@@ -14,8 +14,8 @@ app.use(express.static(__dirname + '/public'));
 var port = process.env.PORT || 8080;        // set our port
 
 app.get('/', function (req, res) {
-    res.render('index', {
-        title: 'Home'
+    res.render('layout', {
+        title: 'Datagamer'
     });
 });
 

@@ -17,22 +17,22 @@ background-color-primary = #4e5969
 background-color-secondary = #5c687b
 
 /* Structure */
-body
-  background-color background-color-primary
-  color #fff
-  display flex
-  min-height 100vh
-  flex-direction column
-  font-size 14px
-  line-height 1.5
-  font-family OpenSans, "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
-  -webkit-font-smoothing subpixel-antialiased;
+/*body*/
+  /*background-color background-color-primary*/
+  /*color #fff*/
+  /*display flex*/
+  /*min-height 100vh*/
+  /*flex-direction column*/
+  /*font-size 14px*/
+  /*line-height 1.5*/
+  /*font-family OpenSans, "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;*/
+  /*-webkit-font-smoothing subpixel-antialiased;*/
 
-#content
-  flex 1
+/*#content*/
+  /*flex 1*/
 
-footer
-  text-align center
+/*footer*/
+  /*text-align center*/
 
 /* Navigation */
 .navbar-default
@@ -58,3 +58,44 @@ footer
 .navbar-default .navbar-nav > li > a:focus
   border-color #047792
   color #fff
+
+  /* Demo Material */
+
+.menuBtn {
+  background-color: transparent;
+  border: none;
+  height: 38px;
+  margin: 16px;
+  width: 36px;
+}
+
+md-toolbar h1 {
+  font-size: 1.250em;
+  font-weight: 400;
+  margin: auto;
+}
+
+md-list .md-button {
+  color: inherit;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+}
+
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+/* Using Data-URI converted from svg until <md-icon> becomes available
+https://github.com/google/material-design-icons
+*/
+.menuBtn {
+  background: transparent url("data:image/svg + xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIyNHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI0IDI0IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGcgaWQ9IkhlYWRlciI + CiAgICA8Zz4KICAgICAgICA8cmVjdCB4PSItNjE4IiB5PSItMjIzMiIgZmlsbD0ibm9uZSIgd2lkdGg9IjE0MDAiIGhlaWdodD0iMzYwMCIvPgogICAgPC9nPgo8L2c + CjxnIGlkPSJMYWJlbCI + CjwvZz4KPGcgaWQ9Ikljb24iPgogICAgPGc + CiAgICAgICAgPHJlY3QgZmlsbD0ibm9uZSIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ii8 + CiAgICAgICAgPHBhdGggZD0iTTMsMThoMTh2LTJIM1YxOHogTTMsMTNoMTh2LTJIM1YxM3ogTTMsNnYyaDE4VjZIM3oiIHN0eWxlPSJmaWxsOiNmM2YzZjM7Ii8 + CiAgICA8L2c + CjwvZz4KPGcgaWQ9IkdyaWQiIGRpc3BsYXk9Im5vbmUiPgogICAgPGcgZGlzcGxheT0iaW5saW5lIj4KICAgIDwvZz4KPC9nPgo8L3N2Zz4=") no-repeat center center;
+}

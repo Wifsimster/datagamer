@@ -1,39 +1,48 @@
 doctype
-html
+html(lang="en", ng-app="StarterApp")
     head
         meta(name='viewport', content='width=device-width', initial-scale='1')
 
-        title #{title} - My Site
+        title #{title}
+
+        // Bootstrap 3
         link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
+
+        // Angulars Material
+        link(rel="stylesheet", href="//rawgit.com/angular/bower-material/master/angular-material.css")
+
         link(rel='stylesheet', href='/stylesheets/style.css')
 
-        script(src='https://code.jquery.com/jquery-2.1.3.min.js')
-        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
-    body
-        header
-            nav(class="navbar navbar-default navbar-static-top")
-                .container
-                    .navbar-header
-                        button(type="button", class="navbar-toggle collapsed", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
-                            span(class="sr-only") Toggle navigation
-                            span(class="icon-bar")
-                            span(class="icon-bar")
-                            span(class="icon-bar")
-                        a(class="navbar-brand", href="#") Datagamer
-                    #bs-example-navbar-collapse-1.collapse.navbar-collapse
-                        ul.nav.navbar-nav
-                            li.active
-                                a(href='#') Home
-                                    span.sr-only (current)
-                            li
-                                a(href='#') Wanted
-                            li
-                                a(href='#') Collection
-                            li
-                                a(href='#') Settings
-        #content.container
-            .row
-                .col-md-12
-                    block content
-        footer
-            p Running on node with Express, Jade and Stylus - Wifsimster
+        // Angular Material Dependencies
+        script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js")
+        script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular-route.js")
+        script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular-animate.min.js")
+        script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular-aria.min.js")
+
+        // Latest Angular Material Javascript
+        script(src="//rawgit.com/angular/bower-material/master/angular-material.js")
+
+        script(src="/js/demo.js")
+
+        // script(src='https://code.jquery.com/jquery-2.1.3.min.js')
+        // script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+
+    body(ng-controller="AppCtrl")
+        md-tabs(md-selected="data.selectedIndex")
+            md-tab#tab1(aria-controls="tab1-content") Home
+            md-tab#tab2(aria-controls="tab2-content") Wanted
+            md-tab#tab3(aria-controls="tab3-content") Collection
+            md-tab#tab4(aria-controls="tab4-content") Settings
+
+        ng-switch.tabpanel-container(on="data.selectedIndex")
+            #tab1-content(role="tabpanel", aria-labelledby="tab1", ng-switch-when="0", md-swipe-left="next()", md-swipe-right="previous()") Content from item 1
+            #tab2-content(role="tabpanel", aria-labelledby="tab2", ng-switch-when="1", md-swipe-left="next()", md-swipe-right="previous()") Content from item 2
+            #tab3-content(role="tabpanel", aria-labelledby="tab3", ng-switch-when="2", md-swipe-left="next()", md-swipe-right="previous()") Content from item 3
+            #tab4-content(role="tabpanel", aria-labelledby="tab4", ng-switch-when="3", md-swipe-left="next()", md-swipe-right="previous()") Content from item 4
+
+
+            // Content
+            md-content(ng-view, md-scroll-y, flex)
+
+        //footer
+        //    p Running on node with Express, Jade and Stylus - Wifsimster
