@@ -11,12 +11,29 @@ html
         script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
     body
         header
-            h1 Datagamer
-        .container-fluid
+            nav(class="navbar navbar-default navbar-static-top")
+                .container
+                    .navbar-header
+                        button(type="button", class="navbar-toggle collapsed", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+                            span(class="sr-only") Toggle navigation
+                            span(class="icon-bar")
+                            span(class="icon-bar")
+                            span(class="icon-bar")
+                        a(class="navbar-brand", href="#") Datagamer
+                    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+                        ul.nav.navbar-nav
+                            li.active
+                                a(href='#') Home
+                                    span.sr-only (current)
+                            li
+                                a(href='#') Wanted
+                            li
+                                a(href='#') Collection
+                            li
+                                a(href='#') Settings
+        #content.container
             .row
-                .col-md-4
-                    block sidebar
-                .col-md-8
+                .col-md-12
                     block content
         footer
-            p Running on node with Express, Jade and Stylus
+            p Running on node with Express, Jade and Stylus - Wifsimster
