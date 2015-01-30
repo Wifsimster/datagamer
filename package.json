@@ -1,0 +1,13 @@
+{
+  "name": "datagamer",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "body-parser": "~1.0.1",
+    "express": "~4.0.0",
+    "jade": "^1.9.1",
+    "unirest": "*"
+  },
+  "author": "Wifsimster",
+  "license": "MIT"
+}
