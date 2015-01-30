@@ -6,8 +6,14 @@
     "body-parser": "~1.0.1",
     "express": "~4.0.0",
     "jade": "^1.9.1",
+    "nib": "^1.1.0",
+    "stylus": "^0.49.3",
     "unirest": "*"
   },
   "author": "Wifsimster",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-stylus": "^2.0.0"
+  }
 }
