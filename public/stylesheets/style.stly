@@ -4,13 +4,13 @@
 global-reset()
 
 /*box-shadow()*/
-  /*-webkit-box-shadow arguments*/
-  /*-moz-box-shadow arguments*/
-  /*box-shadow arguments*/
-  /*html.ie8 &,*/
-  /*html.ie7 &,*/
-  /*html.ie6 &*/
-    /*border 2px solid arguments[length(arguments) - 1]*/
+/*-webkit-box-shadow arguments*/
+/*-moz-box-shadow arguments*/
+/*box-shadow arguments*/
+/*html.ie8 &,*/
+/*html.ie7 &,*/
+/*html.ie6 &*/
+/*border 2px solid arguments[length(arguments) - 1]*/
 
 /* variables */
 /*background-color-primary = #4e5969*/
@@ -104,7 +104,7 @@ global-reset()
 }
 
 /*.tabpanel-container [role="tabpanel"] {*/
-  /*padding: 20px;*/
+/*padding: 20px;*/
 /*}*/
 
 .after-tabs-area {
@@ -146,4 +146,46 @@ md-tab[disabled] {
 
 md-tabs-ink-bar {
   background-color: #FFFF8D !important;
+}
+
+.docs-menu,
+.docs-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.docs-menu li {
+  margin: 0;
+}
+
+.docs-menu > li {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.docs-menu .md-button {
+  border-radius: 0;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 400;
+  line-height: 40px;
+  margin: 0;
+  max-height: 40px;
+  overflow: hidden;
+  padding: 0px 16px;
+  text-align: left;
+  text-decoration: none;
+  white-space: normal;
+  width: 100%;
+}
+
+.docs-menu a.md-button {
+  display: block;
+}
+
+.docs-menu button.md-button::-moz-focus-inner {
+  padding: 0;
+}
+
+.docs-menu .md-button.active {
+  color: #03a9f4;
 }

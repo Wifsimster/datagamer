@@ -5,65 +5,93 @@ html(lang="en", ng-app="StarterApp")
 
         title #{title}
 
-        // Angulars Material
+        // Angular material design style
         link(rel="stylesheet", href="//rawgit.com/angular/bower-material/master/angular-material.css")
 
+        // Lumx material design style
+        link(rel="stylesheet", href="/bower_components/lumx/dist/css/lumx.css")
+
+        // General style generate with Gulp
         link(rel='stylesheet', href='/stylesheets/style.css')
 
-        // Angular Material Dependencies
+        // Lumx material design dependencies
+        script(src="/bower_components/jquery/dist/jquery.js")
+        script(src="/bower_components/velocity/velocity.js")
+        script(src="/bower_components/moment/min/moment-with-locales.min.js")
+
+        // Angular material design dependencies
         script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js")
         script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular-route.js")
         script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular-animate.min.js")
         script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular-aria.min.js")
 
-        // Latest Angular Material Javascript
+        // Angular material design
         script(src="//rawgit.com/angular/bower-material/master/angular-material.js")
 
-        script(src="/js/demo.js")
+        // Lumx material design
+        script(src="/bower_components/lumx/dist/js/lumx.js")
 
-    body(ng-controller="AppCtrl")
-        md-tabs(md-selected="data.selectedIndex")
-            md-tab#tab1(aria-controls="tab1-content") Home
-            md-tab#tab2(aria-controls="tab2-content") Wanted
-            md-tab#tab3(aria-controls="tab3-content") Collection
-            md-tab#tab4(aria-controls="tab4-content") Settings
+        // Angular controllers
+        script(src="/js/app.js")
 
-        ng-switch.tabpanel-container(on="data.selectedIndex")
-            #tab1-content(role="tabpanel", aria-labelledby="tab1", ng-switch-when="0", md-swipe-left="next()", md-swipe-right="previous()") Content from item 1
-            #tab2-content(role="tabpanel", aria-labelledby="tab2", ng-switch-when="1", md-swipe-left="next()", md-swipe-right="previous()") Content from item 2
-            #tab3-content(role="tabpanel", aria-labelledby="tab3", ng-switch-when="2", md-swipe-left="next()", md-swipe-right="previous()") Content from item 3
-            #tab4-content(role="tabpanel", aria-labelledby="tab4", ng-switch-when="3", md-swipe-left="next()", md-swipe-right="previous()")
-                section(layout="row", flex)
+    body(ng-controller="AppCtrl", layout="row")
+        md-sidenav.md-sidenav-left.md-whiteframe-z2(layout="column", md-component-id="left", md-is-locked-open="$media('gt-sm')", tabindex="-1")
 
-                    // Settings - Sidebar left
-                    md-sidenav.md-sidenav-left.md-whitefram-z2(md-component-id="left", md-is-locked-open="$media('gt-md')", layour="column")
-                        md-toolbar.md-theme-indigo
-                            h1.md-toolbar-tools Sidenav left
+            // Sidebar title
+            md-toolbar.md-theme-indigo
+                h1.md-toolbar-tools Datagamer
+
+            // Sidebar content
+            md-content.md-default-theme(style="overflow: auto;")
+                ul.docs-menu
+                    li(ng-repeat="title in pages")
+                        menu-link(section="page")
+                            a.md-button.md-default-theme(ng-href="#")
+                                span {{title}}
+
+        div(layout="column", layout-fill, tabindex="-1" role="main")
+
+            // Toolbar
+            md-toolbar.md-default-theme
+                .md-toolbar-tools(tabindex="0")
+                    button.btn(hide-gt-sm="", aria-label="Toggle Menu")
+                        i.icon.icon--l.icon--flat.mdi.mdi--menu
+                    fill-height(layout="rox", flex)
+                        .md-toolbar-item.md-breadcrumb
+                            span Breadcrumb
+
+                    span(flex)
+
+                    .md-toolbar-item.md-tools(layout="row")
+                        div
+
+                        lx-select(ng-model="ajax.selected", change="cbSelect.exec(newValue, oldValue)", placeholder="Choose a game",
+                        choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}",
+                        min-length="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)",
+                        model-to-selection="ajax.toSelection(data, callback)")
+                            lx-select-selected {{ $selected.Title }} ({{ $selected.Year }})
+                            lx-select-choices  {{ $choice.Title }} - {{ $choice.Type }}
+
+
+            md-content.md-padding.md-default-theme(ng-view, md-scroll-y, flex)
+                div(layout="column", layout-fill)
+                    md-card
+                        md-toolbar.md-primary
+                            h1.md-toolbar-tools General
                         md-content.md-padding
-                            md-item(ng-repeat="item in settings")
-                                md-item-content
-                                    md-button {{item}}
 
-                    //div(layout="column", layout-fill, tabindex="-1", role="main")
-                    md-content.md-padding.md-default-theme(ng-view, md-scroll-y, flex)
-                        div(layout="column", layout-fill)
-                            md-card
-                                md-toolbar.md-primary
-                                    h1.md-toolbar-tools Top Secret Project
-                                md-content.md-padding
-                                    h2 Paracosm
-                                    p The titles of Washed Out's breakthrough song and the first single from Paracosm share.
-                                    form(name="userForm")
-                                        md-input-container
-                                            label Last Name
-                                            input(name="lastName", ng-model="lastName", required, md-maxlength="10", minlength="4")
-                                            div(ng-messages="userForm.lastName.$error", ng-show="userForm.bio.$dirty")
-                                                div(ng-message="required") This is required!
-                                                div(ng-message="md-maxlength") That's too long!
-                                                div(ng-message="minlength") That's too short!
+                            .mb
+                                button.btn.btn--m.btn--blue.btn--raised(lx-ripple, lx-tooltip="Tooltip") Tooltip
+                                button.btn.btn--m.btn--blue.btn--raised(ng-click="ajax.selected = 'Inception'", lx-ripple) Set to 'Inception'
 
-            // Content
-            md-content(ng-view, md-scroll-y, flex)
+                           .grid__col4
+                                lx-select(ng-model="ajax.selected", change="cbSelect.exec(newValue, oldValue)", placeholder="Choose a game",
+                                choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}",
+                                min-length="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)",
+                                model-to-selection="ajax.toSelection(data, callback)")
+                                    lx-select-selected {{ $selected.Title }} ({{ $selected.Year }})
+                                    lx-select-choices  {{ $choice.Title }} - {{ $choice.Type }}
 
-        //footer
+
+    //footer
         //    p Running on node with Express, Jade and Stylus - Wifsimster
