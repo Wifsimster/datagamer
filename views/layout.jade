@@ -69,8 +69,8 @@ html(lang="en", ng-app="StarterApp")
                         choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}",
                         min-length="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)",
                         model-to-selection="ajax.toSelection(data, callback)")
-                            lx-select-selected {{ $selected.Title }} ({{ $selected.Year }})
-                            lx-select-choices  {{ $choice.Title }} - {{ $choice.Type }}
+                            lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate }})
+                            lx-select-choices  {{ $choice.name }} - {{ $choice.releaseDate }}
 
 
             md-content.md-padding.md-default-theme(ng-view, md-scroll-y, flex)

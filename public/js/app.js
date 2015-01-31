@@ -34,9 +34,13 @@ app.controller('AppCtrl', ['$scope', '$http', '$mdSidenav', function ($scope, $h
         update: function (newFilter, oldFilter) {
             if (newFilter) {
                 $scope.ajax.loading = true;
-                $http.get('http://www.omdbapi.com/?s=' + escape(newFilter)).
-                    success(function (data) {
-                        $scope.ajax.list = data.Search;
+                $http.get('http://192.168.0.21:8084/api/games/by/name/' + escape(newFilter), {
+                    headers: {
+                        "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
+                    }
+                }).
+                    success(function (result) {
+                        $scope.ajax.list = result.games;
                         $scope.ajax.loading = false;
                     }).
                     error(function () {
