@@ -1,10 +1,76 @@
 div(ng-controller="WantedCtrl")
-        div(layout="column", layout-fill)
-        md-card
-            md-toolbar.md-primary
-                h1.md-toolbar-tools General
-            md-content.md-padding
+        .grid
+            .grid__col4
+                div(class="p+")
+                    strong.fs-headline.display-block General
+                    strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
+                    lx-text-field(label="Username")
+                        input(type="text" ng-model="general.username")
 
-                .mb
-                    button.btn.btn--m.btn--blue.btn--raised(lx-ripple, lx-tooltip="Tooltip") Tooltip
-                    button.btn.btn--m.btn--blue.btn--raised(ng-click="ajax.selected = 'Inception'", lx-ripple) Set to 'Inception'
+                    lx-text-field(label="Password")
+                        input(type="text" ng-model="general.password")
+
+                    lx-text-field(label="Port")
+                        input(type="text" ng-model="general.port")
+
+            .grid__col4
+                div(class="p+")
+                    strong.fs-headline.display-block Advanced
+                    strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
+                    lx-text-field(label="API Key")
+                        input(type="text" ng-model="general.apikey")
+                    div.checkbox.mt
+                        input.checkbox__input(type="checkbox", id="debug")
+                        label.checkbox__label(for="debug") Debug
+                        span.checkbox__help Check for generate a debug file
+                    lx-file-input(label="Select a directory...")
+
+            .grid__col4
+                div(class="p+")
+                    strong.fs-headline.display-block Update
+                    strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
+                    div.checkbox.mt
+                        input.checkbox__input(type="checkbox", id="notification")
+                        label.checkbox__label(for="notification") Notification
+                        span.checkbox__help Send a notification if an update is available
+                    div.checkbox.mt
+                        input.checkbox__input(type="checkbox", id="automatic")
+                        label.checkbox__label(for="automatic") Automatic
+                        span.checkbox__help Automatically update when update is available
+
+        .grid
+            .grid__col4
+                div(class="p+")
+                    strong.fs-headline.display-block Video game search
+                    strong.fs-subhead.tc-black-2.display-block Search options for video games
+                    div.checkbox.mt
+                        input.checkbox__input(type="checkbox", id="new_releases", checked)
+                        label.checkbox__label(for="new_releases") Search for new releases
+                        span.checkbox__help Search for new video game releases.
+                    .checkbox.mt
+                        input.checkbox__input(type="checkbox", id="startup", checked)
+                        label.checkbox__label(for="startup") Run on startup
+                        span.checkbox__help Force to search for new video game releases after start.
+
+                    // CRON
+                    .grid__col4
+                        lx-text-field(label="Day", lx-tooltip="* Every day | */4 fourth day of the month")
+                            input(type="text" ng-model="general.cron.day")
+                    .grid__col4
+                        lx-text-field(label="Hour", lx-tooltip="* Every hour | */2 Every two hours")
+                            input(type="text" ng-model="general.cron.hour")
+                    .grid__col4
+                        lx-text-field(label="Minute", lx-tooltip="Better keep it random, so the providers don't get DDOSed by every Datagamer user on a 'full' hour.")
+                            input(type="text" ng-model="general.cron.minute")
+            div.grid__col4
+                div(class="p+")
+                    strong.fs-headline.display-block Torrent providers
+                    strong.fs-subhead.tc-black-2.display-block Providers searching torrent sites for new releases
+                    div.checkbox.mt
+                        input.checkbox__input(type="checkbox", id="notification")
+                        label.checkbox__label(for="notification") Notification
+                        span.checkbox__help Send a notification if an update is available
+                    div.checkbox.mt
+                        input.checkbox__input(type="checkbox", id="automatic")
+                        label.checkbox__label(for="automatic") Automatic
+                        span.checkbox__help Automatically update when update is available

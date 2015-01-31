@@ -3,76 +3,14 @@
 /*Nib provides a CSS reset*/
 global-reset()
 
-/*box-shadow()*/
-/*-webkit-box-shadow arguments*/
-/*-moz-box-shadow arguments*/
-/*box-shadow arguments*/
-/*html.ie8 &,*/
-/*html.ie7 &,*/
-/*html.ie6 &*/
-/*border 2px solid arguments[length(arguments) - 1]*/
-
-/* variables */
-/*background-color-primary = #4e5969*/
-/*background-color-secondary = #5c687b*/
-
 /* Structure */
-/*body*/
-/*background-color background-color-primary*/
-/*color #fff*/
-/*display flex*/
-/*min-height 100vh*/
-/*flex-direction column*/
-/*font-size 14px*/
-/*line-height 1.5*/
-/*font-family OpenSans, "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;*/
-/*-webkit-font-smoothing subpixel-antialiased;*/
-
-/*#content*/
-/*flex 1*/
-
-/*footer*/
-/*text-align center*/
-
-/* Navigation */
-.navbar-default
-  background-color background-color-secondary
-  box-shadow 0 0 10px rgba(0, 0, 0, .1)
-  border-color transparent
-  font-size 15px
-
-.navbar-default .navbar-brand
-  color #fff
-
-.navbar-default .navbar-nav > li > a
-  color #fff
-  border 1px solid transparent
-  border-width 0 0 4px 0
-
-.navbar-default .navbar-nav > li.active > a
-  border-color #04bce6
-  background-color background-color-secondary
-  color #fff
-
-.navbar-default .navbar-nav > li > a:hover
-.navbar-default .navbar-nav > li > a:focus
-  border-color #047792
-  color #fff
+body
+  font-size 14px
+  line-height 1.5
+  font-family OpenSans, "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif
+  -webkit-font-smoothing subpixel-antialiased
 
 /* Demo Material */
-
-#tab1-content {
-  background-color: #3F51B5;
-}
-
-#tab2-content {
-  background-color: #673AB7;
-}
-
-#tab3-content {
-  background-color: #00796B;
-}
-
 .tabpanel-container {
   display: block;
   position: relative;

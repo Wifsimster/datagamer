@@ -26,7 +26,6 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', function ($
     $scope.breadcrumb = $location.path();
 
     $scope.isActive = function (route) {
-        console.log(route + " / " + $location.path());
         return route === $location.path();
     }
 
