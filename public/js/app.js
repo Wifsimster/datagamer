@@ -1,22 +1,50 @@
-var app = angular.module('StarterApp', ['ngMaterial', 'lumx']);
+var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute']);
 
-app.controller('AppCtrl', ['$scope', '$http', '$mdSidenav', function ($scope, $http, $mdSidenav) {
-
-
-    $scope.confirm = function (type) {
-        console.log("Confirm click !" + type);
-        if (type === 1) {
-            LxNotificationService.confirm('Lorem Ipsum', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet urna quis nisi sodales semper pharetra eu augue.', {
-                cancel: 'Disagree',
-                ok: 'Agree'
-            }, function (answer) {
-                console.log(answer);
+// App configuration
+app.config(['$routeProvider', '$locationProvider',
+    function ($routeProvider, $locationProvider) {
+        $routeProvider
+            .when('/wanted', {
+                templateUrl: '/partials/wanted',
+                controller: 'WantedCtrl'
+            })
+            .when('/settings', {
+                templateUrl: '/partials/settings',
+                controller: 'SettingsCtrl'
+            })
+            .when('/collection', {
+                templateUrl: '/partials/collection',
+                controller: 'CollectionCtrl'
             });
-        }
-    };
+
+        $locationProvider.html5Mode({enabled: true, requireBase: false});
+    }]);
+
+// App controller
+app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', function ($scope, $http, $routeParams, $location) {
+
+    $scope.breadcrumb = $location.path();
+
+    $scope.isActive = function (route) {
+        console.log(route + " / " + $location.path());
+        return route === $location.path();
+    }
 
     // Pages for sidebar
-    $scope.pages = ["Wanted", "Collection"];
+    $scope.pages = [
+        {
+            title: "Home",
+            url: ""
+        }, {
+            title: "Wanted",
+            url: "wanted"
+        }, {
+            title: "Collection",
+            url: "collection"
+        }, {
+            title: "Settings",
+            url: "settings"
+        }];
 
     // Sub-menu for settings sidebar
     $scope.settings = ["General", "Searcher", "Downloaders", "Renamer", "Automation", "Notifications", "Manage", "About"];
@@ -54,3 +82,15 @@ app.controller('AppCtrl', ['$scope', '$http', '$mdSidenav', function ($scope, $h
         loading: false
     };
 }]);
+
+app.controller('WantedCtrl', function ($scope) {
+
+});
+
+app.controller('SettingsCtrl', function ($scope) {
+
+});
+
+app.controller('CollectionCtrl', function ($scope) {
+
+});

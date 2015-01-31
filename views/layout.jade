@@ -35,19 +35,20 @@ html(lang="en", ng-app="StarterApp")
         script(src="/js/app.js")
 
     body(ng-controller="AppCtrl", layout="row")
+        // Sidebar left
         md-sidenav.md-sidenav-left.md-whiteframe-z2(layout="column", md-component-id="left", md-is-locked-open="$media('gt-sm')", tabindex="-1")
 
-            // Sidebar title
+            // Sidebar Title
             md-toolbar.md-theme-indigo
                 h1.md-toolbar-tools Datagamer
 
-            // Sidebar content
+            // Sidebar Content
             md-content.md-default-theme(style="overflow: auto;")
                 ul.docs-menu
-                    li(ng-repeat="title in pages")
+                    li(ng-repeat="item in pages")
                         menu-link(section="page")
-                            a.md-button.md-default-theme(ng-href="#")
-                                span {{title}}
+                            md-button(ng-href="/{{item.url}}", ng-class="{active:isActive('/{{item.url}}')}")
+                                span {{item.title}}
 
         div(layout="column", layout-fill, tabindex="-1" role="main")
 
@@ -58,7 +59,7 @@ html(lang="en", ng-app="StarterApp")
                         i.icon.icon--l.icon--flat.mdi.mdi--menu
                     fill-height(layout="rox", flex)
                         .md-toolbar-item.md-breadcrumb
-                            span Breadcrumb
+                            span {{breadcrumb}}
 
                     span(flex)
 
@@ -73,24 +74,8 @@ html(lang="en", ng-app="StarterApp")
                             lx-select-choices  {{ $choice.name }} - {{ $choice.releaseDate }}
 
 
-            md-content.md-padding.md-default-theme(ng-view, md-scroll-y, flex)
-                div(layout="column", layout-fill)
-                    md-card
-                        md-toolbar.md-primary
-                            h1.md-toolbar-tools General
-                        md-content.md-padding
-
-                            .mb
-                                button.btn.btn--m.btn--blue.btn--raised(lx-ripple, lx-tooltip="Tooltip") Tooltip
-                                button.btn.btn--m.btn--blue.btn--raised(ng-click="ajax.selected = 'Inception'", lx-ripple) Set to 'Inception'
-
-                           .grid__col4
-                                lx-select(ng-model="ajax.selected", change="cbSelect.exec(newValue, oldValue)", placeholder="Choose a game",
-                                choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}",
-                                min-length="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)",
-                                model-to-selection="ajax.toSelection(data, callback)")
-                                    lx-select-selected {{ $selected.Title }} ({{ $selected.Year }})
-                                    lx-select-choices  {{ $choice.Title }} - {{ $choice.Type }}
+            md-content.md-padding.md-default-theme(md-scroll-y, flex)
+                div(ng-view)
 
 
     //footer

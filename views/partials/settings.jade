@@ -1,0 +1,10 @@
+div(ng-controller="WantedCtrl")
+        div(layout="column", layout-fill)
+        md-card
+            md-toolbar.md-primary
+                h1.md-toolbar-tools General
+            md-content.md-padding
+
+                .mb
+                    button.btn.btn--m.btn--blue.btn--raised(lx-ripple, lx-tooltip="Tooltip") Tooltip
+                    button.btn.btn--m.btn--blue.btn--raised(ng-click="ajax.selected = 'Inception'", lx-ripple) Set to 'Inception'
