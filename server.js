@@ -26,6 +26,8 @@ var port = process.env.PORT || 8080;
 
 require('./app/routes/generic.js');
 require('./app/routes/transmission.js');
+require('./app/routes/kickasstorrents.js');
+require('./app/routes/thepiratebay.js');
 
 // START THE SERVER
 app.listen(port);
