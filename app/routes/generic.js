@@ -28,6 +28,7 @@ app.get('/settings', function (req, res) {
     });
 });
 
+// Settings
 app.get("/settings/one", function (req, res) {
     settings_db.findOne({}, function (err, doc) {
         res.send(doc)
@@ -45,7 +46,6 @@ app.post("/settings", function (req, res) {
 });
 
 app.put("/settings", function (req, res) {
-    console.log(req.body._id);
     settings_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
         if (!err)
             res.json({message: "OK"});

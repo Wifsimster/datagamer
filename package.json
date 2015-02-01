@@ -10,6 +10,7 @@
     "nib": "^1.1.0",
     "node-uuid": "^1.4.2",
     "stylus": "^0.49.3",
+    "transmission": "^0.4.1",
     "unirest": "*"
   },
   "author": "Wifsimster",

@@ -1,6 +1,6 @@
 div(ng-controller="SettingsCtrl")
-    .grid
-        .grid__col4
+    .grid__col4
+        div#General(class="card")
             div(class="p+")
                 strong.fs-headline.display-block General
                 strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
@@ -14,7 +14,9 @@ div(ng-controller="SettingsCtrl")
                     lx-text-field(label="Port")
                         input(type="text", ng-model="settings.port", ng-change="update(settings)")
 
-        .grid__col4
+        div(style="padding:15px")
+
+        div#Advanced(class="card")
             div(class="p+")
                 strong.fs-headline.display-block Advanced
                 strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
@@ -26,7 +28,9 @@ div(ng-controller="SettingsCtrl")
                     span.checkbox__help Check for generate a debug file
                 lx-file-input(label="Select a directory...", ng-model="settings.debug_directory", ng-change="update(settings)")
 
-        .grid__col4
+        div(style="padding:15px")
+
+        div#Update(class="card")
             div(class="p+")
                 strong.fs-headline.display-block Update
                 strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
@@ -39,8 +43,9 @@ div(ng-controller="SettingsCtrl")
                     label.checkbox__label(for="automatic") Automatic
                     span.checkbox__help Automatically update when update is available
 
-    .grid
-        .grid__col4
+        div(style="padding:15px")
+
+        div#Search(class="card")
             div(class="p+")
                 strong.fs-headline.display-block Video game search
                 strong.fs-subhead.tc-black-2.display-block Search options for video games
@@ -65,8 +70,12 @@ div(ng-controller="SettingsCtrl")
                     lx-text-field(label="Minute", lx-tooltip="Better keep it random, so the providers don't get DDOSed by every Datagamer user on a 'full' hour.",
                     tooltip-position="bottom")
                         input(type="text" ng-model="settings.cron.minute", ng-change="update(settings)")
-        .grid__col4
+
+        div(style="padding:15px")
+
+        div#Providers(class="card")
             div(class="p+")
+                button.btn.btn--m.btn--black.btn--raised(lx-ripple, style="float:right") Test
                 strong.fs-headline.display-block ThePirateBay providers
                 a.fs-subhead.tc-black-2.display-block(ng-href="https://thepiratebay.se/") ThePirateBay
                 strong.fs-subhead.tc-black-2.display-block Providers searching torrents for new releases
@@ -82,12 +91,12 @@ div(ng-controller="SettingsCtrl")
                 .grid__col4
                     lx-text-field(label="Min score", lx-tooltip="Search releases with a minimum score.", tooltip-position="bottom")
                         input(type="text" ng-model="settings.tpb.min_score", ng-change="update(settings)")
-            div(class="p+")
-                .grid__col12
-                    button.btn.btn--m.btn--black.btn--raised(lx-ripple) Test ThePirateBay
 
-        .grid__col4
+        div(style="padding:15px")
+
+        div(class="card")
             div(class="p+")
+                button.btn.btn--m.btn--orange.btn--raised(lx-ripple, style="float:right") Test
                 strong.fs-headline.display-block KickAssTorrents providers
                 a.fs-subhead.tc-black-2.display-block(ng-href="https://kickass.so/") KickAssTorrents
                 strong.fs-subhead.tc-black-2.display-block Providers searching torrents for new releases
@@ -109,15 +118,18 @@ div(ng-controller="SettingsCtrl")
                         input.checkbox__input(type="checkbox", id="verified")
                         label.checkbox__label(for="verified") Only verified
                         span.checkbox__help Only search for verfied video game releases.
-                    button.btn.btn--m.btn--orange.btn--raised(lx-ripple) Test KickAssTorrents
 
-    .grid
-        .grid__col4
+        div(style="padding:15px")
+
+        div#Transmission(class="card")
             div(class="p+")
+                button.btn.btn--m.btn--red.btn--raised(lx-ripple, style="float:right", ng-click="transmission_test()") Test
                 strong.fs-headline.display-block Transmission
                 a.fs-subhead.tc-black-2.display-block(ng-href="https://www.transmissionbt.com/") Transmission
                 strong.fs-subhead.tc-black-2.display-block BitTorrent client for downloading torrents
-
+            .grid
+                #transmission_progress
+            div(class="p+")
                 lx-text-field(label="Host", lx-tooltip="Hostname with port, usually localhost:9091", tooltip-position="bottom")
                     input(type="text", ng-model="settings.transmission.host", ng-change="update(settings)")
                 lx-text-field(label="Rpc url", lx-tooltip="Change if you don't run Transmission RPC at the default url.", tooltip-position="bottom")
@@ -142,9 +154,10 @@ div(ng-controller="SettingsCtrl")
                         input.checkbox__input(type="checkbox", id="pause_torrent", ng-model="settings.transmission.pause_torrent", ng-change="update(settings)")
                         label.checkbox__label(for="pause_torrent") Paused torrent
                         span.checkbox__help Add the torrent paused.
-                    button.btn.btn--m.btn--red.btn--raised(lx-ripple) Test Transmission
 
-        .grid__col4
+        div(style="padding:15px")
+
+        div#Renamer(class="card")
             div(class="p+")
                 strong.fs-headline.display-block Renamer
                 strong.fs-subhead.tc-black-2.display-block Renamer downloaded video games
@@ -161,7 +174,6 @@ div(ng-controller="SettingsCtrl")
                     lx-text-field(label="Run every")
                         input(type="text", ng-model="settings.renamer.detect_minute", ng-change="update(settings)",
                         lx-tooltip="Detect downloaded video games every X minutes.", tooltip-position="bottom")
-            div(class="p+")
                 .grid__col12
                     div.checkbox.mt
                         input.checkbox__input(type="checkbox", id="unrar", ng-model="settings.renamer.unrar", ng-change="update(settings)")

@@ -1,4 +1,4 @@
-var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute']);
+var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute', 'duScroll']);
 
 // App configuration
 app.config(['$routeProvider', '$locationProvider',
@@ -21,7 +21,22 @@ app.config(['$routeProvider', '$locationProvider',
     }]);
 
 // App controller
-app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', function ($scope, $http, $routeParams, $location) {
+app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav', function ($scope, $http, $routeParams, $location, $mdSidenav) {
+
+    // Hide/Show subnav on click
+    $scope.show = false;
+
+    if ($location.path() == "/settings") {
+        $scope.show = true;
+    }
+
+    $scope.toggle = function () {
+        $scope.show = $scope.show === false ? true : false;
+    };
+
+    $scope.isOpen = function () {
+        return $scope.show;
+    };
 
     $scope.breadcrumb = $location.path();
 
@@ -42,13 +57,16 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', function ($
             url: "collection"
         }, {
             title: "Settings",
-            url: "settings"
+            url: "settings",
+            subnav: ["General", "Advanced", "Update", "Search", "Providers", "Transmission", "Renamer"]
         }];
 
-    // Sub-menu for settings sidebar
-    //$scope.settings = ["General", "Searcher", "Downloaders", "Renamer", "Automation", "Notifications", "Manage", "About"];
+// Hide sidebar left on action
+    $scope.openLeftMenu = function () {
+        $mdSidenav('left').toggle();
+    };
 
-    // Single select with ajax and change handler
+// Single select with ajax and change handler
     $scope.ajax = {
         list: [],
         update: function (newFilter, oldFilter) {
@@ -73,9 +91,10 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', function ($
         },
         loading: false
     };
-}]);
+}])
+;
 
-app.controller('SettingsCtrl', function ($scope, $http) {
+app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, LxProgressService) {
 
     $scope.settings = {};
 
@@ -84,7 +103,8 @@ app.controller('SettingsCtrl', function ($scope, $http) {
         success(function (result) {
             console.log(result);
             $scope.settings = result;
-        }).error(function (err) {
+        }).
+        error(function (err) {
             console.error(err);
         });
 
@@ -95,8 +115,31 @@ app.controller('SettingsCtrl', function ($scope, $http) {
         $http.put('/settings', $scope.settings).
             success(function (result) {
                 console.log(result);
-            }).error(function (err) {
+            }).
+            error(function (err) {
                 console.error(err);
+            });
+    }
+
+    $scope.transmission_test = function () {
+
+        LxProgressService.linear.show('#5fa2db', '#transmission_progress');
+
+        $http.get('/transmission/torrents').
+            success(function (result) {
+
+                LxProgressService.linear.hide();
+
+                if (result.torrents) {
+                    LxNotificationService.success('Transmission is OK');
+                } else {
+                    LxNotificationService.error('Something is wrong with Transmission configuration !');
+                }
+            }).
+            error(function (err) {
+                console.error(err);
+                LxProgressService.linear.hide();
+                LxNotificationService.error('Something is wrong with Transmission configuration !');
             });
     }
 
@@ -109,3 +152,6 @@ app.controller('WantedCtrl', function ($scope, $http) {
 app.controller('CollectionCtrl', function ($scope) {
 
 });
+
+
+

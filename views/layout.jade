@@ -31,6 +31,9 @@ html(lang="en", ng-app="StarterApp")
         // Lumx material design
         script(src="/bower_components/lumx/dist/js/lumx.js")
 
+        // ScrollSpy and Affix
+        script(src="/bower_components/angular-scroll/angular-scroll.js")
+
         // Angular controllers
         script(src="/js/app.js")
 
@@ -45,17 +48,31 @@ html(lang="en", ng-app="StarterApp")
             // Sidebar Content
             md-content.md-default-theme(style="overflow: auto;")
                 ul.docs-menu
-                    li(ng-repeat="item in pages")
+                    li.parent-list-item(ng-repeat="item in pages", ng-class="{parentActive:isActive('/{{item.url}}')}")
                         menu-link(section="page")
-                            md-button(ng-href="/{{item.url}}", ng-class="{active:isActive('/{{item.url}}')}")
+                            // Page without subnav
+                            md-button.md-button(ng-if="!item.subnav", ng-href="/{{item.url}}", ng-class="{active:isActive('/{{item.url}}')}")
                                 span {{item.title}}
+                            // Page with subnav
+                            md-button.md-button.md-button-toggle(ng-if="item.subnav", ng-click="toggle()")
+                                span {{item.title}}
+                                span.md-toggle-icon(ng-class="{'toggled' : isOpen()}")
+                                    i.icon.icon--grey.icon--l.mdi.mdi--keyboard-arrow-up
+                            // Subnav
+                            ul.menu-toggle-list(ng-show="show")
+                                li(ng-repeat="subitem in item.subnav")
+                                    menu-link(section="page")
+                                        md-button.md-button(ng-href="/{{item.url}}#{{subitem}}")
+                                            span {{subitem}}
+
+                            pagemenu(affix)
 
         div(layout="column", layout-fill, tabindex="-1" role="main")
 
             // Toolbar
             md-toolbar.bcg-green-500
                 .md-toolbar-tools(tabindex="0")
-                    button.btn(hide-gt-sm="", aria-label="Toggle Menu")
+                    button.btn(hide-gt-sm="", aria-label="Toggle Menu", ng-click="openLeftMenu()")
                         i.icon.icon--l.icon--flat.mdi.mdi--menu
                     fill-height(layout="rox", flex)
                         .md-toolbar-item.md-breadcrumb

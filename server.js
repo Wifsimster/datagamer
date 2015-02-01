@@ -23,6 +23,7 @@ app.use(bodyParser());
 var port = process.env.PORT || 8080;
 
 require('./app/routes/generic.js');
+require('./app/routes/transmission.js');
 
 // START THE SERVER
 app.listen(port);
