@@ -1,26 +1,27 @@
-div(ng-controller="WantedCtrl")
+div(ng-controller="SettingsCtrl")
         .grid
             .grid__col4
                 div(class="p+")
                     strong.fs-headline.display-block General
                     strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
-                    lx-text-field(label="Username")
-                        input(type="text" ng-model="general.username")
+                    form
+                        lx-text-field(label="Username")
+                            input(type="text", ng-model="settings.username", ng-change="update(settings)")
 
-                    lx-text-field(label="Password")
-                        input(type="text" ng-model="general.password")
+                        lx-text-field(label="Password")
+                            input(type="text", ng-model="settings.password", ng-change="update(settings)")
 
-                    lx-text-field(label="Port")
-                        input(type="text" ng-model="general.port")
+                        lx-text-field(label="Port")
+                            input(type="text", ng-model="settings.port", ng-change="update(settings)")
 
             .grid__col4
                 div(class="p+")
                     strong.fs-headline.display-block Advanced
                     strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
-                    lx-text-field(label="API Key")
-                        input(type="text" ng-model="general.apikey")
+                    lx-text-field(label="API Key", disabled="true")
+                        input(type="text", ng-model="settings.apikey", ng-change="update(settings)", ng-disabled="true")
                     div.checkbox.mt
-                        input.checkbox__input(type="checkbox", id="debug")
+                        input.checkbox__input(type="checkbox", id="debug", ng-model="settings.debug", ng-change="update(settings)")
                         label.checkbox__label(for="debug") Debug
                         span.checkbox__help Check for generate a debug file
                     lx-file-input(label="Select a directory...")

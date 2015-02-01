@@ -46,14 +46,7 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', function ($
         }];
 
     // Sub-menu for settings sidebar
-    $scope.settings = ["General", "Searcher", "Downloaders", "Renamer", "Automation", "Notifications", "Manage", "About"];
-
-    $scope.next = function () {
-        $scope.data.selectedIndex = Math.min($scope.data.selectedIndex + 1, 2);
-    };
-    $scope.previous = function () {
-        $scope.data.selectedIndex = Math.max($scope.data.selectedIndex - 1, 0);
-    };
+    //$scope.settings = ["General", "Searcher", "Downloaders", "Renamer", "Automation", "Notifications", "Manage", "About"];
 
     // Single select with ajax and change handler
     $scope.ajax = {
@@ -82,12 +75,35 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', function ($
     };
 }]);
 
-app.controller('WantedCtrl', function ($scope) {
+app.controller('SettingsCtrl', function ($scope, $http) {
+
+    $scope.settings = {};
+
+    // Get the unique settings in database
+    $http.get('/settings/one').
+        success(function (result) {
+            console.log(result);
+            $scope.settings = result;
+        }).error(function (err) {
+            console.error(err);
+        });
+
+    // Update settings
+    $scope.update = function (settings) {
+        console.log("Updating settings...");
+
+        $http.put('/settings', $scope.settings).
+            success(function (result) {
+                console.log(result);
+            }).error(function (err) {
+                console.error(err);
+            });
+    }
 
 });
 
-app.controller('SettingsCtrl', function ($scope) {
 
+app.controller('WantedCtrl', function ($scope, $http) {
 });
 
 app.controller('CollectionCtrl', function ($scope) {
