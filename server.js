@@ -12,6 +12,8 @@ var settings_db = new Datastore({filename: 'settings.nedb', autoload: true});
 GLOBAL.app = app;
 GLOBAL.settings_db = settings_db;
 
+GLOBAL.SETTINGS;
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
@@ -30,7 +32,7 @@ app.listen(port);
 console.log('Datagamer is running on port ' + port);
 
 // Init database settings at startup
-var settings = {
+var settings_init = {
     username: "",
     password: "",
     port: "8080",
@@ -44,8 +46,9 @@ var settings = {
         minute: ""
     },
     transmission: {
-        host: "localhost:9091",
-        rpc_url: "transmission",
+        address: "localhost",
+        port: 9091,
+        rpc_url: "/transmission/rpc",
         remove_torrent: true
     },
     renamer: {
@@ -54,14 +57,22 @@ var settings = {
     }
 };
 
-settings_db.count({}, function (err, count) {
-    if (count > 0) {
-        // Do nothing ! Settings already created once.
-        console.log("Settings found.");
-    } else {
-        settings_db.insert(settings, function (err, newDoc) {
-            if (!err)
-                console.log("No settings found, create new one !");
-        });
+settings_db.findOne({}, function (err, settings) {
+    if (!err) {
+        if (settings) {
+            // Do nothing ! Settings already created once.
+            console.log("Settings found.");
+            SETTINGS = settings;
+        } else {
+            console.log("No settings found, create new one !");
+            settings_db.insert(settings_init, function (err, settings) {
+                if (!err) {
+                    console.log("No settings found, create new one !");
+                    SETTINGS = settings;
+                } else {
+                    console.error(err);
+                }
+            });
+        }
     }
 });

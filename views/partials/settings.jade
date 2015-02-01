@@ -130,10 +130,16 @@ div(ng-controller="SettingsCtrl")
             .grid
                 #transmission_progress
             div(class="p+")
-                lx-text-field(label="Host", lx-tooltip="Hostname with port, usually localhost:9091", tooltip-position="bottom")
-                    input(type="text", ng-model="settings.transmission.host", ng-change="update(settings)")
-                lx-text-field(label="Rpc url", lx-tooltip="Change if you don't run Transmission RPC at the default url.", tooltip-position="bottom")
-                    input(type="text", ng-model="settings.transmission.rpc_url", ng-change="update(settings)")
+                .grid__col8
+                    lx-text-field(label="Address", lx-tooltip="Address, usually localhost", tooltip-position="bottom")
+                        input(type="text", ng-model="settings.transmission.address", ng-change="update(settings)")
+                .grid__col4
+                    lx-text-field(label="Port", lx-tooltip="Port, usually 9091", tooltip-position="bottom")
+                        input(type="text", ng-model="settings.transmission.port", ng-change="update(settings)")
+            div(class="p+")
+                .grid__col12
+                    lx-text-field(label="Rpc url", lx-tooltip="Change if you don't run Transmission RPC at the default url.", tooltip-position="bottom")
+                        input(type="text", ng-model="settings.transmission.rpc_url", ng-change="update(settings)")
 
                 .grid__col6
                     lx-text-field(label="Username")

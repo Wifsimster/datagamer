@@ -39,15 +39,21 @@ app.get("/settings/one", function (req, res) {
 //----              POST                ----
 //------------------------------------------
 app.post("/settings", function (req, res) {
-    settings_db.insert(req.body, function (err, newDoc) {
-        if (!err)
+    settings_db.insert(req.body, function (err, settings) {
+        if (!err) {
             res.json({message: "OK"});
+            SETTINGS = settings;
+        }
     });
 });
 
 app.put("/settings", function (req, res) {
-    settings_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
-        if (!err)
+    settings_db.update({_id: req.body._id}, req.body, function (err, result) {
+        if (!err) {
             res.json({message: "OK"});
+
+            // Update settings var
+            SETTINGS = req.body;
+        }
     });
 });
