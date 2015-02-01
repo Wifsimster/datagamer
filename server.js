@@ -29,7 +29,29 @@ app.listen(port);
 console.log('Datagamer is running on port ' + port);
 
 // Init database settings at startup
-var settings = {username: "", password: "", port: "8080", debug: false, apikey: uuid.v4()};
+var settings = {
+    username: "",
+    password: "",
+    port: "8080",
+    debug: false,
+    apikey: uuid.v4(),
+    new_releases: true,
+    startup: true,
+    cron: {
+        day: "1",
+        hour: "",
+        minute: ""
+    },
+    transmission: {
+        host: "localhost:9091",
+        rpc_url: "transmission",
+        remove_torrent: true
+    },
+    renamer: {
+        folder_naming: "<name> (<year>)",
+        detect_minute: "15"
+    }
+};
 
 settings_db.count({}, function (err, count) {
     if (count > 0) {
