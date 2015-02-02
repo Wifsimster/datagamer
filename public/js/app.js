@@ -147,6 +147,21 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
 
 
 app.controller('WantedCtrl', function ($scope, $http) {
+
+    // Get games from Datagamer
+    $http.get('http://192.168.0.21:8084/api/games', {
+        headers: {
+            "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
+        }
+    }).
+        success(function (result) {
+            $scope.games = result.games;
+
+        }).
+        error(function (err) {
+            console.error(err);
+        });
+
 });
 
 app.controller('CollectionCtrl', function ($scope) {

@@ -1,18 +1,8 @@
 div(ng-controller="WantedCtrl")
-        div(layout="column", layout-fill)
-        md-card
-            md-toolbar.md-primary
-                h1.md-toolbar-tools Search a wanted video game
-            md-content.md-padding
+    .grid__col12
 
-                .mb
-                    button.btn.btn--m.btn--blue.btn--raised(lx-ripple, lx-tooltip="Tooltip") Tooltip
-                    button.btn.btn--m.btn--blue.btn--raised(ng-click="ajax.selected = 'Inception'", lx-ripple) Set to 'Inception'
+        h1.fs-title Video games list from Datagamer
 
-               .grid__col4
-                    lx-select(ng-model="ajax.selected", change="cbSelect.exec(newValue, oldValue)", placeholder="Choose a game",
-                    choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}",
-                    min-length="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)",
-                    model-to-selection="ajax.toSelection(data, callback)")
-                        lx-select-selected {{ $selected.Title }} ({{ $selected.Year }})
-                        lx-select-choices  {{ $choice.Title }} - {{ $choice.Type }}
+        ul
+            li(ng-repeat="game in games")
+                span {{game.name}}
