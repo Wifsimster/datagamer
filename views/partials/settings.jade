@@ -176,10 +176,10 @@ div(ng-controller="SettingsCtrl")
                     strong.fs-headline.display-block Renamer
                     strong.fs-subhead.tc-black-2.display-block Renamer downloaded video games
 
-                    lx-file-input(label="From a directory...", ng-model="config.renamer.from",
-                    ng-blur="update(config)", lx-tooltip="Folder where Datagamer searches for video games.", tooltip-position="bottom")
-                    lx-file-input(label="To a directory...", ng-model="config.renamer.to",
-                    ng-blur="update(config)", lx-tooltip="Folder where the video games are moveed to.", tooltip-position="bottom")
+                    lx-text-field(label="From a directory...")
+                        input(type="text", ng-model="config.renamer.from", lx-tooltip="Folder where Datagamer searches for video games.", tooltip-position="bottom", ng-blur="update(config)")
+                    lx-text-field(label="To a directory...")
+                        input(type="text", ng-model="config.renamer.to", lx-tooltip="Folder where the video games are moved to.", tooltip-position="bottom", ng-blur="update(config)")
 
                     .grid__col6
                         lx-text-field(label="Folder naming", disabled="true")
