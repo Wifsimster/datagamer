@@ -21,23 +21,30 @@ app.use(express.static(__dirname + '/public'));
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
 app.use(bodyParser());
 
-var port = process.env.PORT || 8080;
-
 require('./app/routes/generic.js');
 require('./app/routes/transmission.js');
 require('./app/routes/kickasstorrents.js');
 require('./app/routes/thepiratebay.js');
 
-// START THE SERVER
-app.listen(port);
-console.log('Datagamer is running on port ' + port);
+var port;
 
 // Generate config.ini if first start
 if (fs.existsSync('./config.ini')) {
     console.log('./config.ini found !')
+
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+    if (typeof config.general.port === "undefined") {
+        port = 8080;
+    } else {
+        port = config.general.port;
+    }
+
 } else {
+
     console.log('First time launching the app, generate default settings in ./config.ini file...');
 
+    var port = 8080;
     var config = ini.parse(fs.readFileSync('./config.mdl', 'utf-8'));
 
     // [general]
@@ -101,3 +108,6 @@ if (fs.existsSync('./config.ini')) {
     }
 }
 
+// START THE SERVER
+app.listen(port);
+console.log('Datagamer is running on port ' + port);

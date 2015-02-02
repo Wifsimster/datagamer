@@ -1,14 +1,18 @@
 var Transmission = require('transmission');
+var fs = require('fs');
+var ini = require('ini');
 
+app.get("/transmission/test", function (req, res) {
 
-app.get("/transmission/torrents", function (req, res) {
+    // Open config.ini
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
     var transmission = new Transmission({
-        host: SETTINGS.transmission.address,   // 192.168.0.21
-        port: SETTINGS.transmission.port,   // 9091
-        username: SETTINGS.transmission.username, // wifsimster
-        password: SETTINGS.transmission.password, // 192lucie
-        url: SETTINGS.transmission.rpc_url // /transmission/rpc
+        host: config.transmission.address,   // 192.168.0.21
+        port: config.transmission.port,   // 9091
+        username: config.transmission.username, // wifsimster
+        password: config.transmission.password, // 192lucie
+        url: config.transmission.rpc_url // /transmission/rpc
     });
 
     console.log("transmission init");

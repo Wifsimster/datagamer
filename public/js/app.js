@@ -101,24 +101,59 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
     // Get the unique settings in database
     $http.get('/config').
         success(function (result) {
-            console.log(result);
+            //console.log(result);
             $scope.config = result;
         }).
         error(function (err) {
             console.error(err);
         });
 
-    // Update settings
+    // Update config inputs
     $scope.update = function (config) {
         console.log("Updating config.ini...");
 
-        $http.put('/config', $scope.config).
-            success(function (result) {
-                LxNotificationService.success('config.ini updated !');
-                console.log(result);
+        if (config.general.port == null) {
+            console.error("Port cannot be empty !");
+            LxNotificationService.error('Port cannot be empty !');
+        } else {
+            $http.put('/config', $scope.config).
+                success(function (result) {
+                    LxNotificationService.success('config.ini updated !');
+                    //console.log(result);
+                }).
+                error(function (err) {
+                    console.error(err);
+                });
+        }
+    }
+
+    $scope.thepiratebay_test = function () {
+        LxProgressService.linear.show('#5fa2db', '#thepiratebay_progress');
+
+        $http.get('/thepiratebay/test').
+            success(function () {
+                LxProgressService.linear.hide();
+                LxNotificationService.success('ThePirateBay provider is OK');
             }).
             error(function (err) {
                 console.error(err);
+                LxProgressService.linear.hide();
+                LxNotificationService.error('Something is wrong with ThePirateBay configuration !');
+            });
+    }
+
+    $scope.kickasstorrents_test = function () {
+        LxProgressService.linear.show('#5fa2db', '#kickasstorrents_progress');
+
+        $http.get('/kickasstorrents/test').
+            success(function () {
+                LxProgressService.linear.hide();
+                LxNotificationService.warning('KickAssTorrents provider is not implemented yet.');
+            }).
+            error(function (err) {
+                console.error(err);
+                LxProgressService.linear.hide();
+                LxNotificationService.error('Something is wrong with KickAssTorrents configuration !');
             });
     }
 
@@ -126,7 +161,7 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
 
         LxProgressService.linear.show('#5fa2db', '#transmission_progress');
 
-        $http.get('/transmission/torrents').
+        $http.get('/transmission/test').
             success(function (result) {
                 LxProgressService.linear.hide();
 

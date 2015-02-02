@@ -1,21 +1,19 @@
 var tpb = require('thepiratebay');
+var fs = require('fs');
+var ini = require('ini');
 
-//// Get TOP torrents in subcategory PC
-//tpb.topTorrents('401').then(function (results) {
-//    console.log(results);
-//}).catch(function (err) {
-//    console.log(err);
-//});
-//
-//// Search torrents in category Game
-//tpb.search('Dying Light', {
-//    category: '400'
-//}).then(function (results) {
-//    console.log(results);
-//}).catch(function (err) {
-//    console.log(err);
-//});
+app.get("/thepiratebay/test", function (req, res) {
 
-app.get("/thepiratebay/torrents", function (req, res) {
+    // Open config.ini
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
+    tpb.recentTorrents()
+        .then(function (results) {
+            console.log("Get torrent list !");
+            res.send(results);
+        })
+        .catch(function () {
+            console.error(err);
+            res.send(err);
+        });
 });
