@@ -12,9 +12,6 @@ var settings_db = new Datastore({filename: 'settings.nedb', autoload: true});
 
 // Singleton of Express app instance
 GLOBAL.app = app;
-GLOBAL.settings_db = settings_db;
-
-GLOBAL.SETTINGS;
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -47,31 +44,60 @@ if (fs.existsSync('./config.ini')) {
     config.general.username = "";
     config.general.password = "";
     config.general.port = "8080";
-    config.general.debug = false;
-    config.general.apikey = uuid.v4();
-    config.general.new_releases = true;
-    config.general.startup = true;
 
-    // [cron]
-    config.cron.day = "1";
-    config.cron.hour = "";
-    config.cron.minute = "";
+    // [advanced]
+    config.advanced.apikey = uuid.v4();
+    config.advanced.debug = false;
+    config.advanced.debug_directory = "";
+
+    // [update]
+    config.update.notification = false;
+    config.update.automatic = false;
+
+    // [search]
+    config.search.new_releases = false;
+    config.search.startup = false;
+    config.search.cron.day = "1";
+    config.search.cron.hour = "";
+    config.search.cron.minute = "";
+
+    // [thepiratebay]
+    config.thepiratebay.proxy_server = "";
+    config.thepiratebay.seed_ration = "";
+    config.thepiratebay.seed_time = "";
+    config.thepiratebay.min_score = "";
+
+    // [kickasstorrents]
+    config.kickasstorrents.proxy_server = "";
+    config.kickasstorrents.seed_ration = "";
+    config.kickasstorrents.seed_time = "";
+    config.kickasstorrents.min_score = "";
+    config.kickasstorrents.verified = false;
 
     // [transmission]
     config.transmission.address = "localhost";
     config.transmission.port = 9091;
+    config.transmission.username = "";
+    config.transmission.password = "";
     config.transmission.rpc_url = "/transmission/rpc";
-    config.transmission.remove_torrent = true;
+    config.transmission.directory = "";
+    config.transmission.remove_torrent = false;
+    config.transmission.pause_torrent = false;
 
     // [renamer]
+    config.renamer.from = "";
+    config.renamer.to = "";
     config.renamer.folder_naming = "<name> (<year>)";
     config.renamer.detect_minute = "15";
+    config.renamer.unrar = false;
 
     // Write in config.ini file
     fs.writeFileSync('./config.ini', ini.stringify(config));
 
     if (fs.existsSync('./config.ini')) {
-        console.log('./config.ini created !')
+        console.log('./config.ini created !');
+    } else {
+        console.error('./config.ini was not created !');
     }
 }
 

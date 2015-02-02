@@ -6,13 +6,13 @@ div(ng-controller="SettingsCtrl")
                 strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
                 .grid__col5
                     lx-text-field(label="Username")
-                        input(type="text", ng-model="settings.username", ng-change="update(settings)")
+                        input(type="text", ng-model="config.general.username", ng-blur="update(config)")
                 .grid__col5
                     lx-text-field(label="Password")
-                        input(type="text", ng-model="settings.password", ng-change="update(settings)")
+                        input(type="text", ng-model="config.general.password", ng-blur="update(config)")
                 .grid__col2
                     lx-text-field(label="Port")
-                        input(type="text", ng-model="settings.port", ng-change="update(settings)")
+                        input(type="text", ng-model="config.general.port", ng-blur="update(config)")
 
         div(style="padding:15px")
 
@@ -21,12 +21,12 @@ div(ng-controller="SettingsCtrl")
                 strong.fs-headline.display-block Advanced
                 strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
                 lx-text-field(label="API Key", disabled="true")
-                    input(type="text", ng-model="settings.apikey", ng-change="update(settings)", ng-disabled="true")
+                    input(type="text", ng-model="config.advanced.apikey", ng-blur="update(config)", ng-disabled="true")
                 div.checkbox.mt
-                    input.checkbox__input(type="checkbox", id="debug", ng-model="settings.debug", ng-change="update(settings)")
+                    input.checkbox__input(type="checkbox", id="debug", ng-model="config.advanced.debug", ng-blur="update(config)")
                     label.checkbox__label(for="debug") Debug
                     span.checkbox__help Check for generate a debug file
-                lx-file-input(label="Select a directory...", ng-model="settings.debug_directory", ng-change="update(settings)")
+                lx-file-input(label="Select a directory...", ng-model="config.advanced.debug_directory", ng-blur="update(config)")
 
         div(style="padding:15px")
 
@@ -35,11 +35,11 @@ div(ng-controller="SettingsCtrl")
                 strong.fs-headline.display-block Update
                 strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
                 div.checkbox.mt
-                    input.checkbox__input(type="checkbox", id="notification", ng-model="settings.notification", ng-change="update(settings)")
+                    input.checkbox__input(type="checkbox", id="notification", ng-model="config.update.notification", ng-blur="update(config)")
                     label.checkbox__label(for="notification") Notification
                     span.checkbox__help Send a notification if an update is available
                 div.checkbox.mt
-                    input.checkbox__input(type="checkbox", id="automatic", ng-model="settings.automatic", ng-change="update(settings)")
+                    input.checkbox__input(type="checkbox", id="automatic", ng-model="config.update.automatic", ng-blur="update(config)")
                     label.checkbox__label(for="automatic") Automatic
                     span.checkbox__help Automatically update when update is available
 
@@ -51,25 +51,25 @@ div(ng-controller="SettingsCtrl")
                 strong.fs-subhead.tc-black-2.display-block Search options for video games
 
                 div.checkbox.mt
-                    input.checkbox__input(type="checkbox", id="new_releases", ng-model="settings.new_releases", ng-change="update(settings)")
+                    input.checkbox__input(type="checkbox", id="new_releases", ng-model="config.search.new_releases", ng-blur="update(config)")
                     label.checkbox__label(for="new_releases") Search for new releases
                     span.checkbox__help Search for new video game releases.
                 .checkbox.mt
-                    input.checkbox__input(type="checkbox", id="startup", ng-model="settings.startup", ng-change="update(settings)")
+                    input.checkbox__input(type="checkbox", id="startup", ng-model="config.search.startup", ng-blur="update(config)")
                     label.checkbox__label(for="startup") Run on startup
                     span.checkbox__help Force to search for new video game releases after start.
 
                 // CRON
                 .grid__col4
                     lx-text-field(label="Day", lx-tooltip="* Every day | */4 fourth day of the month", tooltip-position="bottom")
-                        input(type="text" ng-model="settings.cron.day", ng-change="update(settings)")
+                        input(type="text" ng-model="config.search.cron.day", ng-blur="update(config)")
                 .grid__col4
                     lx-text-field(label="Hour", lx-tooltip="* Every hour | */2 Every two hours", tooltip-position="bottom")
-                        input(type="text" ng-model="settings.cron.hour", ng-change="update(settings)")
+                        input(type="text" ng-model="config.search.cron.hour", ng-blur="update(config)")
                 .grid__col4
                     lx-text-field(label="Minute", lx-tooltip="Better keep it random, so the providers don't get DDOSed by every Datagamer user on a 'full' hour.",
                     tooltip-position="bottom")
-                        input(type="text" ng-model="settings.cron.minute", ng-change="update(settings)")
+                        input(type="text" ng-model="config.search.cron.minute", ng-blur="update(config)")
 
         div(style="padding:15px")
 
@@ -81,16 +81,16 @@ div(ng-controller="SettingsCtrl")
                 strong.fs-subhead.tc-black-2.display-block Providers searching torrents for new releases
 
                 lx-text-field(label="Proxy server", lx-tooltip="Domain for requests, keep empty to let Datagamer pick.", tooltip-position="bottom")
-                    input(type="text" ng-model="settings.tpb.proxy", ng-change="update(settings)")
+                    input(type="text" ng-model="config.thepiratebay.proxy_server", ng-blur="update(config)")
                 .grid__col4
                     lx-text-field(label="Seed ratio", lx-tooltip="Will not be removed until this seed ratio is met.", tooltip-position="bottom")
-                        input(type="text" ng-model="settings.tpb.seed_ratio", ng-change="update(settings)")
+                        input(type="text" ng-model="config.thepiratebay.seed_ratio", ng-blur="update(config)")
                 .grid__col4
                     lx-text-field(label="Seed time", lx-tooltip="Will not be removed until this seed time is met.", tooltip-position="bottom")
-                        input(type="text" ng-model="settings.tpb.seed_time", ng-change="update(settings)")
+                        input(type="text" ng-model="config.thepiratebay.seed_time", ng-blur="update(config)")
                 .grid__col4
                     lx-text-field(label="Min score", lx-tooltip="Search releases with a minimum score.", tooltip-position="bottom")
-                        input(type="text" ng-model="settings.tpb.min_score", ng-change="update(settings)")
+                        input(type="text" ng-model="config.thepiratebay.min_score", ng-blur="update(config)")
 
         div(style="padding:15px")
 
@@ -102,20 +102,20 @@ div(ng-controller="SettingsCtrl")
                 strong.fs-subhead.tc-black-2.display-block Providers searching torrents for new releases
 
                 lx-text-field(label="Proxy server", lx-tooltip="Domain for requests, keep empty to let Datagamer pick.", tooltip-position="bottom")
-                    input(type="text" ng-model="settings.kickass.proxy", ng-change="update(settings)")
+                    input(type="text" ng-model="config.kickasstorrents.proxy_server", ng-blur="update(config)")
                 .grid__col4
                     lx-text-field(label="Seed ratio", lx-tooltip="Will not be removed until this seed ratio is met.", tooltip-position="bottom")
-                        input(type="text" ng-model="settings.kickass.seed_ratio", ng-change="update(settings)")
+                        input(type="text" ng-model="config.kickasstorrents.seed_ratio", ng-blur="update(config)")
                 .grid__col4
                     lx-text-field(label="Seed time", lx-tooltip="Will not be removed until this seed time is met.", tooltip-position="bottom")
-                        input(type="text" ng-model="settings.kickass.seed_time", ng-change="update(settings)")
+                        input(type="text" ng-model="config.kickasstorrents.seed_time", ng-blur="update(config)")
                 .grid__col4
                     lx-text-field(label="Min score", lx-tooltip="Search releases with a minimum score.", tooltip-position="bottom")
-                        input(type="text" ng-model="settings.kickass.min_score", ng-change="update(settings)")
+                        input(type="text" ng-model="config.kickasstorrents.min_score", ng-blur="update(config)")
             div(class="p+")
                 .grid__col12
                     div.checkbox.mt
-                        input.checkbox__input(type="checkbox", id="verified")
+                        input.checkbox__input(type="checkbox", id="verified", ng-model="config.kickasstorrents.verified", ng-blur="update(config)")
                         label.checkbox__label(for="verified") Only verified
                         span.checkbox__help Only search for verfied video game releases.
 
@@ -132,32 +132,32 @@ div(ng-controller="SettingsCtrl")
             div(class="p+")
                 .grid__col8
                     lx-text-field(label="Address", lx-tooltip="Address, usually localhost", tooltip-position="bottom")
-                        input(type="text", ng-model="settings.transmission.address", ng-change="update(settings)")
+                        input(type="text", ng-model="config.transmission.address", ng-blur="update(config)")
                 .grid__col4
                     lx-text-field(label="Port", lx-tooltip="Port, usually 9091", tooltip-position="bottom")
-                        input(type="text", ng-model="settings.transmission.port", ng-change="update(settings)")
+                        input(type="text", ng-model="config.transmission.port", ng-blur="update(config)")
             div(class="p+")
                 .grid__col12
                     lx-text-field(label="Rpc url", lx-tooltip="Change if you don't run Transmission RPC at the default url.", tooltip-position="bottom")
-                        input(type="text", ng-model="settings.transmission.rpc_url", ng-change="update(settings)")
+                        input(type="text", ng-model="config.transmission.rpc_url", ng-blur="update(config)")
 
                 .grid__col6
                     lx-text-field(label="Username")
-                        input(type="text", ng-model="settings.transmission.username", ng-change="update(settings)")
+                        input(type="text", ng-model="config.transmission.username", ng-blur="update(config)")
                 .grid__col6
                     lx-text-field(label="Password")
-                        input(type="text", ng-model="settings.transmission.password", ng-change="update(settings)")
+                        input(type="text", ng-model="config.transmission.password", ng-blur="update(config)")
             div(class="p+")
                 .grid__col12
-                    lx-file-input(label="Select a directory...", ng-model="settings.transmission.directory",
-                    ng-change="update(settings)", lx-tooltip="Download to this directory, Keep empty for default Transmission directory.", tooltip-position="bottom")
+                    lx-file-input(label="Select a directory...", ng-model="config.transmission.directory",
+                    ng-blur="update(config)", lx-tooltip="Download to this directory, Keep empty for default Transmission directory.", tooltip-position="bottom")
 
                     div.checkbox.mt
-                        input.checkbox__input(type="checkbox", id="remove_torrent", ng-model="settings.transmission.remove_torrent", ng-change="update(settings)")
+                        input.checkbox__input(type="checkbox", id="remove_torrent", ng-model="config.transmission.remove_torrent", ng-blur="update(config)")
                         label.checkbox__label(for="remove_torrent") Remove torrent
                         span.checkbox__help Remove the torrent from Transmission after it finished seeding.
                     div.checkbox.mt
-                        input.checkbox__input(type="checkbox", id="pause_torrent", ng-model="settings.transmission.pause_torrent", ng-change="update(settings)")
+                        input.checkbox__input(type="checkbox", id="pause_torrent", ng-model="config.transmission.pause_torrent", ng-blur="update(config)")
                         label.checkbox__label(for="pause_torrent") Paused torrent
                         span.checkbox__help Add the torrent paused.
 
@@ -168,20 +168,20 @@ div(ng-controller="SettingsCtrl")
                 strong.fs-headline.display-block Renamer
                 strong.fs-subhead.tc-black-2.display-block Renamer downloaded video games
 
-                lx-file-input(label="From a directory...", ng-model="settings.renamer.from",
-                ng-change="update(settings)", lx-tooltip="Folder where Datagamer searches for video games.", tooltip-position="bottom")
-                lx-file-input(label="To a directory...", ng-model="settings.renamer.to",
-                ng-change="update(settings)", lx-tooltip="Folder where the video games are moveed to.", tooltip-position="bottom")
+                lx-file-input(label="From a directory...", ng-model="config.renamer.from",
+                ng-blur="update(config)", lx-tooltip="Folder where Datagamer searches for video games.", tooltip-position="bottom")
+                lx-file-input(label="To a directory...", ng-model="config.renamer.to",
+                ng-blur="update(config)", lx-tooltip="Folder where the video games are moveed to.", tooltip-position="bottom")
 
                 .grid__col6
                     lx-text-field(label="Folder naming", disabled="true")
-                        input(type="text", ng-model="settings.renamer.folder_naming", ng-disabled="true")
+                        input(type="text", ng-model="config.renamer.folder_naming", ng-disabled="true")
                 .grid__col6
                     lx-text-field(label="Run every")
-                        input(type="text", ng-model="settings.renamer.detect_minute", ng-change="update(settings)",
+                        input(type="text", ng-model="config.renamer.detect_minute", ng-blur="update(config)",
                         lx-tooltip="Detect downloaded video games every X minutes.", tooltip-position="bottom")
                 .grid__col12
                     div.checkbox.mt
-                        input.checkbox__input(type="checkbox", id="unrar", ng-model="settings.renamer.unrar", ng-change="update(settings)")
+                        input.checkbox__input(type="checkbox", id="unrar", ng-model="config.renamer.unrar", ng-blur="update(config)")
                         label.checkbox__label(for="unrar") Unrar
                         span.checkbox__help Extract rar files if found.

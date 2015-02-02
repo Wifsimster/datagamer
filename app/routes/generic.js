@@ -1,3 +1,6 @@
+var fs = require('fs');
+var ini = require('ini');
+
 //------------------------------------------
 //----              GET                 ----
 //------------------------------------------
@@ -28,32 +31,17 @@ app.get('/settings', function (req, res) {
     });
 });
 
-// Settings
-app.get("/settings/one", function (req, res) {
-    settings_db.findOne({}, function (err, doc) {
-        res.send(doc)
-    });
+// Config
+app.get("/config", function (req, res) {
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+    res.send(config);
 });
 
-//------------------------------------------
-//----              POST                ----
-//------------------------------------------
-app.post("/settings", function (req, res) {
-    settings_db.insert(req.body, function (err, settings) {
-        if (!err) {
-            res.json({message: "OK"});
-            SETTINGS = settings;
-        }
-    });
-});
+app.put("/config", function (req, res) {
+    var config = req.body;
 
-app.put("/settings", function (req, res) {
-    settings_db.update({_id: req.body._id}, req.body, function (err, result) {
-        if (!err) {
-            res.json({message: "OK"});
+    // Write in config.ini file
+    fs.writeFileSync('./config.ini', ini.stringify(config));
 
-            // Update settings var
-            SETTINGS = req.body;
-        }
-    });
+    res.json({message: "OK"});
 });

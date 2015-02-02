@@ -1,4 +1,4 @@
-var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute', 'duScroll']);
+var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute']);
 
 // App configuration
 app.config(['$routeProvider', '$locationProvider',
@@ -96,24 +96,25 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav
 
 app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, LxProgressService) {
 
-    $scope.settings = {};
+    $scope.config = {};
 
     // Get the unique settings in database
-    $http.get('/settings/one').
+    $http.get('/config').
         success(function (result) {
             console.log(result);
-            $scope.settings = result;
+            $scope.config = result;
         }).
         error(function (err) {
             console.error(err);
         });
 
     // Update settings
-    $scope.update = function (settings) {
-        console.log("Updating settings...");
+    $scope.update = function (config) {
+        console.log("Updating config.ini...");
 
-        $http.put('/settings', $scope.settings).
+        $http.put('/config', $scope.config).
             success(function (result) {
+                LxNotificationService.success('config.ini updated !');
                 console.log(result);
             }).
             error(function (err) {
@@ -127,7 +128,6 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
 
         $http.get('/transmission/torrents').
             success(function (result) {
-
                 LxProgressService.linear.hide();
 
                 if (result.torrents) {
@@ -142,7 +142,6 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
                 LxNotificationService.error('Something is wrong with Transmission configuration !');
             });
     }
-
 });
 
 
