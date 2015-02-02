@@ -2,6 +2,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var uuid = require('node-uuid');
+var fs = require('fs');
+var ini = require('ini');
 var app = express();
 
 // Nedb - Embedded database package
@@ -33,48 +35,43 @@ require('./app/routes/thepiratebay.js');
 app.listen(port);
 console.log('Datagamer is running on port ' + port);
 
-// Init database settings at startup
-var settings_init = {
-    username: "",
-    password: "",
-    port: "8080",
-    debug: false,
-    apikey: uuid.v4(),
-    new_releases: true,
-    startup: true,
-    cron: {
-        day: "1",
-        hour: "",
-        minute: ""
-    },
-    transmission: {
-        address: "localhost",
-        port: 9091,
-        rpc_url: "/transmission/rpc",
-        remove_torrent: true
-    },
-    renamer: {
-        folder_naming: "<name> (<year>)",
-        detect_minute: "15"
-    }
-};
+// Generate config.ini if first start
+if (fs.existsSync('./config.ini')) {
+    console.log('./config.ini found !')
+} else {
+    console.log('First time launching the app, generate default settings in ./config.ini file...');
 
-settings_db.findOne({}, function (err, settings) {
-    if (!err) {
-        if (settings) {
-            // Do nothing ! Settings already created once.
-            console.log("Settings found.");
-            SETTINGS = settings;
-        } else {
-            console.log("No settings found, create new one !");
-            settings_db.insert(settings_init, function (err, settings) {
-                if (!err) {
-                    console.log("No settings found, create new one !");
-                    SETTINGS = settings;
-                } else {
-                    console.error(err);
-                }
-            });
-        }
+    var config = ini.parse(fs.readFileSync('./config.mdl', 'utf-8'));
+
+    // [general]
+    config.general.username = "";
+    config.general.password = "";
+    config.general.port = "8080";
+    config.general.debug = false;
+    config.general.apikey = uuid.v4();
+    config.general.new_releases = true;
+    config.general.startup = true;
+
+    // [cron]
+    config.cron.day = "1";
+    config.cron.hour = "";
+    config.cron.minute = "";
+
+    // [transmission]
+    config.transmission.address = "localhost";
+    config.transmission.port = 9091;
+    config.transmission.rpc_url = "/transmission/rpc";
+    config.transmission.remove_torrent = true;
+
+    // [renamer]
+    config.renamer.folder_naming = "<name> (<year>)";
+    config.renamer.detect_minute = "15";
+
+    // Write in config.ini file
+    fs.writeFileSync('./config.ini', ini.stringify(config));
+
+    if (fs.existsSync('./config.ini')) {
+        console.log('./config.ini created !')
     }
-});
+}
+
