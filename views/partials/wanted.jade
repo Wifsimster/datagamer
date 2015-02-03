@@ -1,11 +1,23 @@
 div(ng-controller="WantedCtrl")
-    .grid__col6
-        .card
-            .toolbar
-                lx-search-filter(model="searchFilter.fifth" filter-width="100%" placeholder="Search")
+    .grid
+        .grid__col6
+            lx-select(ng-model="ajax.selected", change="cbSelect.exec(newValue, oldValue)", placeholder="Search a video game...",
+            choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}",
+            min-length="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)",
+            model-to-selection="ajax.toSelection(data, callback)")
+                lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate }})
+                lx-select-choices  {{ $choice.name }} - {{ $choice.releaseDate }}
 
-        h1.fs-title Video games list from Datagamer
+            br
 
-        ul
-            li(ng-repeat="game in games")
-                span {{game.name}}
+            button(class="btn btn--m btn--blue btn--raised", ng-click="ajax.selected = 'Inception'", lx-ripple) Set to 'Inception'
+
+            br
+
+            h1.fs-title Wanted video games
+
+           p {{ajax.selected}}
+
+            ul
+                li(ng-repeat="game in wantedGames")
+                    span {{game}}

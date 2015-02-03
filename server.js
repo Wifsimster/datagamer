@@ -19,7 +19,10 @@ app.set('view engine', 'jade');
 // Configure
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
-app.use(bodyParser());
+
+// app.use(bodyParser()); // Deprecated
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 require('./app/routes/generic.js');
 require('./app/routes/transmission.js');

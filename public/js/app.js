@@ -65,32 +65,6 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav
     $scope.openLeftMenu = function () {
         $mdSidenav('left').toggle();
     };
-
-// Single select with ajax and change handler
-    $scope.ajax = {
-        list: [],
-        update: function (newFilter, oldFilter) {
-            if (newFilter) {
-                $scope.ajax.loading = true;
-                $http.get('http://192.168.0.21:8084/api/games/by/name/' + escape(newFilter), {
-                    headers: {
-                        "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
-                    }
-                }).
-                    success(function (result) {
-                        $scope.ajax.list = result.games;
-                        $scope.ajax.loading = false;
-                    }).
-                    error(function () {
-                        $scope.ajax.loading = false;
-                    });
-            }
-            else {
-                $scope.ajax.list = false;
-            }
-        },
-        loading: false
-    };
 }])
 ;
 
@@ -180,21 +154,51 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
 });
 
 
-app.controller('WantedCtrl', function ($scope, $http) {
+app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
 
-    // Get games from Datagamer
-    $http.get('http://192.168.0.21:8084/api/games', {
-        headers: {
-            "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
+    // Get wanted video games
+    //$http.get('/wanted/games').
+    //    success(function (result) {
+    //        $scope.wantedGames = result;
+    //    }).
+    //    error(function (err) {
+    //        console.error(err);
+    //    });
+
+    // Single select with ajax and change handler
+    $scope.ajax = {
+        list: [],
+        update: function (newFilter, oldFilter) {
+            if (newFilter) {
+                $scope.ajax.loading = true;
+                $http.get('http://192.168.0.21:8084/api/games/by/name/' + escape(newFilter), {
+                    headers: {
+                        "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
+                    }
+                }).
+                    success(function (result) {
+                        $scope.ajax.list = result.games;
+                        $scope.ajax.loading = false;
+                    }).
+                    error(function () {
+                        $scope.ajax.loading = false;
+                    });
+            }
+            else {
+                $scope.ajax.list = false;
+            }
+        },
+        loading: false
+    };
+
+    $scope.ajax.selected = "";
+
+    $scope.cbSelect = {
+        exec: function(){
+            console.log("!!!!!");
+            LxNotificationService.notify('Change detected!');
         }
-    }).
-        success(function (result) {
-            $scope.games = result.games;
-
-        }).
-        error(function (err) {
-            console.error(err);
-        });
+    };
 
 });
 

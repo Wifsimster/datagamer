@@ -2,8 +2,11 @@ var fs = require('fs');
 var ini = require('ini');
 
 // Config
-app.get("/config", function (req, res) {
+app.get("/wanted/games", function (req, res) {
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+    console.log("Getting wanted video games...");
+
     res.send(config);
 });
 
