@@ -2,6 +2,11 @@ div(ng-controller="CollectionCtrl")
     .grid
                 #scan_progress
         .grid__col6
+
+            button.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanGames()") Scan your collection
+
+            br
+
             h1.fs-title(ng-show="games.length > 0") Your video games
 
             ul.list
@@ -17,8 +22,3 @@ div(ng-controller="CollectionCtrl")
 
             div(ng-hide="games.length > 0")
                 p No game found in your collection !
-                button.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanGames()") Scan your collection
-
-
-            h1.fs-title(ng-show="result") log
-            p {{result}}

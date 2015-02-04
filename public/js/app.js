@@ -253,11 +253,18 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
 
         $http.get('/collection/games/scan').
             success(function (result) {
-
-                $scope.result = result;
-
                 LxProgressService.linear.hide();
                 LxNotificationService.success('Scan ended !');
+
+                // Refresh game list
+                $http.get('/collection/games').
+                    success(function (result) {
+                        //console.log(result);
+                        $scope.games = result;
+                    }).
+                    error(function (err) {
+                        console.error(err);
+                    });
             }).
             error(function (err) {
                 console.error(err);
