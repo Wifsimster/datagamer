@@ -38,13 +38,12 @@ app.get("/collection/games/scan", function (req, res) {
                     // First game found
                     var game = obj.Search[0];
 
-                    console.log("Find '" + game.Title + "' game !" );
-
+                    console.log("Find '" + game.Title + "' game !");
 
                     collection_db.findOne({Title: game.Title}, function (err, newDoc) {
                         if (!err) {
                             console.log(newDoc);
-                            if(newDoc) {
+                            if (newDoc) {
                                 console.log("Game already in collection, updating the game info...");
                                 collection_db.update({Title: newDoc.Title}, game, {}, function (err, newDoc) {
                                     if (!err)

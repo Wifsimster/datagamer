@@ -4,6 +4,8 @@ var bodyParser = require('body-parser');
 var uuid = require('node-uuid');
 var fs = require('fs');
 var ini = require('ini');
+var request = require('request');
+var CronJob = require('cron').CronJob;
 var app = express();
 
 // Singleton of Express app instance
@@ -63,26 +65,33 @@ if (fs.existsSync('./config.ini')) {
     config.update.notification = false;
     config.update.automatic = false;
 
-    // [config]
+    // [collection]
     config.collection.directory = "/your/games/collection";
     config.collection.scan = false;
     config.collection.cron.day = "1";
-    config.collection.cron.hour = "";
-    config.collection.cron.minute = "";
+    config.collection.cron.hour = "*";
+    config.collection.cron.minute = "*";
 
     // [search]
     config.search.directory = "";
     config.search.new_releases = false;
     config.search.startup = false;
-    config.search.cron.day = "1";
-    config.search.cron.hour = "";
-    config.search.cron.minute = "";
+    config.search.cron.day = "*";
+    config.search.cron.hour = "1";
+    config.search.cron.minute = "*";
 
     // [thepiratebay]
     config.thepiratebay.proxy_server = "";
     config.thepiratebay.seed_ration = "";
     config.thepiratebay.seed_time = "";
-    config.thepiratebay.min_score = "";
+
+    // [thepiratebay.filter]
+    config.thepiratebay.filters.favorite_words = "";
+    config.thepiratebay.filters.forbidden_words = "";
+    config.thepiratebay.filters.uploadDate = "";
+    config.thepiratebay.filters.size_min = "";
+    config.thepiratebay.filters.seeders = "";
+    config.thepiratebay.filters.leechers = "";
 
     // [kickasstorrents]
     config.kickasstorrents.proxy_server = "";
@@ -121,3 +130,48 @@ if (fs.existsSync('./config.ini')) {
 // START THE SERVER
 app.listen(port);
 console.log('Datagamer is running on port ' + port);
+
+// -----------------------------------------------------
+// ----                     CRON                    ----
+// -----------------------------------------------------
+console.log('Initialazing CRON...');
+// Config
+var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+var search_cron = config.search.cron.minute + ' ' + config.search.cron.hour + ' ' + config.search.cron.day;
+var collection_cron = config.collection.cron.minute + ' ' + config.collection.cron.hour + ' ' + config.collection.cron.day;
+
+// Search cron
+new CronJob('/45 ' + search_cron + ' * * *', function () {
+    console.log('Search cron activated !');
+
+    // Get wanted games list
+    request('http://localhost:' + config.general.port + '/wanted/games', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+
+            var games = JSON.parse(body);
+
+            for(var i = 0 ; i < games.length; i++) {
+
+                var name = games[i].Title;
+
+                console.log("TPB - Searching for " + name + "...");
+
+                request('http://localhost:' + config.general.port + '/thepiratebay/search/' + name, function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
+
+                        var trakers = JSON.parse(body);
+
+                        console.log("ThePirateBay result(s) :");
+                        console.log(trakers);
+                    }
+                });
+            }
+        }
+    });
+
+}, null, true, "Europe/Paris");
+
+// Collection cron
+new CronJob('* ' + collection_cron + ' * * *', function () {
+    console.log('Collection cron activated !');
+}, null, true, "Europe/Paris");

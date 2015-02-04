@@ -254,21 +254,23 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
         $http.get('/collection/games/scan').
             success(function (result) {
                 LxProgressService.linear.hide();
-                LxNotificationService.success('Scan ended !');
 
                 // Refresh game list
                 $http.get('/collection/games').
                     success(function (result) {
                         //console.log(result);
                         $scope.games = result;
+                        LxNotificationService.success('Scan ended. Collection updated !');
                     }).
                     error(function (err) {
                         console.error(err);
+                        LxNotificationService.error('Scan ended with error !');
                     });
             }).
             error(function (err) {
                 console.error(err);
                 LxProgressService.linear.hide();
+                LxNotificationService.error('Scan ended with error ! Need to check your conf.');
             });
     };
 
