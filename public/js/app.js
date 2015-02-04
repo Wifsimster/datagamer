@@ -251,7 +251,18 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
         LxProgressService.linear.show('#5fa2db', '#scan_progress');
         LxNotificationService.info('Scan started...');
 
-        // TODO : Searching games in renamer directory
+        $http.get('/collection/games/scan').
+            success(function (result) {
+
+                $scope.result = result;
+
+                LxProgressService.linear.hide();
+                LxNotificationService.success('Scan ended !');
+            }).
+            error(function (err) {
+                console.error(err);
+                LxProgressService.linear.hide();
+            });
     };
 
     $scope.deleteGame = function (id) {

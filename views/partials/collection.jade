@@ -9,7 +9,7 @@ div(ng-controller="CollectionCtrl")
                     .list-primary-tile
 
                     .list-content-tile.list-content-tile--one-line
-                        {{game.Title}} - {{game.Year}}
+                        {{ game.Title }} - {{ game.Year }}
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteGame(game._id)",
                         lx-tooltip="Delete a game from collection database", tooltip-position="right")
@@ -18,3 +18,7 @@ div(ng-controller="CollectionCtrl")
             div(ng-hide="games.length > 0")
                 p No game found in your collection !
                 button.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanGames()") Scan your collection
+
+
+            h1.fs-title(ng-show="result") log
+            p {{result}}
