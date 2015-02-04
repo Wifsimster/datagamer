@@ -196,7 +196,6 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
                     $http.get('/wanted/games').
                         success(function (result) {
                             $scope.wantedGames = result;
-                            LxNotificationService.success('Wanted games list refreshed !');
                         }).
                         error(function (err) {
                             console.error(err);
@@ -209,10 +208,61 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
                 });
         }
     };
+
+    $scope.deleteWantedGame = function (id) {
+        // Delete wanted game from database
+        $http.delete('/wanted/games/' + id).
+            success(function (result) {
+                // If ok, refresh wanted games list
+                $http.get('/wanted/games').
+                    success(function (result) {
+                        $scope.wantedGames = result;
+                    }).
+                    error(function (err) {
+                        console.error(err);
+                    });
+
+                LxNotificationService.success('Wanted game deleted !');
+            }).
+            error(function (err) {
+                console.error(err);
+            });
+    };
 });
 
-app.controller('CollectionCtrl', function ($scope) {
+app.controller('CollectionCtrl', function ($scope, $http) {
 
+    $scope.games = [];
+
+    // Get collection video games
+    $http.get('/collection/games').
+        success(function (result) {
+            console.log(result);
+            $scope.games = result;
+        }).
+        error(function (err) {
+            console.error(err);
+        });
+
+    $scope.deleteGame = function (id) {
+        // Delete game from collection database
+        $http.delete('/collection/games/' + id).
+            success(function (result) {
+                // If ok, refresh collection games list
+                $http.get('/collection/games').
+                    success(function (result) {
+                        $scope.games = result;
+                    }).
+                    error(function (err) {
+                        console.error(err);
+                    });
+
+                LxNotificationService.success('Game deleted from collection !');
+            }).
+            error(function (err) {
+                console.error(err);
+            });
+    };
 });
 
 

@@ -1,2 +1,19 @@
 div(ng-controller="CollectionCtrl")
-    p Collection content ...
+    .grid
+        .grid__col6
+            h1.fs-title(ng-show="games.length > 0") Your video games
+
+            ul.list
+                li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games")
+                    .list-primary-tile
+
+                    .list-content-tile.list-content-tile--one-line
+                        {{game.Title}} - {{game.Year}}
+                    .list-secondary-tile
+                        button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteGame(game._id)",
+                        lx-tooltip="Delete", tooltip-position="right")
+                            i.mdi.mdi--delete
+
+            div(ng-hide="games.length > 0")
+                p No game found in your collection !
+                button.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="searchCollectionGames()") Scan your collection

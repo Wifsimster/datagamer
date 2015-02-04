@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // Routes
+require('./app/routes/collection.js');
 require('./app/routes/datagamer.js');
 require('./app/routes/generic.js');
 require('./app/routes/transmission.js');

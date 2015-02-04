@@ -20,6 +20,16 @@ div(ng-controller="WantedCtrl")
 
             h1.fs-title(ng-show="wantedGames.length > 0") Wanted video games
 
-            ul
-                li(ng-repeat="game in wantedGames")
-                    span {{game.Title}}
+            ul.list
+                li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames")
+                    .list-primary-tile
+
+                    .list-content-tile.list-content-tile--one-line
+                        {{game.Title}} - {{game.Year}}
+                    .list-secondary-tile
+                        button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteWantedGame(game._id)",
+                        lx-tooltip="Delete", tooltip-position="right")
+                            i.mdi.mdi--delete
+
+            div(ng-hide="wantedGames.length > 0")
+                p No game found in your wanted list !
