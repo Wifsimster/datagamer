@@ -22,7 +22,6 @@ app.use(bodyParser.json());
 
 // Routes
 require('./app/routes/collection.js');
-require('./app/routes/datagamer.js');
 require('./app/routes/generic.js');
 require('./app/routes/transmission.js');
 require('./app/routes/kickasstorrents.js');
@@ -64,7 +63,15 @@ if (fs.existsSync('./config.ini')) {
     config.update.notification = false;
     config.update.automatic = false;
 
+    // [config]
+    config.collection.directory = "/your/games/collection";
+    config.collection.scan = false;
+    config.collection.cron.day = "1";
+    config.collection.cron.hour = "";
+    config.collection.cron.minute = "";
+
     // [search]
+    config.search.directory = "";
     config.search.new_releases = false;
     config.search.startup = false;
     config.search.cron.day = "1";

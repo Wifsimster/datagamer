@@ -4,6 +4,10 @@
 
 [update]
 
+[collection]
+
+[collection.cron]
+
 [search]
 
 [search.cron]

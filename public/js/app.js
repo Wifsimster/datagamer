@@ -58,7 +58,7 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav
         }, {
             title: "Settings",
             url: "settings",
-            subnav: ["General", "Advanced", "Update", "Search", "Providers", "Transmission", "Renamer"]
+            subnav: ["General", "Advanced", "Update", "Collection", "Search", "Providers", "Transmission", "Renamer"]
         }];
 
 // Hide sidebar left on action
@@ -84,20 +84,23 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
 
     // Update config inputs
     $scope.update = function (config) {
-        console.log("Updating config.ini...");
+        //console.log("Updating config.ini...");
 
         if (config.general.port == null) {
-            console.error("Port cannot be empty !");
             LxNotificationService.error('Port cannot be empty !');
         } else {
-            $http.put('/config', $scope.config).
-                success(function (result) {
-                    LxNotificationService.success('config.ini updated !');
-                    //console.log(result);
-                }).
-                error(function (err) {
-                    console.error(err);
-                });
+            if (config.collection.directory == null) {
+                LxNotificationService.error('Collection directory cannot be empty !');
+            } else {
+                $http.put('/config', $scope.config).
+                    success(function (result) {
+                        LxNotificationService.success('config.ini updated !');
+                        //console.log(result);
+                    }).
+                    error(function (err) {
+                        console.error(err);
+                    });
+            }
         }
     }
 
@@ -161,7 +164,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
     // Get wanted video games
     $http.get('/wanted/games').
         success(function (result) {
-            console.log(result);
+            //console.log(result);
             $scope.wantedGames = result;
         }).
         error(function (err) {
@@ -230,19 +233,26 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
     };
 });
 
-app.controller('CollectionCtrl', function ($scope, $http) {
+app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxNotificationService) {
 
     $scope.games = [];
 
     // Get collection video games
     $http.get('/collection/games').
         success(function (result) {
-            console.log(result);
+            //console.log(result);
             $scope.games = result;
         }).
         error(function (err) {
             console.error(err);
         });
+
+    $scope.scanGames = function () {
+        LxProgressService.linear.show('#5fa2db', '#scan_progress');
+        LxNotificationService.info('Scan started...');
+
+        // TODO : Searching games in renamer directory
+    };
 
     $scope.deleteGame = function (id) {
         // Delete game from collection database

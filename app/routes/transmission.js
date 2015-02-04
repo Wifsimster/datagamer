@@ -21,7 +21,7 @@ app.get("/transmission/test", function (req, res) {
         if (!err) {
             if (data) {
                 if (data.torrents) {
-                    console.log("Get torrent list !");
+                    //console.log("Get torrent list !");
                     res.send(data);
                 }
             } else {

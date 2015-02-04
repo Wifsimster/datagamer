@@ -1,5 +1,6 @@
 div(ng-controller="CollectionCtrl")
     .grid
+                #scan_progress
         .grid__col6
             h1.fs-title(ng-show="games.length > 0") Your video games
 
@@ -11,9 +12,9 @@ div(ng-controller="CollectionCtrl")
                         {{game.Title}} - {{game.Year}}
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteGame(game._id)",
-                        lx-tooltip="Delete", tooltip-position="right")
+                        lx-tooltip="Delete a game from collection database", tooltip-position="right")
                             i.mdi.mdi--delete
 
             div(ng-hide="games.length > 0")
                 p No game found in your collection !
-                button.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="searchCollectionGames()") Scan your collection
+                button.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanGames()") Scan your collection

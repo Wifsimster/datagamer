@@ -44,6 +44,5 @@ app.put("/config", function (req, res) {
 
     // Write in config.ini file
     fs.writeFileSync('./config.ini', ini.stringify(config));
-
     res.json({message: "OK"});
 });

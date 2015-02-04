@@ -40,6 +40,7 @@ div(ng-controller="SettingsCtrl")
             div#Update(class="card")
                 div(class="p+")
                     strong.fs-headline.display-block Update
+                    strong.fs-subhead.tc-black-2.display-block Application update options
                     div.checkbox.mt
                         input.checkbox__input(type="checkbox", id="notification", ng-model="config.update.notification", ng-change="update(config)")
                         label.checkbox__label(for="notification") Notification
@@ -48,6 +49,32 @@ div(ng-controller="SettingsCtrl")
                         input.checkbox__input(type="checkbox", id="automatic", ng-model="config.update.automatic", ng-change="update(config)")
                         label.checkbox__label(for="automatic") Automatic
                         span.checkbox__help Automatically update when update is available
+
+            div(style="padding:15px")
+
+            div#Collection(class="card")
+                div(class="p+")
+                    strong.fs-headline.display-block Collection
+                    md-input-container
+                        lx-text-field(label="Directory to scan *", lx-tooltip="Directory of your games collection", tooltip-position="bottom")
+                            input(type="text" ng-model="config.collection.directory", ng-blur="update(config)", required)
+                            div(ng-messages="configForm.config.collection.directory.$error", ng-show="configForm.config.collection.directory.$dirty")
+                                div(ng-messages="required") This is required !
+                    .checkbox.mt
+                        input.checkbox__input(type="checkbox", id="collection_cron", ng-model="config.collection.scan", ng-change="update(config)")
+                        label.checkbox__label(for="collection_cron") Automatically scan
+                        span.checkbox__help Automatically scan your collection directory to add new games.
+                    // CRON
+                    .grid__col4
+                        lx-text-field(label="Day", lx-tooltip="* Every day | */4 fourth day of the month", tooltip-position="bottom")
+                            input(type="text" ng-model="config.collection.cron.day", ng-blur="update(config)")
+                    .grid__col4
+                        lx-text-field(label="Hour", lx-tooltip="* Every hour | */2 Every two hours", tooltip-position="bottom")
+                            input(type="text" ng-model="config.collection.cron.hour", ng-blur="update(config)")
+                    .grid__col4
+                        lx-text-field(label="Minute", lx-tooltip="Better keep it random.",
+                        tooltip-position="bottom")
+                            input(type="text" ng-model="config.collection.cron.minute", ng-blur="update(config)")
 
             div(style="padding:15px")
 

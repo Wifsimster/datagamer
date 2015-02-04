@@ -9,7 +9,6 @@ app.get("/thepiratebay/test", function (req, res) {
 
     tpb.recentTorrents()
         .then(function (results) {
-            console.log("Get torrent list !");
             res.send(results);
         })
         .catch(function () {
