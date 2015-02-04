@@ -159,10 +159,16 @@ new CronJob('/45 ' + search_cron + ' * * *', function () {
                 request('http://localhost:' + config.general.port + '/thepiratebay/search/' + name, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
 
-                        var trakers = JSON.parse(body);
+                        var traker = JSON.parse(body);
 
-                        console.log("ThePirateBay result(s) :");
-                        console.log(trakers);
+                        // If tracker found by TPB
+                        if(tracker) {
+                            console.log("TPB - Found one tracker with the current filters");
+
+
+
+                            console.log("Tracker added to Transmission !");
+                        }
                     }
                 });
             }

@@ -2,6 +2,7 @@ var Transmission = require('transmission');
 var fs = require('fs');
 var ini = require('ini');
 
+// Check if Transmission is OK
 app.get("/transmission/test", function (req, res) {
 
     // Open config.ini
@@ -14,8 +15,6 @@ app.get("/transmission/test", function (req, res) {
         password: config.transmission.password, // 192lucie
         url: config.transmission.rpc_url // /transmission/rpc
     });
-
-    console.log("transmission init");
 
     transmission.get(function (err, data) {
         if (!err) {
@@ -34,4 +33,9 @@ app.get("/transmission/test", function (req, res) {
         }
 
     });
+});
+
+// Add a new tracker to Tranmission
+app.post("/transmission/add", function(req, res){
+
 });
