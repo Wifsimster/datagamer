@@ -1,23 +1,25 @@
 div(ng-controller="WantedCtrl")
     .grid
         .grid__col6
-            lx-select(ng-model="ajax.selected", change="cbSelect.exec(newValue, oldValue)", placeholder="Search a video game...",
-            choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}",
-            min-length="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)",
+            lx-select(
+            placeholder="Search a video game...",
+            loading="{{ ajax.loading }}",
+            min-length="2"
+            allow-clear="true"
+
+            ng-model="ajax.selected"
+            choices="ajax.list"
+            filter="ajax.update(newValue, oldValue)"
+            change="cbSelect.exec(newValue, oldValue)"
+            selection-to-model="ajax.toModel(data, callback)"
             model-to-selection="ajax.toSelection(data, callback)")
-                lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate }})
-                lx-select-choices  {{ $choice.name }} - {{ $choice.releaseDate }}
+                lx-select-selected {{ $selected.Title }} ({{ $selected.Year }})
+                lx-select-choices  {{ $choice.Title }} - {{ $choice.Type }}
 
             br
 
-            button(class="btn btn--m btn--blue btn--raised", ng-click="ajax.selected = 'Inception'", lx-ripple) Set to 'Inception'
-
-            br
-
-            h1.fs-title Wanted video games
-
-           p {{ajax.selected}}
+            h1.fs-title(ng-show="wantedGames.length > 0") Wanted video games
 
             ul
                 li(ng-repeat="game in wantedGames")
-                    span {{game}}
+                    span {{game.Title}}

@@ -6,10 +6,6 @@ var fs = require('fs');
 var ini = require('ini');
 var app = express();
 
-// Nedb - Embedded database package
-var Datastore = require('nedb');
-var settings_db = new Datastore({filename: 'settings.nedb', autoload: true});
-
 // Singleton of Express app instance
 GLOBAL.app = app;
 
@@ -24,10 +20,13 @@ app.use('/bower_components', express.static(__dirname + '/bower_components'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+// Routes
+require('./app/routes/datagamer.js');
 require('./app/routes/generic.js');
 require('./app/routes/transmission.js');
 require('./app/routes/kickasstorrents.js');
 require('./app/routes/thepiratebay.js');
+require('./app/routes/wanted.js');
 
 var port;
 

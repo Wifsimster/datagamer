@@ -156,28 +156,27 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
 
 app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
 
-    // Get wanted video games
-    //$http.get('/wanted/games').
-    //    success(function (result) {
-    //        $scope.wantedGames = result;
-    //    }).
-    //    error(function (err) {
-    //        console.error(err);
-    //    });
+    $scope.wantedGames = [];
 
-    // Single select with ajax and change handler
+    // Get wanted video games
+    $http.get('/wanted/games').
+        success(function (result) {
+            console.log(result);
+            $scope.wantedGames = result;
+        }).
+        error(function (err) {
+            console.error(err);
+        });
+
+    // Search input
     $scope.ajax = {
         list: [],
         update: function (newFilter, oldFilter) {
             if (newFilter) {
                 $scope.ajax.loading = true;
-                $http.get('http://192.168.0.21:8084/api/games/by/name/' + escape(newFilter), {
-                    headers: {
-                        "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
-                    }
-                }).
-                    success(function (result) {
-                        $scope.ajax.list = result.games;
+                $http.get('http://www.omdbapi.com/?s=' + escape(newFilter)).
+                    success(function (data) {
+                        $scope.ajax.list = data.Search;
                         $scope.ajax.loading = false;
                     }).
                     error(function () {
@@ -188,18 +187,28 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
                 $scope.ajax.list = false;
             }
         },
-        loading: false
-    };
+        loading: false,
+        toModel: function (data) {
+            // Add new game to wanted database
+            $http.post('/wanted/games', data).
+                success(function (result) {
+                    // If ok, refresh wanted games list
+                    $http.get('/wanted/games').
+                        success(function (result) {
+                            $scope.wantedGames = result;
+                            LxNotificationService.success('Wanted games list refreshed !');
+                        }).
+                        error(function (err) {
+                            console.error(err);
+                        });
 
-    $scope.ajax.selected = "";
-
-    $scope.cbSelect = {
-        exec: function(){
-            console.log("!!!!!");
-            LxNotificationService.notify('Change detected!');
+                    LxNotificationService.success(data.Title + ' added to wanted game !');
+                }).
+                error(function (err) {
+                    console.error(err);
+                });
         }
     };
-
 });
 
 app.controller('CollectionCtrl', function ($scope) {

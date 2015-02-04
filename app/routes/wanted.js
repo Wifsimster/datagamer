@@ -1,20 +1,33 @@
 var fs = require('fs');
 var ini = require('ini');
 
+// Nedb - Embedded database package
+var Datastore = require('nedb');
+var wanted_db = new Datastore({filename: 'wanted.nedb', autoload: true});
+
 // Config
 app.get("/wanted/games", function (req, res) {
-    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
-
     console.log("Getting wanted video games...");
 
-    res.send(config);
+    wanted_db.find({}, function (err, games) {
+        res.send(games)
+    });;
 });
 
-app.put("/config", function (req, res) {
-    var config = req.body;
 
-    // Write in config.ini file
-    fs.writeFileSync('./config.ini', ini.stringify(config));
+app.post("/wanted/games", function (req, res) {
+    console.log(req.body);
+    wanted_db.insert(req.body, function (err, newDoc) {
+        if (!err)
+            res.json({message: "OK"});
+    });
+});
 
-    res.json({message: "OK"});
+
+app.put("/wanted/games", function (req, res) {
+    console.log(req.body._id);
+    wanted_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
+        if (!err)
+            res.json({message: "OK"});
+    });
 });
