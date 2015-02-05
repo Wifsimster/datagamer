@@ -13,8 +13,8 @@ div(ng-controller="WantedCtrl")
             change="cbSelect.exec(newValue, oldValue)"
             selection-to-model="ajax.toModel(data, callback)"
             model-to-selection="ajax.toSelection(data, callback)")
-                lx-select-selected {{ $selected.Title }} ({{ $selected.Year }})
-                lx-select-choices  {{ $choice.Title }} - {{ $choice.Type }}
+                lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate| date:'yyyy' }})
+                lx-select-choices  {{ $choice.name }} ({{ $choice.releaseDate| date:'yyyy' }})
 
             br
 
@@ -24,8 +24,8 @@ div(ng-controller="WantedCtrl")
                 li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames")
                     .list-primary-tile
 
-                    .list-content-tile.list-content-tile--one-line
-                        {{game.Title}} - {{game.Year}}
+                    .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}})
+
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteWantedGame(game._id)",
                         lx-tooltip="Delete", tooltip-position="right")

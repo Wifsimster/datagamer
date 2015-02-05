@@ -152,14 +152,14 @@ new CronJob('/45 ' + search_cron + ' * * *', function () {
 
             for(var i = 0 ; i < games.length; i++) {
 
-                var name = games[i].Title;
+                var name = games[i].name;
 
                 console.log("TPB - Searching for " + name + "...");
 
                 request('http://localhost:' + config.general.port + '/thepiratebay/search/' + name, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
 
-                        var traker = JSON.parse(body);
+                        var tracker = JSON.parse(body);
 
                         // If tracker found by TPB
                         if(tracker) {

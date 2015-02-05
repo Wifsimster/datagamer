@@ -177,9 +177,13 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
         update: function (newFilter, oldFilter) {
             if (newFilter) {
                 $scope.ajax.loading = true;
-                $http.get('http://www.omdbapi.com/?s=' + escape(newFilter)).
+                $http.get('http://192.168.0.21:8084/api/games/by/name/' + escape(newFilter), {
+                    headers: {
+                        "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
+                    }
+                }).
                     success(function (data) {
-                        $scope.ajax.list = data.Search;
+                        $scope.ajax.list = data.games;
                         $scope.ajax.loading = false;
                     }).
                     error(function () {
@@ -204,7 +208,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
                             console.error(err);
                         });
 
-                    LxNotificationService.success(data.Title + ' added to wanted game !');
+                    LxNotificationService.success(data.name + ' added to wanted game !');
                 }).
                 error(function (err) {
                     console.error(err);

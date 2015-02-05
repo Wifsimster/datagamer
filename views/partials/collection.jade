@@ -13,8 +13,7 @@ div(ng-controller="CollectionCtrl")
                 li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games")
                     .list-primary-tile
 
-                    .list-content-tile.list-content-tile--one-line
-                        {{ game.Title }} - {{ game.Year }}
+                    .list-content-tile.list-content-tile--one-line {{ game.Title }} - {{ game.Year }}
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteGame(game._id)",
                         lx-tooltip="Delete a game from collection database", tooltip-position="right")

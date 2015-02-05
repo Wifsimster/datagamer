@@ -11,9 +11,11 @@ app.get("/collection/games/scan", function (req, res) {
 
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
-    console.log(config.collection.directory);
+    // TODO : Need to detect network or not
 
-    var files = getFiles(config.collection.directory);
+    console.log("\\" + config.collection.directory);
+
+    var files = getFiles("\\" + config.collection.directory);
 
     for (var i = 0; i < files.length; i++) {
 
@@ -30,37 +32,54 @@ app.get("/collection/games/scan", function (req, res) {
 
             console.log("Searching a game for : " + filename);
 
-            request('http://www.omdbapi.com/?s=' + escape(filename), function (error, response, body) {
-                if (!error && response.statusCode == 200) {
+            request('http://192.168.0.21:8084/api/games/by/name/' + escape(filename), {
+                    headers: {
+                        "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
+                    }
+                }, function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
 
-                    var obj = JSON.parse(body);
+                        var obj = JSON.parse(body);
 
-                    // First game found
-                    var game = obj.Search[0];
+                        if (obj.games.length > 0) {
 
-                    console.log("Find '" + game.Title + "' game !");
+                            // First game found
+                            var game = obj.games[0];
 
-                    collection_db.findOne({Title: game.Title}, function (err, newDoc) {
-                        if (!err) {
-                            console.log(newDoc);
-                            if (newDoc) {
-                                console.log("Game already in collection, updating the game info...");
-                                collection_db.update({Title: newDoc.Title}, game, {}, function (err, newDoc) {
-                                    if (!err)
-                                        res.json({message: "OK"});
-                                });
+                            console.log(obj);
+                            console.log(game);
 
-                            } else {
-                                console.log("Game added to collection !");
-                                collection_db.insert(game, function (err, newDoc) {
-                                    if (!err)
-                                        res.json({message: "OK"});
-                                });
-                            }
+                            console.log("Find '" + game.name + "' game !");
+
+                            collection_db.findOne({name: game.name}, function (err, newDoc) {
+                                if (!err) {
+                                    console.log(newDoc);
+                                    if (newDoc) {
+                                        console.log("Game already in collection, updating the game info...");
+                                        collection_db.update({name: newDoc.name}, game, {}, function (err, newDoc) {
+                                            if (!err)
+                                                res.json({message: "OK"});
+                                        });
+
+                                    } else {
+                                        console.log("Game added to collection !");
+                                        collection_db.insert(game, function (err, newDoc) {
+                                            if (!err)
+                                                res.json({message: "OK"});
+                                        });
+                                    }
+                                }
+                            });
+                        } else {
+                            console.log("No game found with this name in Datagamer !");
+
+                            // If no game found with a potential game, added it to Datagamer through the Metacritic API.
+
                         }
-                    });
+                    }
                 }
-            });
+            )
+            ;
         }
     }
 });
