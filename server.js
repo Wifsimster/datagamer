@@ -181,3 +181,8 @@ new CronJob('/45 ' + search_cron + ' * * *', function () {
 new CronJob('* ' + collection_cron + ' * * *', function () {
     console.log('Collection cron activated !');
 }, null, true, "Europe/Paris");
+
+// Renamer cron
+new CronJob('* ' + config.renamer.detect_minute + ' * * * * *', function () {
+    console.log('Renamer cron activated !');
+}, null, true, "Europe/Paris");

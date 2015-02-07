@@ -14,9 +14,11 @@ app.get("/datagamer/search/:name", function (req, res) {
             "apiKey": API_KEY
         }
     }, function (error, response, body) {
-
-        res.send(data);
-
+        if (!error) {
+            res.send(JSON.parse(body));
+        } else {
+            console.error(error);
+        }
     })
 });
 
@@ -25,14 +27,15 @@ app.put("/datagamer/request/:name", function (req, res) {
 
     var name = req.params.name;
 
-    // TODO : Request to metacritic
-    request(DATAGAMER_URL + '/api/metacritic/' + escape(name), {
+    request(DATAGAMER_URL + '/metacritic/find/' + escape(name), {
         headers: {
             "apiKey": API_KEY
         }
     }, function (error, response, body) {
-
-        res.send(data);
-
+        if (!error) {
+            res.send(JSON.parse(body));
+        } else {
+            console.error(error);
+        }
     })
 });
