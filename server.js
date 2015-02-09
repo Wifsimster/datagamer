@@ -68,15 +68,14 @@ if (fs.existsSync('./config.ini')) {
 
     // [collection]
     config.collection.directory = "/your/games/collection";
-    config.collection.scan = false;
+    config.ranamer.scan_auto = true;
     config.collection.cron.day = "1";
     config.collection.cron.hour = "*";
     config.collection.cron.minute = "*";
 
     // [search]
     config.search.directory = "";
-    config.search.new_releases = false;
-    config.search.startup = false;
+    config.ranamer.scan_auto = true;
     config.search.cron.day = "*";
     config.search.cron.hour = "1";
     config.search.cron.minute = "*";
@@ -114,6 +113,7 @@ if (fs.existsSync('./config.ini')) {
     // [renamer]
     config.renamer.from = "";
     config.renamer.to = "";
+    config.ranamer.scan_auto = true;
     config.renamer.folder_naming = "<name> (<year>)";
     config.renamer.detect_minute = "15";
     config.renamer.unrar = false;
@@ -136,65 +136,111 @@ console.log('Datagamer is running on port ' + port);
 // ----                     CRON                    ----
 // -----------------------------------------------------
 console.log('Initialazing CRON :');
-// Config
-var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
-var search_cron = config.search.cron.minute + ' ' + config.search.cron.hour + ' ' + config.search.cron.day;
-var collection_cron = config.collection.cron.minute + ' ' + config.collection.cron.hour + ' ' + config.collection.cron.day;
 
-console.log("-- Search : " + search_cron);
-console.log("-- Collection : " + collection_cron);
-console.log("-- Renamer : " + config.renamer.detect_minute + " * *");
+// Open conf file
+var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
 // Search cron
-new CronJob('/45 ' + search_cron + ' * * *', function () {
-    console.log('Search cron activated !');
+if (config.search.scan_auto) {
 
-    // Get wanted games list
-    request('http://localhost:' + config.general.port + '/wanted/games', function (error, response, body) {
-        if (!error && response.statusCode == 200) {
+    // CRON conf
+    var search_cron = config.search.cron.minute + ' ' + config.search.cron.hour + ' ' + config.search.cron.day;
+    console.log("-- Search : " + search_cron);
 
-            var games = JSON.parse(body);
+    new CronJob('/45 ' + search_cron + ' * * *', function () {
+        console.log('CRON - Search :');
 
-            for(var i = 0 ; i < games.length; i++) {
+        // Get wanted games list
+        request('http://localhost:' + config.general.port + '/wanted/games', function (error, response, body) {
+            if (!error && response.statusCode == 200) {
 
-                var name = games[i].name;
+                var games = JSON.parse(body);
 
-                console.log("TPB - Searching for " + name + "...");
+                for (var i = 0; i < games.length; i++) {
 
-                request('http://localhost:' + config.general.port + '/thepiratebay/search/' + name, function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
+                    var name = games[i].name;
 
-                        var tracker = JSON.parse(body);
+                    console.log("-- TPB : Searching for " + name + "...");
 
-                        // If tracker found by TPB
-                        if(tracker) {
-                            console.log("TPB - Found one tracker with the current filters");
+                    request('http://localhost:' + config.general.port + '/thepiratebay/search/' + name, function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+
+                            var tracker = JSON.parse(body);
+
+                            // If tracker found by TPB
+                            if (tracker) {
+                                console.log("-- TPB : Found one tracker with the current filters");
 
 
-
-                            console.log("Tracker added to Transmission !");
+                                console.log("-- Tracker added to Transmission !");
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
-        }
-    });
-
-}, null, true, "Europe/Paris");
+        });
+    }, null, true, "Europe/Paris");
+}
 
 // Collection cron
-new CronJob('* ' + collection_cron + ' * * *', function () {
-    console.log('Collection cron activated !');
-}, null, true, "Europe/Paris");
+if (config.collection.scan_auto) {
+
+    // CRON conf
+    var collection_cron = config.collection.cron.minute + ' ' + config.collection.cron.hour + ' ' + config.collection.cron.day;
+    console.log("-- Collection : " + collection_cron);
+
+    new CronJob('* ' + collection_cron + ' * * *', function () {
+        console.log('CRON - Collection :');
+
+        request('http://localhost:' + config.general.port + '/collection/games/scan', function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log("200");
+            }
+        });
+    }, null, true, "Europe/Paris");
+}
 
 // Renamer cron
-new CronJob('* ' + config.renamer.detect_minute + ' * * * * *', function () {
-    console.log('Renamer cron activated !');
+if (config.renamer.scan_auto) {
 
-    // Get wanted games list
-    request('http://localhost:' + config.general.port + '/renamer/games/scan', function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log("200");
+    // CRON conf
+    console.log("-- Renamer : " + config.renamer.detect_minute + " * *");
+
+    new CronJob('* ' + config.renamer.detect_minute + ' * * * * *', function () {
+
+        console.log('CRON - Renamer :');
+
+        request('http://localhost:' + config.general.port + '/renamer/games/scan', function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log("200");
+            }
+        });
+    }, null, true, "Europe/Paris");
+}
+
+// Update cron
+if (config.update.notification || config.update.automatic) {
+
+    // CRON conf
+    console.log("-- Check for update every day");
+
+    // Check every day for new update
+    new CronJob('* * * 1 * * *', function () {
+
+        console.log('CRON - Update :');
+
+        // TODO : Check for any update online
+        var update = false;
+
+        if (update) {
+            if (config.update.notification) {
+                // TODO : Send a notification
+            }
+
+            if (config.update.automatic) {
+                // TODO : Automatically get the update and reboot the app
+            }
         }
-    });
-}, null, true, "Europe/Paris");
+
+    }, null, true, "Europe/Paris");
+}

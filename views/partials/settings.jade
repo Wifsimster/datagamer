@@ -39,6 +39,7 @@ div(ng-controller="SettingsCtrl")
 
             div#Update(class="card")
                 div(class="p+")
+                    button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                     strong.fs-headline.display-block Update
                     strong.fs-subhead.tc-black-2.display-block Application update options
                     div.checkbox.mt
@@ -63,7 +64,7 @@ div(ng-controller="SettingsCtrl")
                             div(ng-messages="configForm.config.collection.directory.$error", ng-show="configForm.config.collection.directory.$dirty")
                                 div(ng-messages="required") This is required !
                     .checkbox.mt
-                        input.checkbox__input(type="checkbox", id="collection_cron", ng-model="config.collection.scan", ng-change="update(config)")
+                        input.checkbox__input(type="checkbox", id="collection_cron", ng-model="config.collection.scan_auto", ng-change="update(config)")
                         label.checkbox__label(for="collection_cron") Automatically scan
                         span.checkbox__help Automatically scan your collection directory to add new games.
                     // CRON
@@ -86,14 +87,10 @@ div(ng-controller="SettingsCtrl")
                     strong.fs-headline.display-block Video game search
                     strong.fs-subhead.tc-black-2.display-block Search options - Need restart before changes take effect.
 
-                    div.checkbox.mt
-                        input.checkbox__input(type="checkbox", id="new_releases", ng-model="config.search.new_releases", ng-change="update(config)")
-                        label.checkbox__label(for="new_releases") Search for new releases
-                        span.checkbox__help Search for new video game releases.
                     .checkbox.mt
-                        input.checkbox__input(type="checkbox", id="startup", ng-model="config.search.startup", ng-change="update(config)")
-                        label.checkbox__label(for="startup") Run on startup
-                        span.checkbox__help Force to search for new video game releases after start.
+                        input.checkbox__input(type="checkbox", id="search_cron", ng-model="config.search.scan_auto", ng-change="update(config)")
+                        label.checkbox__label(for="search_cron") Automatically scan
+                        span.checkbox__help Automatically search for new video game releases on your provider.
 
                     // CRON
                     .grid__col4
@@ -227,6 +224,11 @@ div(ng-controller="SettingsCtrl")
                         input(type="text", ng-model="config.renamer.from", lx-tooltip="Folder where Datagamer searches for video games.", tooltip-position="bottom", ng-blur="update(config)")
                     lx-text-field(label="To a directory...")
                         input(type="text", ng-model="config.renamer.to", lx-tooltip="Folder where the video games are moved to.", tooltip-position="bottom", ng-blur="update(config)")
+
+                    .checkbox.mt
+                        input.checkbox__input(type="checkbox", id="renamer_cron", ng-model="config.renamer.scan_auto", ng-change="update(config)")
+                        label.checkbox__label(for="renamer_cron") Automatically scan
+                        span.checkbox__help Automatically search for downloaded video games.
 
                     .grid__col6
                         lx-text-field(label="Folder naming", disabled="true")
