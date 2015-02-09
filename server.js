@@ -27,6 +27,7 @@ require('./app/routes/collection.js');
 require('./app/routes/generic.js');
 require('./app/routes/transmission.js');
 require('./app/routes/kickasstorrents.js');
+require('./app/routes/renamer.js');
 require('./app/routes/thepiratebay.js');
 require('./app/routes/wanted.js');
 
@@ -134,11 +135,15 @@ console.log('Datagamer is running on port ' + port);
 // -----------------------------------------------------
 // ----                     CRON                    ----
 // -----------------------------------------------------
-console.log('Initialazing CRON...');
+console.log('Initialazing CRON :');
 // Config
 var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 var search_cron = config.search.cron.minute + ' ' + config.search.cron.hour + ' ' + config.search.cron.day;
 var collection_cron = config.collection.cron.minute + ' ' + config.collection.cron.hour + ' ' + config.collection.cron.day;
+
+console.log("-- Search : " + search_cron);
+console.log("-- Collection : " + collection_cron);
+console.log("-- Renamer : " + config.renamer.detect_minute + " * *");
 
 // Search cron
 new CronJob('/45 ' + search_cron + ' * * *', function () {
@@ -185,4 +190,11 @@ new CronJob('* ' + collection_cron + ' * * *', function () {
 // Renamer cron
 new CronJob('* ' + config.renamer.detect_minute + ' * * * * *', function () {
     console.log('Renamer cron activated !');
+
+    // Get wanted games list
+    request('http://localhost:' + config.general.port + '/renamer/games/scan', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log("200");
+        }
+    });
 }, null, true, "Europe/Paris");
