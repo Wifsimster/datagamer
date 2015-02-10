@@ -42,11 +42,11 @@ html(lang="en", ng-app="StarterApp")
         md-sidenav.md-sidenav-left.md-whiteframe-z2(layout="column", md-component-id="left", md-is-locked-open="$media('gt-sm')", tabindex="-1")
 
             // Sidebar Title
-            md-toolbar.bcg-green-500
+            md-toolbar.bgc-grey-900
                 h1.md-toolbar-tools Datagamer
 
             // Sidebar Content
-            md-content.md-default-theme(style="overflow: auto;")
+            md-content.tc-grey-900(style="overflow: auto;")
                 ul.docs-menu
                     li.parent-list-item(ng-repeat="item in pages", ng-class="{parentActive:isActive('/{{item.url}}')}")
                         menu-link(section="page")
@@ -70,7 +70,7 @@ html(lang="en", ng-app="StarterApp")
         div(layout="column", layout-fill, tabindex="-1" role="main")
 
             // Toolbar
-            md-toolbar.bcg-green-500
+            md-toolbar.bgc-grey-900
                 .md-toolbar-tools(tabindex="0")
                     button.btn(hide-gt-sm="", aria-label="Toggle Menu", ng-click="openLeftMenu()")
                         i.icon.icon--l.icon--flat.mdi.mdi--menu
@@ -91,7 +91,7 @@ html(lang="en", ng-app="StarterApp")
                             lx-select-choices  {{ $choice.name }} - {{ $choice.releaseDate }}
 
 
-            md-content.md-padding.md-default-theme(md-scroll-y, flex)
+            md-content.md-padding(md-scroll-y, flex)
                 div(ng-view)
 
 

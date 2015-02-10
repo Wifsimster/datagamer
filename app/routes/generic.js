@@ -9,7 +9,6 @@ app.get('/partials/:partialPath', function (req, res) {
 });
 
 app.get('/', function (req, res) {
-    console.log('frehertjyjty');
     res.render('layout', {
         title: 'Datagamer'
     });

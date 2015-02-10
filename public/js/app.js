@@ -38,9 +38,11 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav
         return $scope.show;
     };
 
-    $scope.breadcrumb = $location.path();
-
     $scope.isActive = function (route) {
+
+        // Update breadcrumb on click
+        $scope.breadcrumb = $location.path().split("/")[1];
+
         return route === $location.path();
     }
 
