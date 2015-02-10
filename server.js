@@ -165,15 +165,27 @@ if (config.search.scan_auto) {
                     request('http://localhost:' + config.general.port + '/thepiratebay/search/' + name, function (error, response, body) {
                         if (!error && response.statusCode == 200) {
 
-                            var tracker = JSON.parse(body);
+                            if (body) {
+                                var tracker = JSON.parse(body);
 
-                            // If tracker found by TPB
-                            if (tracker) {
-                                console.log("-- TPB : Found one tracker with the current filters");
+                                // If tracker found by TPB
+                                if (tracker) {
+                                    console.log("-- TPB : Found one tracker with the current filters");
 
+                                    console.log(tracker);
 
-                                console.log("-- Tracker added to Transmission !");
+                                    request.post('http://localhost:' + config.general.port + '/transmission/add', {url : tracker.magnetLink},  function (error, response, body) {
+                                        if (!error && response.statusCode == 200) {
+
+                                            console.log("-- Tracker added to Transmission !");
+                                        } else {
+                                            console.error(error);
+                                        }
+                                    });
+                                }
                             }
+                        } else {
+                            console.error(error);
                         }
                     });
                 }
