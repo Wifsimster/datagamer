@@ -1,7 +1,7 @@
 div(ng-controller="SettingsCtrl")
-    .grid__col4
-        form(name="configGorm")
-            div#General(class="card")
+    form(name="configGorm")
+        masonry.grid(load-images="false")
+            div#General(class="grid__col4 card mansonry-brick")
                 div(class="p+")
                     button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                     strong.fs-headline.display-block General
@@ -19,9 +19,9 @@ div(ng-controller="SettingsCtrl")
                                 div(ng-messages="configForm.config.general.port.$error", ng-show="configForm.config.general.port.$dirty")
                                     div(ng-messages="required") This is required !
 
-            div(style="padding:15px")
+            //div(style="padding:15px")
 
-            div#Advanced(class="card")
+            div#Advanced(class="grid__col4 card mansonry-brick")
                 div(class="p+")
                     strong.fs-headline.display-block Advanced
                     lx-text-field(label="API Key", disabled="true")
@@ -35,9 +35,9 @@ div(ng-controller="SettingsCtrl")
                     lx-text-field(label="Log directory")
                         input(type="text", ng-model="config.advanced.debug_directory", ng-blur="update(config)")
 
-            div(style="padding:15px")
+            //div(style="padding:15px")
 
-            div#Update(class="card")
+            div#Update(class="grid__col4 card mansonry-brick")
                 div(class="p+")
                     button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                     strong.fs-headline.display-block Update
@@ -51,9 +51,9 @@ div(ng-controller="SettingsCtrl")
                         label.checkbox__label(for="automatic") Automatic
                         span.checkbox__help Automatically update when update is available
 
-            div(style="padding:15px")
+            //div(style="padding:15px")
 
-            div#Collection(class="card")
+            div#Collection(class="grid__col4 card")
                 div(class="p+")
                     button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                     strong.fs-headline.display-block Collection
@@ -79,9 +79,9 @@ div(ng-controller="SettingsCtrl")
                         tooltip-position="bottom")
                             input(type="text" ng-model="config.collection.cron.minute", ng-blur="update(config)")
 
-            div(style="padding:15px")
+            //div(style="padding:15px")
 
-            div#Search(class="card")
+            div#Search(class="grid__col4 card")
                 div(class="p+")
                     button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                     strong.fs-headline.display-block Video game search
@@ -104,9 +104,9 @@ div(ng-controller="SettingsCtrl")
                         tooltip-position="bottom")
                             input(type="text" ng-model="config.search.cron.minute", ng-blur="update(config)")
 
-            div(style="padding:15px")
+            //div(style="padding:15px")
 
-            div#Providers(class="card")
+            div#Providers(class="grid__col4 card")
                 div(class="p+")
                     button.btn.btn--m.btn--black.btn--raised(lx-ripple, style="float:right", ng-click="thepiratebay_test()") Test
                     strong.fs-headline.display-block ThePirateBay providers
@@ -142,9 +142,9 @@ div(ng-controller="SettingsCtrl")
                         lx-text-field(label="Minimum leechers", lx-tooltip="Only keep trackers with this minimum leechers.", tooltip-position="bottom")
                             input(type="text" ng-model="config.thepiratebay.filters.leechers", ng-blur="update(config)")
 
-            div(style="padding:15px")
+            //div(style="padding:15px")
 
-            div(class="card")
+            div(class="grid__col4 card")
                 div(class="p+")
                     button.btn.btn--m.btn--orange.btn--raised(lx-ripple, style="float:right", ng-click="kickasstorrents_test()") Test
                     strong.fs-headline.display-block KickAssTorrents providers
@@ -169,9 +169,9 @@ div(ng-controller="SettingsCtrl")
                             label.checkbox__label(for="verified") Only verified
                             span.checkbox__help Only search for verfied video game releases.
 
-            div(style="padding:15px")
+            //div(style="padding:15px")
 
-            div#Transmission(class="card")
+            div#Transmission(class="grid__col4 card")
                 div(class="p+")
                     button.btn.btn--m.btn--red.btn--raised(lx-ripple, style="float:right", ng-click="transmission_test()") Test
                     strong.fs-headline.display-block Transmission
@@ -212,9 +212,9 @@ div(ng-controller="SettingsCtrl")
                             label.checkbox__label(for="pause_torrent") Paused torrent
                             span.checkbox__help Add the torrent paused.
 
-            div(style="padding:15px")
+            //div(style="padding:15px")
 
-            div#Renamer(class="card")
+            div#Renamer(class="grid__col4 card")
                 div(class="p+")
                     button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                     strong.fs-headline.display-block Renamer

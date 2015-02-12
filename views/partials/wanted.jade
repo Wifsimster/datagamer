@@ -1,4 +1,5 @@
 div(ng-controller="WantedCtrl")
+    button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanNewReleases()") Scan for new releases
     .grid
         .grid__col6
             lx-select(
@@ -16,7 +17,9 @@ div(ng-controller="WantedCtrl")
                 lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate| date:'yyyy' }})
                 lx-select-choices  {{ $choice.name }} ({{ $choice.releaseDate| date:'yyyy' }})
 
-            br
+        .grid__col12
+
+            #scan_progress
 
             h1.fs-title(ng-show="wantedGames.length > 0") Wanted video games
 
@@ -32,4 +35,6 @@ div(ng-controller="WantedCtrl")
                             i.mdi.mdi--delete
 
             div(ng-hide="wantedGames.length > 0")
-                p No game found in your wanted list !
+                br
+
+                p.text-center.card(class="p+") No game found in your wanted list !

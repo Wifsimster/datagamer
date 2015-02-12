@@ -237,6 +237,11 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
                 console.error(err);
             });
     };
+
+    $scope.scanNewReleases = function() {
+        console.log('Start new relealses scan...');
+        LxNotificationService.success('Start new relealses scan...');
+    }
 });
 
 app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxNotificationService) {

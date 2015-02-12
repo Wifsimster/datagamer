@@ -188,3 +188,12 @@ md-tabs-ink-bar {
   transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
 }
+
+@media screen and (min-width: 1024px)
+  .grid__col4 {
+    margin-right: 1.57%;
+  }
+
+.card {
+  margin-bottom : 10px;
+}
