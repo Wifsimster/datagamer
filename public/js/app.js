@@ -255,9 +255,52 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
             });
     };
 
+    $scope.searchTorrents = function (id) {
+        //console.log('Search for torrents');
+
+        $http.get('/wanted/games/' + id).
+            success(function (game) {
+
+                LxNotificationService.info('Searching new torrents for ' + game.name + '...');
+
+                $http.get('/thepiratebay/search/' + game.name).
+                    success(function (torrent) {
+                        if (torrent) {
+                            //console.log('Found one torrent : ' + torrent.name);
+                            LxNotificationService.success('Found ' + torrent.name + ' !');
+
+                            $http.post('/transmission/add/', {url: torrent.magnetLink}).
+                                success(function (res) {
+                                    if (res) {
+                                        //console.log('Torrent added to Transmission !');
+                                        LxNotificationService.success(res.name + ' added to Transmission !');
+                                    } else {
+                                        LxNotificationService.error('No torrent added to Transmission !');
+                                    }
+                                }).
+                                error(function (err) {
+                                    if (err) {
+                                        console.error(err.result);
+                                        LxNotificationService.error(JSON.parse(err.result).result);
+                                    }
+                                });
+
+                        } else {
+                            LxNotificationService.error('No torrent found for ' + game.name + ' !');
+                        }
+                    }).
+                    error(function (err) {
+                        console.error(err);
+                    });
+            }).
+            error(function (err) {
+                console.error(err);
+            });
+    };
+
     $scope.scanNewReleases = function () {
         console.log('Start new relealses scan...');
-        LxNotificationService.success('Start new relealses scan... [TODO]');
+        LxNotificationService.success('Starting new releases scan...');
     }
 });
 

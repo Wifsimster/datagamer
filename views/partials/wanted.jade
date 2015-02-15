@@ -25,7 +25,8 @@ div(ng-controller="WantedCtrl")
                 lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate| date:'yyyy' }})
                 lx-select-choices  {{ $choice.name }} ({{ $choice.releaseDate| date:'yyyy' }})
 
-        .grid__col12
+    .grid
+        .grid__col6
 
             #scan_progress
 
@@ -38,8 +39,12 @@ div(ng-controller="WantedCtrl")
                     .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}})
 
                     .list-secondary-tile
+                        button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="searchTorrents(game._id)",
+                        lx-tooltip="Search for torrents", tooltip-position="bottom", style="margin-right: 5px")
+                            i.mdi.mdi--gamepad
+
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteWantedGame(game._id)",
-                        lx-tooltip="Delete", tooltip-position="right")
+                        lx-tooltip="Delete", tooltip-position="bottom")
                             i.mdi.mdi--delete
 
             div(ng-hide="wantedGames.length > 0")

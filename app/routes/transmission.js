@@ -30,7 +30,7 @@ function removeTorrent(id) {
         if (err) {
             throw err;
         }
-        console.log('Torrent was removed !');
+        console.log('Transmission - Torrent was removed !');
     });
 }
 
@@ -39,21 +39,17 @@ function addTorrent(url, downloadDirectory) {
         "download-dir": downloadDirectory
     }, function (err, result) {
         if (err) {
-            return console.log(err);
+            console.error(err);
+            return err;
         }
-        var id = result.id;
-        console.log('New torrent added - ID: ' + id);
+
+        console.log('Transmission - New torrent added - ID: ' + result.id);
+        return result.id;
     });
 }
 
 function addTorrent(url) {
-    transmission.addUrl(url, function (err, result) {
-        if (err) {
-            return console.log(err);
-        }
-        var id = result.id;
-        console.log('New torrent added - ID: ' + id);
-    });
+
 }
 
 // -----------------------------------------------------
@@ -78,20 +74,23 @@ app.get("/transmission/test", function (req, res) {
             console.error(err);
             res.send(err);
         }
-
     });
 });
 
 // Add a new tracker to Transmission
-app.post("/transmission/add", function (req, res) {
+app.post("/transmission/add/", function (req, res) {
 
     var url = req.body.url;
 
-    console.log("Try to add '" + url + "' to Transmission...");
+    console.log("Transmission - Try to add '" + url);
 
-    var result = addTorrent(url);
-
-    console.log(result);
-
-    res.send(result);
+    transmission.addUrl(url, function (err, result) {
+        if (err) {
+            console.error(err);
+            res.status(500).send(err);
+        } else {
+            console.log('Transmission - New torrent added - ID: ' + result.name);
+            res.send(result);
+        }
+    });
 });

@@ -140,7 +140,11 @@ console.log('Datagamer is running on port ' + port);
 // -----------------------------------------------------
 // ----                     CRON                    ----
 // -----------------------------------------------------
-console.log('Initialazing CRON :');
+if (config.search.scan_auto || config.collection.scan_auto || config.renamer.scan_auto || config.update.scan_auto) {
+    console.log('Initialazing CRON :');
+} else {
+    console.log('No CRON activated.');
+}
 
 // Open conf file
 var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));

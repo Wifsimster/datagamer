@@ -11,6 +11,16 @@ app.get("/wanted/games", function (req, res) {
     });
 });
 
+app.get("/wanted/games/:id", function (req, res) {
+
+    var id = req.params.id;
+
+    wanted_db.findOne({_id: id}, function (err, game) {
+        if (!err)
+            res.send(game);
+    });
+});
+
 app.post("/wanted/games", function (req, res) {
 
     wanted_db.find({name: req.body.name}, function (err, games) {

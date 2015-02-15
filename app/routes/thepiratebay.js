@@ -17,6 +17,7 @@ app.get("/thepiratebay/test", function (req, res) {
         });
 });
 
+
 // Example :
 //    name: 'Far.Cry.4.[v1.5].Repack-R.G.Mechanics',
 //    size: '13.34 GiB',
@@ -31,7 +32,7 @@ app.get("/thepiratebay/search/:name", function (req, res) {
 
     var name = req.params.name;
 
-    console.log("Searching TPB for '" + name + "'...");
+    console.log("TPB - Searching for '" + name + "'...");
 
     // Open config.ini
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
@@ -53,7 +54,7 @@ app.get("/thepiratebay/search/:name", function (req, res) {
                 // First, only take PC game tracker
                 if (torrent.subcategory.id == '401') {
 
-                    console.log("Torrent subject to be taken : " + torrent.name);
+                    console.log("TPB - Torrent subject to be taken : " + torrent.name);
 
                     // Filter white list of words
                     if (config.thepiratebay.filters.favorite_words) {
@@ -71,21 +72,24 @@ app.get("/thepiratebay/search/:name", function (req, res) {
                         }
                     }
 
+                    // Extract GiB from size
+                    torrent.size = parseInt(torrent.size.split('GiB'));
+
                     // Filter size : If torrent size <= config size reject the torrent
                     if (torrent.size <= config.thepiratebay.filters.size_min) {
-                        console.log("-- Torrent reject : Size too small (" + torrent.size + ")");
+                        console.log("TPB -      Torrent reject : Size too small (" + torrent.size + ")");
                         favorite_torrent = null;
                     }
 
                     // Filter seeders : If torrent seeders <= config seeders reject the torrent
                     if (torrent.seeders <= config.thepiratebay.filters.seeders) {
-                        console.log("-- Torrent reject : Seeders too small (" + torrent.seeders + ")");
+                        console.log("TPB -      Torrent reject : Seeders too small (" + torrent.seeders + ")");
                         favorite_torrent = null;
                     }
 
                     // Filter leechers : If torrent leechers <= config leechers reject the torrent
                     if (torrent.leechers <= config.thepiratebay.filters.leechers) {
-                        console.log("-- Torrent reject : Leechers too small (" + torrent.leechers + ")");
+                        console.log("TPB -      Torrent reject : Leechers too small (" + torrent.leechers + ")");
                         favorite_torrent = null;
                     }
 
@@ -97,9 +101,9 @@ app.get("/thepiratebay/search/:name", function (req, res) {
 
                         var filterDate = Date.parse(config.thepiratebay.filters.uploadDate);
 
-                        console.log("-- Check date parsing :");
-                        console.log("---- Torent : " + torrent.uploadDate + " = " + torrentDate.getDay() + torrentDate.getMonth() + torrentDate.getFullYear());
-                        console.log("---- Filter : " + filterDate);
+                        console.log("TPB -      Check date parsing :");
+                        console.log("TPB -          Torent : " + torrent.uploadDate + " = " + torrentDate.getDay() + torrentDate.getMonth() + torrentDate.getFullYear());
+                        console.log("TPB -          Filter : " + filterDate);
 
                         // Compare millisconds
                         if (torrent.uploadDate.getTime() < filterDate) {
@@ -109,11 +113,17 @@ app.get("/thepiratebay/search/:name", function (req, res) {
 
                     // If favorite torrent is not null send him
                     if (favorite_torrent) {
-                        res.send(favorite_torrent);
+                        break;
                     }
                 }
             }
-            res.send(null);
+
+            if (favorite_torrent) {
+                console.log("TPB - Return torrent is : " + favorite_torrent.name);
+                res.send(favorite_torrent);
+            } else {
+                res.send(null);
+            }
         })
         .catch(function () {
             console.error(err);
