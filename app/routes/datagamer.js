@@ -1,17 +1,39 @@
 var fs = require('fs');
 var ini = require('ini');
-
-var DATAGAMER_URL = "http://192.168.0.21:8084";
-var API_KEY = "b3dae6c0-83a0-4721-9901-bf0ee7011af8";
+var request = require('request');
 
 // Search a game name on Datagamer database
 app.get("/datagamer/search/:name", function (req, res) {
 
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
     var name = req.params.name;
 
-    request(DATAGAMER_URL + '/api/games/by/name/' + escape(name), {
+    console.log("Datagamer - Searching game : " + name);
+
+    request('http://' + config.search.datagamer.url + '/api/games/by/name/' + escape(name), {
         headers: {
-            "apiKey": API_KEY
+            "apiKey": config.search.datagamer.apikey
+        }
+    }, function (error, response, body) {
+        if (!error) {
+            res.send(JSON.parse(body));
+        } else {
+            console.error(error);
+        }
+    })
+});
+
+// Ask for video games count on Datagamer
+app.get("/datagamer/games/count", function (req, res) {
+
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+    console.log("Datagamer - Asking games count...");
+
+    request('http://' + config.search.datagamer.url + '/api/games/count', {
+        headers: {
+            "apiKey": config.search.datagamer.apikey
         }
     }, function (error, response, body) {
         if (!error) {
@@ -25,11 +47,13 @@ app.get("/datagamer/search/:name", function (req, res) {
 // Ask Datagamer to search on Metacritic a new game missing from Datagamer database
 app.put("/datagamer/request/:name", function (req, res) {
 
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
     var name = req.params.name;
 
-    request(DATAGAMER_URL + '/metacritic/find/' + escape(name), {
+    request('http://' + config.search.datagamer.url + '/metacritic/find/' + escape(name), {
         headers: {
-            "apiKey": API_KEY
+            "apiKey": config.search.datagamer.apikey
         }
     }, function (error, response, body) {
         if (!error) {

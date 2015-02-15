@@ -173,17 +173,22 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
             console.error(err);
         });
 
+    $http.get('/datagamer/games/count').
+        success(function (result) {
+            //console.log(result);
+            $scope.datagamerCount = result.count;
+        }).
+        error(function (err) {
+            console.error(err);
+        });
+
     // Search input
     $scope.ajax = {
         list: [],
         update: function (newFilter, oldFilter) {
             if (newFilter) {
                 $scope.ajax.loading = true;
-                $http.get('http://192.168.0.21:8084/api/games/by/name/' + escape(newFilter), {
-                    headers: {
-                        "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
-                    }
-                }).
+                $http.get("/datagamer/search/" + escape(newFilter)).
                     success(function (data) {
                         $scope.ajax.list = data.games;
                         $scope.ajax.loading = false;
@@ -238,7 +243,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
             });
     };
 
-    $scope.scanNewReleases = function() {
+    $scope.scanNewReleases = function () {
         console.log('Start new relealses scan...');
         LxNotificationService.success('Start new relealses scan...');
     }

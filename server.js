@@ -24,6 +24,7 @@ app.use(bodyParser.json());
 
 // Routes
 require('./app/routes/collection.js');
+require('./app/routes/datagamer.js');
 require('./app/routes/generic.js');
 require('./app/routes/transmission.js');
 require('./app/routes/kickasstorrents.js');
@@ -75,10 +76,14 @@ if (fs.existsSync('./config.ini')) {
 
     // [search]
     config.search.directory = "";
-    config.ranamer.scan_auto = true;
+    config.search.scan_auto = true;
     config.search.cron.day = "*";
     config.search.cron.hour = "1";
     config.search.cron.minute = "*";
+
+    // [search.datagamer]
+    config.search.datagamer.apikey = "b3dae6c0-83a0-4721-9901-bf0ee7011af8";
+    config.search.datagamer.url = "localhost:8084";
 
     // [thepiratebay]
     config.thepiratebay.proxy_server = "";
@@ -174,7 +179,7 @@ if (config.search.scan_auto) {
 
                                     console.log(tracker);
 
-                                    request.post('http://localhost:' + config.general.port + '/transmission/add', {url : tracker.magnetLink},  function (error, response, body) {
+                                    request.post('http://localhost:' + config.general.port + '/transmission/add', {url: tracker.magnetLink}, function (error, response, body) {
                                         if (!error && response.statusCode == 200) {
 
                                             console.log("-- Tracker added to Transmission !");

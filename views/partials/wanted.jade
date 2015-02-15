@@ -1,7 +1,15 @@
 div(ng-controller="WantedCtrl")
     button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanNewReleases()") Scan for new releases
     .grid
+
+        .grid__col7
+            div.tc-white-1(class="p+ bgc-blue-500")
+                p Datagamer has currently <strong>{{ datagamerCount }}</strong> video games on his database and counting...
+                p If video game does not exist in the list, Datagamer will automatically search the game on the internet and added it to his database !
+                p You just need to make an other research to see the game appear ;)
+
         .grid__col6
+
             lx-select(
             placeholder="Search a video game...",
             loading="{{ ajax.loading }}",
