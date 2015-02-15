@@ -173,6 +173,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
             console.error(err);
         });
 
+    // Get the total video games on Datagamer db
     $http.get('/datagamer/games/count').
         success(function (result) {
             //console.log(result);
@@ -206,16 +207,27 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
             // Add new game to wanted database
             $http.post('/wanted/games', data).
                 success(function (result) {
-                    // If ok, refresh wanted games list
-                    $http.get('/wanted/games').
-                        success(function (result) {
-                            $scope.wantedGames = result;
-                        }).
-                        error(function (err) {
-                            console.error(err);
-                        });
 
-                    LxNotificationService.success(data.name + ' added to wanted game !');
+                    console.log(result)
+
+                    if (result.code == 412) {
+                        LxNotificationService.warning(data.name + ' already in wanted list !');
+                    }
+
+                    // SUCCESS CODE
+                    if (result.code == 200) {
+
+                        LxNotificationService.success(data.name + ' added to wanted game !');
+
+                        // If ok, refresh wanted games list
+                        $http.get('/wanted/games').
+                            success(function (result) {
+                                $scope.wantedGames = result;
+                            }).
+                            error(function (err) {
+                                console.error(err);
+                            });
+                    }
                 }).
                 error(function (err) {
                     console.error(err);
@@ -245,7 +257,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
 
     $scope.scanNewReleases = function () {
         console.log('Start new relealses scan...');
-        LxNotificationService.success('Start new relealses scan...');
+        LxNotificationService.success('Start new relealses scan... [TODO]');
     }
 });
 
