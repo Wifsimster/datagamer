@@ -63,6 +63,10 @@ app.get("/collection/games/scan", function (req, res) {
 
                                     } else {
                                         console.log("Game added to collection !");
+
+                                        // Set the game as downloaded
+                                        game.downloaded = true;
+
                                         collection_db.insert(game, function (err, newDoc) {
                                             if (!err)
                                                 res.json({message: "OK"});

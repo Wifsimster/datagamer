@@ -32,7 +32,9 @@ var GameSchema = new Schema({
     metacritic: {
         score: Number,
         url: String
-    }
+    },
+    snatched: false,
+    downloaded: false
 });
 
 module.exports = mongoose.model('Game', GameSchema);
