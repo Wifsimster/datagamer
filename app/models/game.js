@@ -2,6 +2,7 @@ var mongoose = require('mongoose-q')(require('mongoose'));
 var Schema = mongoose.Schema;
 
 var GameSchema = new Schema({
+    datagamer_id: Number,
     name: {
         type: String,
         trim: true

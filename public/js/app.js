@@ -194,7 +194,8 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
                         $scope.ajax.list = data.games;
                         $scope.ajax.loading = false;
                     }).
-                    error(function () {
+                    error(function (err) {
+                        console.error(err);
                         $scope.ajax.loading = false;
                     });
             }
@@ -204,6 +205,10 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
         },
         loading: false,
         toModel: function (data) {
+
+            // Save the Datagamer id
+            data.datagamer_id = data._id;
+
             // Add new game to wanted database
             $http.post('/wanted/games', data).
                 success(function (result) {
@@ -298,10 +303,28 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
             });
     };
 
+    $scope.updateGameInfo = function (datagamer_id) {
+
+        $http.get('/datagamer/game/info/' + datagamer_id).
+            success(function (res) {
+
+                // SUCCESS
+                if (res.code == 200) {
+                    console.log(res);
+                    LxNotificationService.success(res.game.name + ' updated !');
+                } else {
+                    LxNotificationService.error(res.message);
+                }
+            }).
+            error(function (err) {
+                console.error(err);
+            });
+    };
+
     $scope.scanNewReleases = function () {
         console.log('Start new relealses scan...');
         LxNotificationService.success('Starting new releases scan...');
-    }
+    };
 });
 
 app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxNotificationService) {

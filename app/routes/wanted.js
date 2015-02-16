@@ -25,9 +25,6 @@ app.post("/wanted/games", function (req, res) {
 
     wanted_db.find({name: req.body.name}, function (err, games) {
 
-        console.log(req.body.name);
-        console.log(games.length);
-
         if (games.length == 0) {
             wanted_db.insert(req.body, function (err, newDoc) {
                 if (!err)
