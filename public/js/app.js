@@ -158,7 +158,6 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
     }
 });
 
-
 app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxProgressService) {
 
     $scope.wantedGames = [];
@@ -166,11 +165,10 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
     // Get wanted video games
     $http.get('/wanted/games').
         success(function (result) {
-            //console.log(result);
             $scope.wantedGames = result;
         }).
         error(function (err) {
-            console.error(err);
+            LxNotificationService.error(err);
         });
 
     // Get the total video games on Datagamer db
@@ -180,7 +178,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
             $scope.datagamerCount = result.count;
         }).
         error(function (err) {
-            console.error(err);
+            LxNotificationService.error(err);
         });
 
     // Search input
@@ -212,17 +210,16 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
             // Add new game to wanted database
             $http.post('/wanted/games', data).
                 success(function (result) {
+                    //if (result.code == 412) {
+                    //    LxNotificationService.warning(data.name + ' already in wanted list !');
+                    //}
 
-                    console.log(result)
+                    // SUCCESS POST CODE
+                    if (result.code == 201) {
 
-                    if (result.code == 412) {
-                        LxNotificationService.warning(data.name + ' already in wanted list !');
-                    }
+                        LxNotificationService.success(result.game.name + ' added to wanted game !');
 
-                    // SUCCESS CODE
-                    if (result.code == 200) {
-
-                        LxNotificationService.success(data.name + ' added to wanted game !');
+                        $scope.updateGameInfo(result.game.datagamer_id);
 
                         // If ok, refresh wanted games list
                         $http.get('/wanted/games').
@@ -230,12 +227,12 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                                 $scope.wantedGames = result;
                             }).
                             error(function (err) {
-                                console.error(err);
+                                LxNotificationService.error(err);
                             });
                     }
                 }).
                 error(function (err) {
-                    console.error(err);
+                    LxNotificationService.error(err);
                 });
         }
     };
@@ -250,13 +247,13 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                         $scope.wantedGames = result;
                     }).
                     error(function (err) {
-                        console.error(err);
+                        LxNotificationService.error(err);
                     });
 
-                LxNotificationService.success('Wanted game deleted !');
+                LxNotificationService.notify('Wanted game deleted !', 'delete', 'grey');
             }).
             error(function (err) {
-                console.error(err);
+                LxNotificationService.error(err);
             });
     };
 
@@ -271,7 +268,6 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                 $http.get('/thepiratebay/search/' + game.name).
                     success(function (torrent) {
                         if (torrent) {
-                            //console.log('Found one torrent : ' + torrent.name);
                             LxNotificationService.success('Found ' + torrent.name + ' !');
 
                             $http.post('/transmission/add/', {url: torrent.magnetLink}).
@@ -323,7 +319,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                             $http.get('/wanted/games').
                                 success(function (result) {
                                     $scope.wantedGames = result;
-                                    LxNotificationService.success('Game info refreshed !');
+                                   // LxNotificationService.success('Game info refreshed !');
                                     LxProgressService.circular.hide();
                                 }).
                                 error(function (err) {

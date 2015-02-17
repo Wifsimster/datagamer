@@ -25,16 +25,17 @@ app.get("/wanted/games/:id", function (req, res) {
 });
 
 app.post("/wanted/games", function (req, res) {
-
     wanted_db.find({name: req.body.name}, function (err, games) {
 
         if (games.length == 0) {
             wanted_db.insert(req.body, function (err, newDoc) {
-                if (!err)
-                    res.json(CODE.SUCCESS);
+                if (!err) {
+                    CODE.SUCCESS_POST.game = newDoc;
+                    res.json(CODE.SUCCESS_POST);
+                }
             });
         } else {
-            res.json(CODE.ALREADY_EXIST)
+            res.json(CODE.ALREADY_EXIST);
         }
     });
 });

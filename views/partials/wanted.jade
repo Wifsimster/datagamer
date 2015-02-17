@@ -1,15 +1,18 @@
-div(ng-controller="WantedCtrl")
+div
     button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanNewReleases()") Scan for new releases
     .grid
 
-        .grid__col7
+        .grid__col7(ng-show="datagamerCount")
             div.tc-white-1(class="p+ bgc-blue-500")
                 p Datagamer has currently <strong>{{ datagamerCount }}</strong> video games on his database and counting...
                 p If video game does not exist in the list, Datagamer will automatically search the game on the internet and added it to his database !
                 p You just need to make an other research to see the game appear ;)
 
-        .grid__col6
+        //.grid__col7(ng-hide="datagamerCount")
+            div.tc-white-1(class="p+ bgc-red-200")
+                p Something is not right with Datagamer ! Please, check your settings.
 
+        .grid__col6
             lx-select(
             placeholder="Search a video game...",
             loading="{{ ajax.loading }}",
@@ -19,7 +22,7 @@ div(ng-controller="WantedCtrl")
             ng-model="ajax.selected"
             choices="ajax.list"
             filter="ajax.update(newValue, oldValue)"
-            change="cbSelect.exec(newValue, oldValue)"
+            change="ajax.exec(newValue, oldValue)"
             selection-to-model="ajax.toModel(data, callback)"
             model-to-selection="ajax.toSelection(data, callback)")
                 lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate| date:'yyyy' }})
@@ -35,10 +38,11 @@ div(ng-controller="WantedCtrl")
             ul.list
                 li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames")
                     .list-primary-tile
-                        img.list-primary-tile__img(src="{{game.media.thumbnails[0]}}")
+                        img.list-primary-tile__img(ng-show="game.media.thumbnails[0]" ng-src="{{ game.media.thumbnails[0] }}")
+                        img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://www.metalcuttingtools.eu/sites/default/files/default_images/thumbnail-default.jpg")
 
                     .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}})
-                        p {{game.developers}}, {{game.genres}}, {{game.platforms}}, {{game.score}}
+                        //p {{game.developers}}, {{game.genres}}, {{game.platforms}}, {{game.score}}
 
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game.datagamer_id)",

@@ -167,7 +167,7 @@ md-tabs-ink-bar {
   display: block;
   padding: 0 16px 0 32px;
   text-transform: none;
-}
+}tv
 
 .md-button-toggle .md-toggle-icon {
   background-size: 100% auto;
