@@ -159,7 +159,7 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
 });
 
 
-app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
+app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxProgressService) {
 
     $scope.wantedGames = [];
 
@@ -305,15 +305,39 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService) {
 
     $scope.updateGameInfo = function (datagamer_id) {
 
+        LxProgressService.circular.show('#5fa2db', '#scan_progress');
+
         $http.get('/datagamer/game/info/' + datagamer_id).
             success(function (res) {
 
                 // SUCCESS
                 if (res.code == 200) {
-                    console.log(res);
-                    LxNotificationService.success(res.game.name + ' updated !');
+
+                    // Save the datagamer id
+                    res.game.datagamer_id = res.game._id;
+
+                    // Update wanted game info
+                    $http.put('/wanted/games', res.game)
+                        .success(function (res) {
+                            // Get wanted video games
+                            $http.get('/wanted/games').
+                                success(function (result) {
+                                    $scope.wantedGames = result;
+                                    LxNotificationService.success('Game info refreshed !');
+                                    LxProgressService.circular.hide();
+                                }).
+                                error(function (err) {
+                                    LxNotificationService.error(err);
+                                    LxProgressService.circular.hide();
+                                });
+                        })
+                        .error(function (err) {
+                            LxNotificationService.error(err);
+                            LxProgressService.circular.hide();
+                        });
                 } else {
                     LxNotificationService.error(res.message);
+                    LxProgressService.circular.hide();
                 }
             }).
             error(function (err) {

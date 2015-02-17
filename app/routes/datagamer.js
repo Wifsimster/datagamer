@@ -2,6 +2,8 @@ var fs = require('fs');
 var ini = require('ini');
 var request = require('request');
 
+var CODE = require('../../app/enums/codes');
+
 // Search games by name
 // This will automatically update Datagamer db
 app.get("/datagamer/search/:name", function (req, res) {
@@ -61,7 +63,14 @@ app.get("/datagamer/game/info/:id", function (req, res) {
         }
     }, function (error, response, body) {
         if (!error) {
-            res.send(JSON.parse(body));
+            var result = JSON.parse(body);
+
+            if (result.code == 200) {
+                console.log('Datagamer responds with game info !');
+                res.json(result);
+            } else {
+                res.json(CODE.SERVER_ERROR);
+            }
         } else {
             console.error(error);
         }

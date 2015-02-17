@@ -1,6 +1,7 @@
 // Nedb - Embedded database package
 var Datastore = require('nedb');
-var wanted_db = new Datastore({filename: 'wanted.nedb', autoload: true});
+var wanted_db = new Datastore('wanted.nedb');
+wanted_db.loadDatabase();
 
 var CODE = require('../../app/enums/codes');
 
@@ -16,8 +17,10 @@ app.get("/wanted/games/:id", function (req, res) {
     var id = req.params.id;
 
     wanted_db.findOne({_id: id}, function (err, game) {
-        if (!err)
-            res.send(game);
+        if (!err) {
+            CODE.SUCCESS.game = game;
+            res.send(CODE.SUCCESS);
+        }
     });
 });
 
@@ -37,10 +40,15 @@ app.post("/wanted/games", function (req, res) {
 });
 
 app.put("/wanted/games", function (req, res) {
-    //console.log(req.body._id);
-    wanted_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
-        if (!err)
-            res.json(CODE.SUCCESS);
+
+    console.log(req.body.name);
+
+    wanted_db.update({name: req.body.name}, req.body, function (err, newDoc) {
+        if (!err) {
+            res.json(CODE.SUCCESS_PUT);
+        } else {
+            console.error(err);
+        }
     });
 });
 

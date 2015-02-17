@@ -35,9 +35,10 @@ div(ng-controller="WantedCtrl")
             ul.list
                 li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames")
                     .list-primary-tile
+                        img.list-primary-tile__img(src="{{game.media.thumbnails[0]}}")
 
                     .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}})
-                        p info : {{game.developer}} {{game.genre}}{{game.platform}} {{game.score}}
+                        p {{game.developers}}, {{game.genres}}, {{game.platforms}}, {{game.score}}
 
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game.datagamer_id)",
