@@ -1,7 +1,6 @@
-div
-    form(name="configGorm")
-        //masonry.grid(load-images="false")
-        div#General(class="grid__col4 card mansonry-brick")
+form(name="configGorm")
+    .grid
+        #General.grid__col4.card
             div(class="p+")
                 button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                 strong.fs-headline.display-block General
@@ -19,9 +18,8 @@ div
                             div(ng-messages="configForm.config.general.port.$error", ng-show="configForm.config.general.port.$dirty")
                                 div(ng-messages="required") This is required !
 
-        //div(style="padding:15px")
 
-        div#Advanced(class="grid__col4 card mansonry-brick")
+        #Advanced.grid__col4.card
             div(class="p+")
                 strong.fs-headline.display-block Advanced
                 lx-text-field(label="API Key", disabled="true")
@@ -35,9 +33,7 @@ div
                 lx-text-field(label="Log directory")
                     input(type="text", ng-model="config.advanced.debug_directory", ng-blur="update(config)")
 
-        //div(style="padding:15px")
-
-        div#Update(class="grid__col4 card mansonry-brick")
+       #Update.grid__col4.card
             div(class="p+")
                 button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                 strong.fs-headline.display-block Update
@@ -51,9 +47,7 @@ div
                     label.checkbox__label(for="automatic") Automatic
                     span.checkbox__help Automatically update when update is available
 
-        //div(style="padding:15px")
-
-        div#Collection(class="grid__col4 card")
+       #Collection.grid__col4.card
             div(class="p+")
                 button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                 strong.fs-headline.display-block Collection
@@ -79,9 +73,7 @@ div
                     tooltip-position="bottom")
                         input(type="text" ng-model="config.collection.cron.minute", ng-blur="update(config)")
 
-        //div(style="padding:15px")
-
-        div#Search(class="grid__col4 card")
+       #Search.grid__col4.card
             div(class="p+")
                 button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                 strong.fs-headline.display-block Video game search
@@ -112,9 +104,7 @@ div
                     tooltip-position="bottom")
                         input(type="text" ng-model="config.search.cron.minute", ng-blur="update(config)")
 
-        //div(style="padding:15px")
-
-        div#Providers(class="grid__col4 card")
+       #Providers.grid__col4.card
             div(class="p+")
                 button.btn.btn--m.btn--black.btn--raised(lx-ripple, style="float:right", ng-click="thepiratebay_test()") Test
                 strong.fs-headline.display-block ThePirateBay providers
@@ -150,36 +140,32 @@ div
                     lx-text-field(label="Minimum leechers", lx-tooltip="Only keep trackers with this minimum leechers.", tooltip-position="bottom")
                         input(type="text" ng-model="config.thepiratebay.filters.leechers", ng-blur="update(config)")
 
-        //div(style="padding:15px")
+            //div(class="grid__col4 card")
+                div(class="p+")
+                    button.btn.btn--m.btn--orange.btn--raised(lx-ripple, style="float:right", ng-click="kickasstorrents_test()") Test
+                    strong.fs-headline.display-block KickAssTorrents providers
+                    a.fs-subhead.tc-black-2.display-block(ng-href="https://kickass.so/") KickAssTorrents
+                    strong.fs-subhead.tc-black-2.display-block Providers searching torrents for new releases
 
-        //div(class="grid__col4 card")
-            div(class="p+")
-                button.btn.btn--m.btn--orange.btn--raised(lx-ripple, style="float:right", ng-click="kickasstorrents_test()") Test
-                strong.fs-headline.display-block KickAssTorrents providers
-                a.fs-subhead.tc-black-2.display-block(ng-href="https://kickass.so/") KickAssTorrents
-                strong.fs-subhead.tc-black-2.display-block Providers searching torrents for new releases
+                    lx-text-field(label="Proxy server", lx-tooltip="Domain for requests, keep empty to let Datagamer pick.", tooltip-position="bottom")
+                        input(type="text" ng-model="config.kickasstorrents.proxy_server", ng-blur="update(config)")
+                    .grid__col4
+                        lx-text-field(label="Seed ratio", lx-tooltip="Will not be removed until this seed ratio is met.", tooltip-position="bottom")
+                            input(type="text" ng-model="config.kickasstorrents.seed_ratio", ng-blur="update(config)")
+                    .grid__col4
+                        lx-text-field(label="Seed time", lx-tooltip="Will not be removed until this seed time is met.", tooltip-position="bottom")
+                            input(type="text" ng-model="config.kickasstorrents.seed_time", ng-blur="update(config)")
+                    .grid__col4
+                        lx-text-field(label="Min score", lx-tooltip="Search releases with a minimum score.", tooltip-position="bottom")
+                            input(type="text" ng-model="config.kickasstorrents.min_score", ng-blur="update(config)")
+                div(class="p+")
+                    .grid__col12
+                        div.checkbox.mt
+                            input.checkbox__input(type="checkbox", id="verified", ng-model="config.kickasstorrents.verified", ng-change="update(config)")
+                            label.checkbox__label(for="verified") Only verified
+                            span.checkbox__help Only search for verfied video game releases.
 
-                lx-text-field(label="Proxy server", lx-tooltip="Domain for requests, keep empty to let Datagamer pick.", tooltip-position="bottom")
-                    input(type="text" ng-model="config.kickasstorrents.proxy_server", ng-blur="update(config)")
-                .grid__col4
-                    lx-text-field(label="Seed ratio", lx-tooltip="Will not be removed until this seed ratio is met.", tooltip-position="bottom")
-                        input(type="text" ng-model="config.kickasstorrents.seed_ratio", ng-blur="update(config)")
-                .grid__col4
-                    lx-text-field(label="Seed time", lx-tooltip="Will not be removed until this seed time is met.", tooltip-position="bottom")
-                        input(type="text" ng-model="config.kickasstorrents.seed_time", ng-blur="update(config)")
-                .grid__col4
-                    lx-text-field(label="Min score", lx-tooltip="Search releases with a minimum score.", tooltip-position="bottom")
-                        input(type="text" ng-model="config.kickasstorrents.min_score", ng-blur="update(config)")
-            div(class="p+")
-                .grid__col12
-                    div.checkbox.mt
-                        input.checkbox__input(type="checkbox", id="verified", ng-model="config.kickasstorrents.verified", ng-change="update(config)")
-                        label.checkbox__label(for="verified") Only verified
-                        span.checkbox__help Only search for verfied video game releases.
-
-        //div(style="padding:15px")
-
-        div#Transmission(class="grid__col4 card")
+       #Transmission.grid__col4.card
             div(class="p+")
                 button.btn.btn--m.btn--red.btn--raised(lx-ripple, style="float:right", ng-click="transmission_test()") Test
                 strong.fs-headline.display-block Transmission
@@ -220,9 +206,7 @@ div
                         label.checkbox__label(for="pause_torrent") Paused torrent
                         span.checkbox__help Add the torrent paused.
 
-        //div(style="padding:15px")
-
-        div#Renamer(class="grid__col4 card")
+       #Renamer.grid__col4.card
             div(class="p+")
                 button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", lx-tooltip="Restart the application", tooltip-position="left") Restart
                 strong.fs-headline.display-block Renamer

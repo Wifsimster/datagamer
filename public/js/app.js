@@ -250,7 +250,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                         LxNotificationService.error(err);
                     });
 
-                LxNotificationService.notify('Wanted game deleted !', 'delete', 'grey');
+                LxNotificationService.notify('Wanted game deleted !', 'delete', false, 'grey');
             }).
             error(function (err) {
                 LxNotificationService.error(err);
