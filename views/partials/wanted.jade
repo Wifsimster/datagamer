@@ -41,8 +41,8 @@ div
                         img.list-primary-tile__img(ng-show="game.media.thumbnails[0]" ng-src="{{ game.media.thumbnails[0] }}")
                         img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://www.metalcuttingtools.eu/sites/default/files/default_images/thumbnail-default.jpg")
 
-                    .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}})
-                        //p {{game.developers}}, {{game.genres}}, {{game.platforms}}, {{game.score}}
+                    .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}}) - {{game.metacritic.score}}
+                        p {{game.developers[0].name}}, {{game.genres[0].name}}, {{game.platforms[0].name}}, {{game.editors[0].name}}
 
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game.datagamer_id)",
