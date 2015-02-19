@@ -263,9 +263,11 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
         $http.get('/wanted/games/' + id).
             success(function (result) {
 
-                LxNotificationService.info('Searching new torrents for ' + result.game.name + '...');
+                var selectedGame = result.game;
 
-                $http.get('/thepiratebay/search/' + result.game.name).
+                LxNotificationService.info('Searching new torrents for ' + selectedGame.name + '...');
+
+                $http.get('/thepiratebay/search/' + selectedGame.name).
                     success(function (result) {
 
                         if (result.code == 200) {
@@ -276,6 +278,25 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                                     if (res) {
                                         //console.log('Torrent added to Transmission !');
                                         LxNotificationService.success(res.name + ' added to Transmission !');
+
+                                        selectedGame.snatched = true;
+
+                                        $http.put('/wanted/games', selectedGame).
+                                            success(function () {
+                                                console.log('Game snatched !');
+
+                                                // If ok, refresh wanted games list
+                                                $http.get('/wanted/games').
+                                                    success(function (result) {
+                                                        $scope.wantedGames = result;
+                                                    }).
+                                                    error(function (err) {
+                                                        LxNotificationService.error(err);
+                                                    });
+                                            }).
+                                            error(function (err) {
+                                                console.error(err);
+                                            });
                                     } else {
                                         LxNotificationService.error('No torrent added to Transmission !');
                                     }
@@ -289,7 +310,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
                         }
                         if (result.code == 404) {
-                            LxNotificationService.error('No torrent found !');
+                            LxNotificationService.error('No torrent found ' + selectedGame.name + ' !');
                         }
                     }).
                     error(function (err) {

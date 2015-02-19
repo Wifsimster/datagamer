@@ -167,8 +167,9 @@ md-tabs-ink-bar {
   display: block;
   padding: 0 16px 0 32px;
   text-transform: none;
-}tv
+}
 
+tv
 .md-button-toggle .md-toggle-icon {
   background-size: 100% auto;
   display: inline-block;
@@ -189,11 +190,28 @@ md-tabs-ink-bar {
   -webkit-transform: rotate(180deg);
 }
 
-@media screen and (min-width: 1024px)
+@media screen and (min-width: 1024px) {
   .grid__col4 {
     margin-right: 1.57%;
   }
 
-.card {
-  margin-bottom : 10px;
+  .card {
+    margin-bottom: 10px;
+  }
 }
+
+/* Bootstrap labels */
+.label
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+
+.label-warning
+  background-color: #f0ad4e;

@@ -37,6 +37,9 @@ div
 
             ul.list
                 li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames")
+
+                    span.label.label-warning(ng-show="game.snatched" style="float:right; margin-top:15px;") Snatched !
+
                     .list-primary-tile
                         img.list-primary-tile__img(ng-show="game.media.thumbnails[0]" ng-src="{{ game.media.thumbnails[0] }}")
                         img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://niesr.ac.uk/sites/default/files/styles/large/adaptive-image/public/default_images/thumbnail-default_2_0.jpg?itok=zti20ldd")
