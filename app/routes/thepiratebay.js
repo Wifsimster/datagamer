@@ -2,6 +2,8 @@ var tpb = require('thepiratebay');
 var fs = require('fs');
 var ini = require('ini');
 
+var CODE = require('../../app/enums/codes');
+
 app.get("/thepiratebay/test", function (req, res) {
 
     // Open config.ini
@@ -40,89 +42,95 @@ app.get("/thepiratebay/search/:name", function (req, res) {
     // Search a tracker in game category
     tpb.search(name, {category: '400'})
         .then(function (torrents) {
+            if (torrents.length > 0) {
+                // The torrent send to transmission if it passed the filter
+                var favorite_torrent = null;
 
-            // The torrent send to transmission if it passed the filter
-            var favorite_torrent = null;
+                for (var i = 0; i < torrents.length; i++) {
 
-            for (var i = 0; i < torrents.length; i++) {
+                    var torrent = torrents[i];
 
-                var torrent = torrents[i];
+                    // Set the favorite torrent as current before filters
+                    favorite_torrent = torrent;
 
-                // Set the favorite torrent as current before filters
-                favorite_torrent = torrent;
+                    // First, only take PC game tracker
+                    if (torrent.subcategory.id == '401') {
 
-                // First, only take PC game tracker
-                if (torrent.subcategory.id == '401') {
+                        console.log("TPB - Torrent subject to be taken : " + torrent.name);
 
-                    console.log("TPB - Torrent subject to be taken : " + torrent.name);
-
-                    // Filter white list of words
-                    if (config.thepiratebay.filters.favorite_words) {
-                        var words = config.thepiratebay.filters.favorite_words.split(',');
-                        for (var i = 0; i < words.length; i++) {
-                            // TODO : Check in the torrent name if the word exist, if so keep this torrent and go on
+                        // Filter white list of words
+                        if (config.thepiratebay.filters.favorite_words) {
+                            var words = config.thepiratebay.filters.favorite_words.split(',');
+                            for (var i = 0; i < words.length; i++) {
+                                // TODO : Check in the torrent name if the word exist, if so keep this torrent and go on
+                            }
                         }
-                    }
 
-                    // Filter black list of words
-                    if (config.thepiratebay.filters.forbidden_words) {
-                        var words = config.thepiratebay.filters.forbidden_words.split(',');
-                        for (var i = 0; i < words.length; i++) {
-                            // TODO : Check in the torrent name if the word exist, if so reject this torrent and go to the next one
+                        // Filter black list of words
+                        if (config.thepiratebay.filters.forbidden_words) {
+                            var words = config.thepiratebay.filters.forbidden_words.split(',');
+                            for (var i = 0; i < words.length; i++) {
+                                // TODO : Check in the torrent name if the word exist, if so reject this torrent and go to the next one
+                            }
                         }
-                    }
 
-                    // Extract GiB from size
-                    torrent.size = parseInt(torrent.size.split('GiB'));
+                        // Extract GiB from size
+                        torrent.size = parseInt(torrent.size.split('GiB'));
 
-                    // Filter size : If torrent size <= config size reject the torrent
-                    if (torrent.size <= config.thepiratebay.filters.size_min) {
-                        console.log("TPB -      Torrent reject : Size too small (" + torrent.size + ")");
-                        favorite_torrent = null;
-                    }
-
-                    // Filter seeders : If torrent seeders <= config seeders reject the torrent
-                    if (torrent.seeders <= config.thepiratebay.filters.seeders) {
-                        console.log("TPB -      Torrent reject : Seeders too small (" + torrent.seeders + ")");
-                        favorite_torrent = null;
-                    }
-
-                    // Filter leechers : If torrent leechers <= config leechers reject the torrent
-                    if (torrent.leechers <= config.thepiratebay.filters.leechers) {
-                        console.log("TPB -      Torrent reject : Leechers too small (" + torrent.leechers + ")");
-                        favorite_torrent = null;
-                    }
-
-                    // Filter uploadDate : 12-09 2014
-                    if (config.thepiratebay.filters.uploadDate) {
-                        var torrentDate = new Date();
-                        var torrentDateArray = torrent.uploadDate.split(" ").split("-");
-                        torrentDate.setFullYear(torrentDateArray[2], torrentDateArray[1], torrentDateArray[0]);
-
-                        var filterDate = Date.parse(config.thepiratebay.filters.uploadDate);
-
-                        console.log("TPB -      Check date parsing :");
-                        console.log("TPB -          Torent : " + torrent.uploadDate + " = " + torrentDate.getDay() + torrentDate.getMonth() + torrentDate.getFullYear());
-                        console.log("TPB -          Filter : " + filterDate);
-
-                        // Compare millisconds
-                        if (torrent.uploadDate.getTime() < filterDate) {
+                        // Filter size : If torrent size <= config size reject the torrent
+                        if (torrent.size <= config.thepiratebay.filters.size_min) {
+                            console.log("TPB -      Torrent reject : Size too small (" + torrent.size + ")");
                             favorite_torrent = null;
                         }
-                    }
 
-                    // If favorite torrent is not null send him
-                    if (favorite_torrent) {
-                        break;
+                        // Filter seeders : If torrent seeders <= config seeders reject the torrent
+                        if (torrent.seeders <= config.thepiratebay.filters.seeders) {
+                            console.log("TPB -      Torrent reject : Seeders too small (" + torrent.seeders + ")");
+                            favorite_torrent = null;
+                        }
+
+                        // Filter leechers : If torrent leechers <= config leechers reject the torrent
+                        if (torrent.leechers <= config.thepiratebay.filters.leechers) {
+                            console.log("TPB -      Torrent reject : Leechers too small (" + torrent.leechers + ")");
+                            favorite_torrent = null;
+                        }
+
+                        // Filter uploadDate : 12-09 2014
+                        if (config.thepiratebay.filters.uploadDate) {
+                            var torrentDate = new Date();
+                            var torrentDateArray = torrent.uploadDate.split(" ").split("-");
+                            torrentDate.setFullYear(torrentDateArray[2], torrentDateArray[1], torrentDateArray[0]);
+
+                            var filterDate = Date.parse(config.thepiratebay.filters.uploadDate);
+
+                            console.log("TPB -      Check date parsing :");
+                            console.log("TPB -          Torent : " + torrent.uploadDate + " = " + torrentDate.getDay() + torrentDate.getMonth() + torrentDate.getFullYear());
+                            console.log("TPB -          Filter : " + filterDate);
+
+                            // Compare millisconds
+                            if (torrent.uploadDate.getTime() < filterDate) {
+                                favorite_torrent = null;
+                            }
+                        }
+
+                        // If favorite torrent is not null send him
+                        if (favorite_torrent) {
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (favorite_torrent) {
-                console.log("TPB - Return torrent is : " + favorite_torrent.name);
-                res.send(favorite_torrent);
+                if (favorite_torrent) {
+                    console.log("TPB - Return torrent is : " + favorite_torrent.name);
+                    CODE.SUCCESS.torrent = favorite_torrent;
+                    res.send(CODE.SUCCESS);
+                } else {
+                    console.log('TPB - No torrent found for ' + name + ' !');
+                    res.send(CODE.NOT_FOUND);
+                }
             } else {
-                res.send(null);
+                console.log('TPB - No torrent found for ' + name + ' !');
+                res.send(CODE.NOT_FOUND);
             }
         })
         .catch(function () {
