@@ -2,6 +2,8 @@ var Transmission = require('transmission');
 var fs = require('fs');
 var ini = require('ini');
 
+var CODE = require('../../app/enums/codes');
+
 // Open config.ini
 var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
@@ -78,7 +80,7 @@ app.get("/transmission/test", function (req, res) {
 });
 
 // Add a new tracker to Transmission
-app.post("/transmission/add/", function (req, res) {
+app.post("/transmission/add", function (req, res) {
 
     var url = req.body.url;
 
@@ -87,10 +89,11 @@ app.post("/transmission/add/", function (req, res) {
     transmission.addUrl(url, function (err, result) {
         if (err) {
             console.error(err);
-            res.status(500).send(err);
+            res.status(500).send(CODE.BAD_REQUEST);
         } else {
             console.log('Transmission - New torrent added - ID: ' + result.name);
-            res.send(result);
+            CODE.SUCCESS.torrent = result;
+            res.send(CODE.SUCCESS);
         }
     });
 });
