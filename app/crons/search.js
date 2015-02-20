@@ -3,84 +3,87 @@ var ini = require('ini');
 var request = require('request');
 var CronJob = require('cron').CronJob;
 
-// Open conf file
-var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
-// Search cron
-if (config.search.scan_auto) {
+module.exports.init = function () {
 
-    // CRON conf
-    var search_cron = config.search.cron.minute + ' ' + config.search.cron.hour + ' ' + config.search.cron.day;
-    console.log("-- Search : " + search_cron);
+    // Open conf file
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
-    new CronJob('/45 ' + search_cron + ' * * *', function () {
-        console.log('CRON - Search :');
+    // Search cron
+    if (config.search.scan_auto) {
 
-        // Get wanted games list
-        request('http://localhost:' + config.general.port + '/wanted/games', function (error, response, body) {
-            if (!error && response.statusCode == 200) {
+        // CRON conf
+        var search_cron = config.search.cron.minute + ' ' + config.search.cron.hour + ' ' + config.search.cron.day;
+        console.log("-- Search : " + search_cron);
 
-                var games = JSON.parse(body);
+        new CronJob('/45 ' + search_cron + ' * * *', function () {
+            console.log('CRON - Search :');
 
-                for (var i = 0; i < games.length; i++) {
+            // Get wanted games list
+            request('http://localhost:' + config.general.port + '/wanted/games', function (error, response, body) {
+                if (!error && response.statusCode == 200) {
 
-                    var game = games[i];
+                    var games = JSON.parse(body);
 
-                    console.log("-- TPB : Searching for " + game.name + "...");
+                    for (var i = 0; i < games.length; i++) {
 
-                    request('http://localhost:' + config.general.port + '/thepiratebay/search/' + game.name, function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
+                        var game = games[i];
 
-                            if (body) {
+                        console.log("-- TPB : Searching for " + game.name + "...");
 
-                                var result = JSON.parse(body);
+                        request('http://localhost:' + config.general.port + '/thepiratebay/search/' + game.name, function (error, response, body) {
+                            if (!error && response.statusCode == 200) {
 
-                                if (result.code == 200) {
-                                    var torrent = result.torrent;
+                                if (body) {
 
-                                    console.log("-- TPB : Found one tracker with the current filters : " + torrent.name);
+                                    var result = JSON.parse(body);
 
-                                    // If a tracker was found, add it to Transmission
-                                    request.post('http://localhost:' + config.general.port + '/transmission/add', {form: {url: torrent.magnetLink}}, function (error, response, body) {
+                                    if (result.code == 200) {
+                                        var torrent = result.torrent;
 
-                                        console.error(error);
-                                        console.log(body);
+                                        console.log("-- TPB : Found one tracker with the current filters : " + torrent.name);
 
-                                        if (!error) {
+                                        // If a tracker was found, add it to Transmission
+                                        request.post('http://localhost:' + config.general.port + '/transmission/add', {form: {url: torrent.magnetLink}}, function (error, response, body) {
+
+                                            console.error(error);
                                             console.log(body);
-                                            var result = JSON.parse(body);
-                                            console.log(result);
 
-                                            if (!error && result.statusCode == 200) {
-                                                console.log("-- Tracker added to Transmission !");
+                                            if (!error) {
+                                                console.log(body);
+                                                var result = JSON.parse(body);
+                                                console.log(result);
 
-                                                // Update wanted game info that the game was snatched
-                                                game.snatched = true;
-                                                request.put('http://localhost:' + config.general.port + '/wanted/game', {form: game}, function (error, response, body) {
-                                                    if (!error && response.statusCode == 202) {
-                                                        console.log(response);
-                                                        // Update wanted game info that the game was snatched
+                                                if (!error && result.statusCode == 200) {
+                                                    console.log("-- Tracker added to Transmission !");
 
-                                                    } else {
-                                                        console.error(error);
-                                                    }
-                                                });
+                                                    // Update wanted game info that the game was snatched
+                                                    game.snatched = true;
+                                                    request.put('http://localhost:' + config.general.port + '/wanted/game', {form: game}, function (error, response, body) {
+                                                        if (!error && response.statusCode == 202) {
+                                                            console.log(response);
+                                                            // Update wanted game info that the game was snatched
+
+                                                        } else {
+                                                            console.error(error);
+                                                        }
+                                                    });
+                                                } else {
+                                                    console.error(error);
+                                                }
                                             } else {
                                                 console.error(error);
                                             }
-                                        } else {
-                                            console.error(error);
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
+                            } else {
+                                console.error(error);
                             }
-                        } else {
-                            console.error(error);
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-        });
-    }, null, true, "Europe/Paris");
+            });
+        }, null, true, "Europe/Paris");
+    }
 }
-

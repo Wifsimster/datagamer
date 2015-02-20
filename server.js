@@ -24,6 +24,7 @@ app.use(bodyParser.json());
 
 // Declare routes to use
 require('./app/routes/collection.js');
+require('./app/routes/cron.js');
 require('./app/routes/datagamer.js');
 require('./app/routes/generic.js');
 require('./app/routes/transmission.js');
@@ -44,17 +45,22 @@ console.log('Datagamer is running on port ' + port);
 // -----------------------------------------------------
 // ----                     CRON                    ----
 // -----------------------------------------------------
+
+// Inject CRONs
+var search = require('./app/crons/search.js');
+
+
 // Open conf file
 var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
 if (config.search.scan_auto || config.collection.scan_auto || config.renamer.scan_auto || config.update.scan_auto) {
     console.log('Initialazing CRON :');
-
-    // Inject CRONs
-    require('./app/crons/search.js');
     require('./app/crons/collection.js');
     require('./app/crons/renamer.js');
     require('./app/crons/update.js');
+
+    search.init();
+
 } else {
     console.log('No CRON activated.');
 }

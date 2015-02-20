@@ -106,6 +106,17 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
         }
     }
 
+    $scope.refreshSearchCron = function() {
+        $http.get('/cron/search').
+            success(function () {
+                LxNotificationService.success('Search CRON restart !');
+            }).
+            error(function (err) {
+                console.error(err);
+                LxNotificationService.error('Something is wrong with search configuration !');
+            });
+    }
+
     $scope.thepiratebay_test = function () {
         LxProgressService.linear.show('#5fa2db', '#thepiratebay_progress');
 
