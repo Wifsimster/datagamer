@@ -12,6 +12,7 @@
     "nedb": "^1.1.1",
     "nib": "^1.1.0",
     "node-uuid": "^1.4.2",
+    "python-shell": "0.0.3",
     "request": "^2.53.0",
     "stylus": "^0.49.3",
     "thepiratebay": "^0.1.2",

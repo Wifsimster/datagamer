@@ -288,7 +288,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                                 success(function (res) {
                                     if (res) {
                                         //console.log('Torrent added to Transmission !');
-                                        LxNotificationService.success(res.name + ' added to Transmission !');
+                                        LxNotificationService.success(res.game.name + ' added to Transmission !');
 
                                         selectedGame.snatched = true;
 
@@ -345,6 +345,9 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
                     // Save the datagamer id
                     res.game.datagamer_id = res.game._id;
+
+                    // Reset snatched info
+                    res.game.snatched = false;
 
                     // Update wanted game info
                     $http.put('/wanted/games', res.game)

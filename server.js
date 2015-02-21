@@ -59,7 +59,7 @@ if (config.search.scan_auto || config.collection.scan_auto || config.renamer.sca
     require('./app/crons/renamer.js');
     require('./app/crons/update.js');
 
-    search.init();
+    search.start();
 
 } else {
     console.log('No CRON activated.');

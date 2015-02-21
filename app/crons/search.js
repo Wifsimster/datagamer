@@ -3,8 +3,12 @@ var ini = require('ini');
 var request = require('request');
 var CronJob = require('cron').CronJob;
 
+// Nedb - Embedded database package
+var Datastore = require('nedb');
+var wanted_db = new Datastore('wanted.nedb');
 
-module.exports.init = function () {
+
+module.exports.start = function () {
 
     // Open conf file
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
@@ -14,10 +18,9 @@ module.exports.init = function () {
 
         // CRON conf
         var search_cron = config.search.cron.minute + ' ' + config.search.cron.hour + ' ' + config.search.cron.day;
-        console.log("-- Search : " + search_cron);
+        console.log("CRON Search - " + search_cron);
 
         new CronJob('/45 ' + search_cron + ' * * *', function () {
-            console.log('CRON - Search :');
 
             // Get wanted games list
             request('http://localhost:' + config.general.port + '/wanted/games', function (error, response, body) {
@@ -29,58 +32,62 @@ module.exports.init = function () {
 
                         var game = games[i];
 
-                        console.log("-- TPB : Searching for " + game.name + "...");
+                        // If game is not already added to Transmission
+                        if(!game.snatched) {
 
-                        request('http://localhost:' + config.general.port + '/thepiratebay/search/' + game.name, function (error, response, body) {
-                            if (!error && response.statusCode == 200) {
+                            console.log("CRON Search - Searching for " + game.name + "...");
 
-                                if (body) {
+                            request('http://localhost:' + config.general.port + '/thepiratebay/search/' + game.name, function (error, response, body) {
+                                if (!error && response.statusCode == 200) {
 
-                                    var result = JSON.parse(body);
+                                    if (body) {
 
-                                    if (result.code == 200) {
-                                        var torrent = result.torrent;
+                                        var result = JSON.parse(body);
 
-                                        console.log("-- TPB : Found one tracker with the current filters : " + torrent.name);
+                                        if (result.code == 200) {
+                                            var torrent = result.torrent;
 
-                                        // If a tracker was found, add it to Transmission
-                                        request.post('http://localhost:' + config.general.port + '/transmission/add', {form: {url: torrent.magnetLink}}, function (error, response, body) {
+                                            console.log("CRON Search - Found one tracker with the current filters : " + torrent.name);
 
-                                            console.error(error);
-                                            console.log(body);
+                                            // If a tracker was found, add it to Transmission
+                                            request.post('http://localhost:' + config.general.port + '/transmission/add', {form: {url: torrent.magnetLink}}, function (error, response, body) {
 
-                                            if (!error) {
-                                                console.log(body);
-                                                var result = JSON.parse(body);
-                                                console.log(result);
+                                                if (!error) {
 
-                                                if (!error && result.statusCode == 200) {
-                                                    console.log("-- Tracker added to Transmission !");
+                                                    var result = JSON.parse(body);
 
-                                                    // Update wanted game info that the game was snatched
-                                                    game.snatched = true;
-                                                    request.put('http://localhost:' + config.general.port + '/wanted/game', {form: game}, function (error, response, body) {
-                                                        if (!error && response.statusCode == 202) {
-                                                            console.log(response);
-                                                            // Update wanted game info that the game was snatched
+                                                    if (result.code == 200) {
+                                                        console.log("CRON Search - Torrent added to Transmission : " + result.torrent.name);
 
-                                                        } else {
-                                                            console.error(error);
-                                                        }
-                                                    });
+                                                        wanted_db.loadDatabase();
+                                                        console.log('Updating wanted game info ' + game.name + '...');
+
+                                                        // Update wanted game info
+                                                        game.snatched = true;
+                                                        wanted_db.update({name: game.name}, game, function (err, newDoc) {
+                                                            if (!err) {
+                                                                console.log(game.name + ' set as snatched !');
+                                                            } else {
+                                                                console.error(err);
+                                                            }
+                                                        });
+
+                                                    } else {
+                                                        console.error(error);
+                                                    }
                                                 } else {
                                                     console.error(error);
                                                 }
-                                            } else {
-                                                console.error(error);
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
+                                } else {
+                                    console.error(error);
                                 }
-                            } else {
-                                console.error(error);
-                            }
-                        });
+                            });
+                        } else {
+                            console.log("No wanted game to search !");
+                        }
                     }
                 }
             });

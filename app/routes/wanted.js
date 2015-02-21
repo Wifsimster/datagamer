@@ -1,12 +1,14 @@
 // Nedb - Embedded database package
 var Datastore = require('nedb');
 var wanted_db = new Datastore('wanted.nedb');
-wanted_db.loadDatabase();
 
 var CODE = require('../../app/enums/codes');
 
 app.get("/wanted/games", function (req, res) {
-    //console.log("Getting wanted video games...");
+
+    wanted_db.loadDatabase();
+    console.log("Getting wanted video games...");
+
     wanted_db.find({}, function (err, games) {
         res.send(games)
     });
@@ -14,6 +16,7 @@ app.get("/wanted/games", function (req, res) {
 
 app.get("/wanted/games/:id", function (req, res) {
 
+    wanted_db.loadDatabase();
     var id = req.params.id;
 
     wanted_db.findOne({_id: id}, function (err, game) {
@@ -25,6 +28,7 @@ app.get("/wanted/games/:id", function (req, res) {
 });
 
 app.post("/wanted/games", function (req, res) {
+    wanted_db.loadDatabase();
     wanted_db.find({name: req.body.name}, function (err, games) {
 
         if (games.length == 0) {
@@ -42,6 +46,7 @@ app.post("/wanted/games", function (req, res) {
 
 app.put("/wanted/games", function (req, res) {
 
+    wanted_db.loadDatabase();
     console.log(req.body.name);
 
     wanted_db.update({name: req.body.name}, req.body, function (err, newDoc) {
@@ -54,6 +59,7 @@ app.put("/wanted/games", function (req, res) {
 });
 
 app.delete("/wanted/games/:id", function (req, res) {
+    wanted_db.loadDatabase();
     var id = req.params.id;
 
     wanted_db.remove({_id: id}, {}, function (err) {
