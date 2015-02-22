@@ -1,4 +1,4 @@
-var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute']);
+var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute', 'react']);
 
 // App configuration
 app.config(['$routeProvider', '$locationProvider',
@@ -200,6 +200,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                 $scope.ajax.loading = true;
                 $http.get("/datagamer/search/" + escape(newFilter)).
                     success(function (data) {
+                        console.log('Datagmer response !');
                         $scope.ajax.list = data.games;
                         $scope.ajax.loading = false;
                     }).

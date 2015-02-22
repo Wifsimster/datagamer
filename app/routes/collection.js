@@ -4,91 +4,133 @@ var request = require('request');
 
 // Nedb - Embedded database package
 var Datastore = require('nedb');
-var collection_db = new Datastore({filename: 'collection.nedb', autoload: true});
-
+var collection_db = new Datastore('collection.nedb');
 
 app.get("/collection/games/scan", function (req, res) {
 
+    collection_db.loadDatabase();
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
     // TODO : Need to detect network or not
 
-    console.log("\\" + config.collection.directory);
+    console.log("Collection - Scan \\" + config.collection.directory);
 
     var files = getFiles("\\" + config.collection.directory);
 
-    for (var i = 0; i < files.length; i++) {
+    addGamesRecursive(0, config, files, function () {
+        console.log('Scan ended !')
+        res.send();
+    });
+
+});
+
+// Recursive loop with callback to process correctly each filename
+function addGamesRecursive(i, config, files, callback) {
+    if (i < files.length) {
+
+        var file = files[i];
 
         var regex = /.*\.((iso)$)/;
 
         // Detect a file ended by .iso
-        if (files[i].match(regex)) {
-            //console.log(files[i]);
-            console.log("Potential video game file : " + files[i]);
+        if (file.match(regex)) {
+            console.log("Collection - Potential video game file : " + file);
 
             // Extract filename (no path, no format, no dot)
-            var filename = files[i].split(/(\\|\/)/g).pop();
+            var filename = file.split(/(\\|\/)/g).pop();
             filename = filename.split('.').reverse().pop();
 
-            console.log("Searching a game for : " + filename);
+            var game = {};
+            game.name = filename;
 
-            request('http://192.168.0.21:8084/api/games/by/name/' + escape(filename), {
-                    headers: {
-                        "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
-                    }
-                }, function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
+            collection_db.findOne({name: filename}, function (err, result) {
 
-                        var obj = JSON.parse(body);
+                if (!err) {
+                    if (result) {
+                        console.log('Collection - ' + result.name + ' already exist !');
+                        addGamesRecursive(i + 1, config, files, callback);
+                    } else {
+                        // First of all add the game in the collection db
+                        collection_db.insert(game, function (err, newDoc) {
+                            if (!err) {
+                                console.log("Collection - Add " + filename + " to collection database !");
+                                console.log("Collection - Searching a game for : " + filename);
 
-                        if (obj.games.length > 0) {
+                                // Search current video game on Datagamer
+                                request('http://localhost:' + config.general.port + '/datagamer/search/' + filename, {
+                                        headers: {
+                                            "apiKey": config.search.datagamer.apikey
+                                        }
+                                    }, function (error, response, body) {
+                                        if (!error && response.statusCode == 200) {
 
-                            // First game found
-                            var game = obj.games[0];
+                                            var result = JSON.parse(body);
 
-                            console.log(obj);
-                            console.log(game);
+                                            if (result.code == 200) {
 
-                            console.log("Find '" + game.name + "' game !");
+                                                // First game found
+                                                var game = result.games[0];
 
-                            collection_db.findOne({name: game.name}, function (err, newDoc) {
-                                if (!err) {
-                                    console.log(newDoc);
-                                    if (newDoc) {
-                                        console.log("Game already in collection, updating the game info...");
-                                        collection_db.update({name: newDoc.name}, game, {}, function (err, newDoc) {
-                                            if (!err)
-                                                res.json({message: "OK"});
-                                        });
+                                                console.log("Collection - Find '" + game.name + "' game !");
 
-                                    } else {
-                                        console.log("Game added to collection !");
+                                                collection_db.findOne({name: game.name}, function (err, newDoc) {
+                                                    if (!err) {
+                                                        if (newDoc) {
+                                                            console.log("Collection - Game already in collection, updating the game info...");
+                                                            collection_db.update({name: newDoc.name}, game, {}, function (err, newDoc) {
+                                                                //if (!err)
+                                                                //res.json({message: "OK"});
+                                                            });
+                                                        } else {
+                                                            console.log("Collection - Game added to collection !");
 
-                                        // Set the game as downloaded
-                                        game.downloaded = true;
+                                                            // Set the game as downloaded
+                                                            game.downloaded = true;
 
-                                        collection_db.insert(game, function (err, newDoc) {
-                                            if (!err)
-                                                res.json({message: "OK"});
-                                        });
+                                                            collection_db.insert(game, function (err, newDoc) {
+                                                                //if (!err)
+                                                                //res.json({message: "OK"});
+                                                            });
+                                                        }
+                                                    } else {
+                                                        console.error(err);
+                                                        addGamesRecursive(i + 1, config, files, callback);
+                                                    }
+                                                });
+                                            } else {
+                                                console.info("Collection - " + filename + " not found in Datagamer database !");
+                                                console.info("Collection - Need to propose a near game names...");
+
+                                                addGamesRecursive(i + 1, config, files, callback);
+                                            }
+                                        } else {
+                                            console.error("Collection - " + error);
+                                            addGamesRecursive(i + 1, config, files, callback);
+                                        }
                                     }
-                                }
-                            });
-                        } else {
-                            console.log("No game found with this name in Datagamer !");
-
-                            // If no game found with a potential game, added it to Datagamer through the Metacritic API.
-
-                        }
+                                );
+                            } else {
+                                console.error(err);
+                                addGamesRecursive(i + 1, config, files, callback);
+                            }
+                        });
                     }
+                } else {
+                    console.error(err);
+                    addGamesRecursive(i + 1, config, files, callback);
                 }
-            )
-            ;
+            });
+        } else {
+            //console.log('Collection - ' + file + ' is not an .iso, next !');
+            addGamesRecursive(i + 1, config, files, callback);
         }
+    } else {
+        callback();
     }
-});
+}
 
 app.get("/collection/games", function (req, res) {
+    collection_db.loadDatabase();
     //console.log("Getting collection video games...");
     collection_db.find({}, function (err, games) {
         res.send(games)
@@ -96,6 +138,7 @@ app.get("/collection/games", function (req, res) {
 });
 
 app.post("/collection/games", function (req, res) {
+    collection_db.loadDatabase();
     //console.log(req.body);
     collection_db.insert(req.body, function (err, newDoc) {
         if (!err)
@@ -104,6 +147,7 @@ app.post("/collection/games", function (req, res) {
 });
 
 app.put("/collection/games", function (req, res) {
+    collection_db.loadDatabase();
     //console.log(req.body._id);
     collection_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
         if (!err)
@@ -112,6 +156,7 @@ app.put("/collection/games", function (req, res) {
 });
 
 app.delete("/collection/games/:id", function (req, res) {
+    collection_db.loadDatabase();
     var id = req.params.id;
 
     collection_db.remove({_id: id}, {}, function (err) {

@@ -12,8 +12,13 @@ div
             ul.list
                 li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games")
                     .list-primary-tile
+                        img.list-primary-tile__img(ng-show="game.media.thumbnails[0]" ng-src="{{ game.media.thumbnails[0] }}")
+                        img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://niesr.ac.uk/sites/default/files/styles/large/adaptive-image/public/default_images/thumbnail-default_2_0.jpg?itok=zti20ldd")
 
-                    .list-content-tile.list-content-tile--one-line {{ game.Title }} - {{ game.Year }}
+                    .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}})
+                        p(ng-show="game.genres[0].name || game.metacritic.score") {{game.genres[0].name}} - {{game.metacritic.score}}
+                        p(ng-show="game.developers[0].name || game.editors[0].name") {{game.developers[0].name}}, {{game.editors[0].name}}
+
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteGame(game._id)",
                         lx-tooltip="Delete a game from collection database", tooltip-position="right")

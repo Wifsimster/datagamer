@@ -14,15 +14,25 @@ app.get("/datagamer/search/:name", function (req, res) {
 
     console.log("Datagamer - Searching game : " + name);
 
-    request('http://' + config.search.datagamer.url + '/api/games/by/name/' + escape(name), {
+    request('http://' + config.search.datagamer.url + '/api/games/by/name/' + name, {
         headers: {
             "apiKey": config.search.datagamer.apikey
         }
     }, function (error, response, body) {
         if (!error) {
-            res.send(JSON.parse(body));
+            var result = JSON.parse(body);
+
+            if (result.code == CODE.SUCCESS.code) {
+                console.log('Datagamer - Games found : ' + result.games);
+                CODE.SUCCESS.games = result.games;
+                res.send(CODE.SUCCESS);
+            } else {
+                console.log('Datagamer - No game found for : ' + name);
+                res.send(CODE.NOT_FOUND);
+            }
         } else {
             console.error(error);
+            res.send(CODE.SERVER_ERROR);
         }
     })
 });
