@@ -106,7 +106,7 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
         }
     }
 
-    $scope.refreshSearchCron = function() {
+    $scope.refreshSearchCron = function () {
         $http.get('/cron/search').
             success(function () {
                 LxNotificationService.success('Search CRON restart !');
@@ -423,6 +423,34 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                 console.error(err);
                 LxProgressService.linear.hide();
                 LxNotificationService.error('Scan ended with error ! Need to check your conf.');
+            });
+    };
+
+    $scope.postProcessing = function () {
+        LxProgressService.linear.show('#5fa2db', '#scan_progress');
+        LxNotificationService.info('Post-processing started...');
+
+        $http.get('/collection/games/postprocessing').
+            success(function (result) {
+                LxProgressService.linear.hide();
+
+                // Refresh game list
+                $http.get('/collection/games').
+                    success(function (result) {
+                        console.log(result);
+
+                        $scope.postProcessingResult = result;
+                        LxNotificationService.success('Post-processing ended. Collection updated !');
+                    }).
+                    error(function (err) {
+                        console.error(err);
+                        LxNotificationService.error('Post-processing ended with error !');
+                    });
+            }).
+            error(function (err) {
+                console.error(err);
+                LxProgressService.linear.hide();
+                LxNotificationService.error('Post-processing ended with error ! Need to check your conf.');
             });
     };
 

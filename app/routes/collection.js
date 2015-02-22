@@ -129,6 +129,38 @@ function addGamesRecursive(i, config, files, callback) {
     }
 }
 
+app.get("/collection/games/postprocessing", function (req, res) {
+
+    collection_db.loadDatabase();
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+    console.log("Collection - Scan \\" + config.collection.directory);
+    var files = getFiles("\\" + config.collection.directory);
+
+    postProcessingGame(0, config, files, function () {
+        console.log('Post-processing ended !');
+        res.send();
+    });
+
+});
+
+// Recursive loop with callback to post-process files naming
+function postProcessingGame(i, config, files, callback) {
+    if (i < files.length) {
+
+        var file = files[i];
+
+        var regex = /.*\.((iso)$)/;
+
+        // Detect a file ended by .iso
+        if (file.match(regex)) {
+            postProcessingGame(i + 1, config, files, callback);
+        }
+    } else {
+        callback();
+    }
+}
+
 app.get("/collection/games", function (req, res) {
     collection_db.loadDatabase();
     //console.log("Getting collection video games...");

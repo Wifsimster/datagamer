@@ -1,5 +1,6 @@
 div
     button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanGames()") Scan your collection
+    button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="postProcessing()", style="margin-right:10px;") Post-processing
     .grid
         .grid__col6
 
@@ -26,3 +27,9 @@ div
 
             div(ng-hide="games.length > 0")
                 p.text-center.card(class="p+") No game found in your collection !
+
+
+md-bottom-sheet.md-list.md-has-header
+    md-subheader Post-processing results
+    md-list
+        p {{ postProcessingResult }}
