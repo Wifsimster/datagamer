@@ -3,6 +3,7 @@
 //var tpb = require('thepiratebay');
 var fs = require('fs');
 var ini = require('ini');
+var winston = require('winston');
 
 app.get("/kickasstorrents/test", function (req, res) {
 
@@ -11,7 +12,7 @@ app.get("/kickasstorrents/test", function (req, res) {
 
     //tpb.recentTorrents()
     //    .then(function (results) {
-    //        console.log("Get torrent list !");
+    //        winston.info("Get torrent list !");
     //        res.send(results);
     //    })
     //    .catch(function () {

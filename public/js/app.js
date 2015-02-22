@@ -74,6 +74,28 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
 
     $scope.config = {};
 
+    // Get last git commit
+    $http.get('/update/last/commit').
+        success(function (result) {
+            if(result.code == 200) {
+                $scope.lastCommit = result.lastCommit;
+            }
+        }).
+        error(function (err) {
+            console.error(err);
+        });
+
+    $scope.updateApp = function () {
+        // Get update
+        $http.get('/update/git').
+            success(function (result) {
+                console.log(result);
+            }).
+            error(function (err) {
+                console.error(err);
+            });
+    };
+
     // Get the unique settings in database
     $http.get('/config').
         success(function (result) {
@@ -430,7 +452,7 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
         LxProgressService.linear.show('#5fa2db', '#scan_progress');
         LxNotificationService.info('Post-processing started...');
 
-        $http.get('/collection/games/postprocessing').
+        $http.get('/renamer/games/postprocessing').
             success(function (result) {
                 LxProgressService.linear.hide();
 

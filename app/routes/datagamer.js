@@ -1,6 +1,7 @@
 var fs = require('fs');
 var ini = require('ini');
 var request = require('request');
+var winston = require('winston');
 
 var CODE = require('../../app/enums/codes');
 
@@ -12,7 +13,7 @@ app.get("/datagamer/search/:name", function (req, res) {
 
     var name = req.params.name;
 
-    console.log("Datagamer - Searching game : " + name);
+    winston.info("Datagamer - Searching game : " + name);
 
     request('http://' + config.search.datagamer.url + '/api/games/by/name/' + name, {
         headers: {
@@ -23,11 +24,11 @@ app.get("/datagamer/search/:name", function (req, res) {
             var result = JSON.parse(body);
 
             if (result.code == CODE.SUCCESS.code) {
-                console.log('Datagamer - Games found : ' + result.games);
+                winston.info('Datagamer - Games found : ' + result.games);
                 CODE.SUCCESS.games = result.games;
                 res.send(CODE.SUCCESS);
             } else {
-                console.log('Datagamer - No game found for : ' + name);
+                winston.info('Datagamer - No game found for : ' + name);
                 res.send(CODE.NOT_FOUND);
             }
         } else {
@@ -37,14 +38,37 @@ app.get("/datagamer/search/:name", function (req, res) {
     })
 });
 
+
 // Ask for video games count
 app.get("/datagamer/games/count", function (req, res) {
 
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
-    console.log("Datagamer - Asking games count...");
+    winston.info("Datagamer - Asking games count...");
 
     request('http://' + config.search.datagamer.url + '/api/games/count', {
+        headers: {
+            "apiKey": config.search.datagamer.apikey
+        }
+    }, function (error, response, body) {
+        if (!error) {
+            res.send(JSON.parse(body));
+        } else {
+            console.error(error);
+        }
+    })
+});
+
+
+app.get("/datagamer/games/similar/:name", function (req, res) {
+
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+    var name = req.params.name;
+
+    winston.info("Datagamer - Searching games similar to " + name);
+
+    request('http://' + config.search.datagamer.url + '/api/games/similar/by/5/for/' + name, {
         headers: {
             "apiKey": config.search.datagamer.apikey
         }
@@ -65,7 +89,7 @@ app.get("/datagamer/game/info/:id", function (req, res) {
 
     var id = req.params.id;
 
-    console.log("Datagamer - Updating '" + id + "' info...");
+    winston.info("Datagamer - Updating '" + id + "' info...");
 
     request('http://' + config.search.datagamer.url + '/api/games/by/id/' + id, {
         headers: {
@@ -76,7 +100,7 @@ app.get("/datagamer/game/info/:id", function (req, res) {
             var result = JSON.parse(body);
 
             if (result.code == 200) {
-                console.log('Datagamer responds with game info !');
+                winston.info('Datagamer responds with game info !');
                 res.json(result);
             } else {
                 res.json(CODE.SERVER_ERROR);

@@ -1,5 +1,6 @@
 var fs = require('fs');
 var ini = require('ini');
+var winston = require('winston');
 
 //------------------------------------------
 //----              PAGES               ----

@@ -1,6 +1,7 @@
 var fs = require('fs');
 var ini = require('ini');
 var request = require('request');
+var winston = require('winston');
 
 // Nedb - Embedded database package
 var Datastore = require('nedb');
@@ -13,12 +14,12 @@ app.get("/collection/games/scan", function (req, res) {
 
     // TODO : Need to detect network or not
 
-    console.log("Collection - Scan \\" + config.collection.directory);
+    winston.info("Collection - Scan \\" + config.collection.directory);
 
     var files = getFiles("\\" + config.collection.directory);
 
     addGamesRecursive(0, config, files, function () {
-        console.log('Scan ended !')
+        winston.info('Scan ended !')
         res.send();
     });
 
@@ -34,7 +35,7 @@ function addGamesRecursive(i, config, files, callback) {
 
         // Detect a file ended by .iso
         if (file.match(regex)) {
-            console.log("Collection - Potential video game file : " + file);
+            winston.info("Collection - Potential video game file : " + file);
 
             // Extract filename (no path, no format, no dot)
             var filename = file.split(/(\\|\/)/g).pop();
@@ -47,14 +48,14 @@ function addGamesRecursive(i, config, files, callback) {
 
                 if (!err) {
                     if (result) {
-                        console.log('Collection - ' + result.name + ' already exist !');
+                        winston.info('Collection - ' + result.name + ' already exist !');
                         addGamesRecursive(i + 1, config, files, callback);
                     } else {
                         // First of all add the game in the collection db
                         collection_db.insert(game, function (err, newDoc) {
                             if (!err) {
-                                console.log("Collection - Add " + filename + " to collection database !");
-                                console.log("Collection - Searching a game for : " + filename);
+                                winston.info("Collection - Add " + filename + " to collection database !");
+                                winston.info("Collection - Searching a game for : " + filename);
 
                                 // Search current video game on Datagamer
                                 request('http://localhost:' + config.general.port + '/datagamer/search/' + filename, {
@@ -71,18 +72,18 @@ function addGamesRecursive(i, config, files, callback) {
                                                 // First game found
                                                 var game = result.games[0];
 
-                                                console.log("Collection - Find '" + game.name + "' game !");
+                                                winston.info("Collection - Find '" + game.name + "' game !");
 
                                                 collection_db.findOne({name: game.name}, function (err, newDoc) {
                                                     if (!err) {
                                                         if (newDoc) {
-                                                            console.log("Collection - Game already in collection, updating the game info...");
+                                                            winston.info("Collection - Game already in collection, updating the game info...");
                                                             collection_db.update({name: newDoc.name}, game, {}, function (err, newDoc) {
                                                                 //if (!err)
                                                                 //res.json({message: "OK"});
                                                             });
                                                         } else {
-                                                            console.log("Collection - Game added to collection !");
+                                                            winston.info("Collection - Game added to collection !");
 
                                                             // Set the game as downloaded
                                                             game.downloaded = true;
@@ -121,40 +122,8 @@ function addGamesRecursive(i, config, files, callback) {
                 }
             });
         } else {
-            //console.log('Collection - ' + file + ' is not an .iso, next !');
+            //winston.info('Collection - ' + file + ' is not an .iso, next !');
             addGamesRecursive(i + 1, config, files, callback);
-        }
-    } else {
-        callback();
-    }
-}
-
-app.get("/collection/games/postprocessing", function (req, res) {
-
-    collection_db.loadDatabase();
-    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
-
-    console.log("Collection - Scan \\" + config.collection.directory);
-    var files = getFiles("\\" + config.collection.directory);
-
-    postProcessingGame(0, config, files, function () {
-        console.log('Post-processing ended !');
-        res.send();
-    });
-
-});
-
-// Recursive loop with callback to post-process files naming
-function postProcessingGame(i, config, files, callback) {
-    if (i < files.length) {
-
-        var file = files[i];
-
-        var regex = /.*\.((iso)$)/;
-
-        // Detect a file ended by .iso
-        if (file.match(regex)) {
-            postProcessingGame(i + 1, config, files, callback);
         }
     } else {
         callback();
@@ -163,7 +132,7 @@ function postProcessingGame(i, config, files, callback) {
 
 app.get("/collection/games", function (req, res) {
     collection_db.loadDatabase();
-    //console.log("Getting collection video games...");
+    //winston.info("Getting collection video games...");
     collection_db.find({}, function (err, games) {
         res.send(games)
     });
@@ -171,7 +140,7 @@ app.get("/collection/games", function (req, res) {
 
 app.post("/collection/games", function (req, res) {
     collection_db.loadDatabase();
-    //console.log(req.body);
+    //winston.info(req.body);
     collection_db.insert(req.body, function (err, newDoc) {
         if (!err)
             res.json({message: "OK"});
@@ -180,7 +149,7 @@ app.post("/collection/games", function (req, res) {
 
 app.put("/collection/games", function (req, res) {
     collection_db.loadDatabase();
-    //console.log(req.body._id);
+    //winston.info(req.body._id);
     collection_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
         if (!err)
             res.json({message: "OK"});

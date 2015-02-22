@@ -1,6 +1,7 @@
 var Transmission = require('transmission');
 var fs = require('fs');
 var ini = require('ini');
+var winston = require('winston');
 
 var CODE = require('../../app/enums/codes');
 
@@ -20,9 +21,9 @@ function getTorrent(id) {
         if (err) {
             throw err;
         }
-        console.log('bt.get returned ' + result.torrents.length + ' torrents');
+        winston.info('bt.get returned ' + result.torrents.length + ' torrents');
         result.torrents.forEach(function (torrent) {
-            console.log('hashString', torrent.hashString);
+            winston.info('hashString', torrent.hashString);
         });
     });
 }
@@ -32,7 +33,7 @@ function removeTorrent(id) {
         if (err) {
             throw err;
         }
-        console.log('Transmission - Torrent was removed !');
+        winston.info('Transmission - Torrent was removed !');
     });
 }
 
@@ -45,7 +46,7 @@ function addTorrent(url, downloadDirectory) {
             return err;
         }
 
-        console.log('Transmission - New torrent added - ID: ' + result.id);
+        winston.info('Transmission - New torrent added - ID: ' + result.id);
         return result.id;
     });
 }
@@ -65,7 +66,7 @@ app.get("/transmission/test", function (req, res) {
         if (!err) {
             if (data) {
                 if (data.torrents) {
-                    //console.log("Get torrent list !");
+                    //winston.info("Get torrent list !");
                     res.send(data);
                 }
             } else {
@@ -84,14 +85,14 @@ app.post("/transmission/add", function (req, res) {
 
     var url = req.body.url;
 
-    console.log("Transmission - Try to add '" + url);
+    winston.info("Transmission - Try to add '" + url);
 
     transmission.addUrl(url, function (err, result) {
         if (err) {
             console.error(err);
             res.status(500).send(CODE.BAD_REQUEST);
         } else {
-            console.log('Transmission - New torrent added - ID: ' + result.name);
+            winston.info('Transmission - New torrent added - ID: ' + result.name);
             CODE.SUCCESS.torrent = result;
             res.send(CODE.SUCCESS);
         }

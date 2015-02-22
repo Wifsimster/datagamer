@@ -1,6 +1,7 @@
 var tpb = require('thepiratebay');
 var fs = require('fs');
 var ini = require('ini');
+var winston = require('winston');
 
 var CODE = require('../../app/enums/codes');
 
@@ -34,7 +35,7 @@ app.get("/thepiratebay/search/:name", function (req, res) {
 
     var name = req.params.name;
 
-    console.log("TPB - Searching for '" + name + "'...");
+    winston.info("TPB - Searching for '" + name + "'...");
 
     // Open config.ini
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
@@ -56,7 +57,7 @@ app.get("/thepiratebay/search/:name", function (req, res) {
                     // First, only take PC game tracker
                     if (torrent.subcategory.id == '401') {
 
-                        console.log("TPB - Torrent subject to be taken : " + torrent.name);
+                        winston.info("TPB - Torrent subject to be taken : " + torrent.name);
 
                         // Filter white list of words
                         if (config.thepiratebay.filters.favorite_words) {
@@ -79,19 +80,19 @@ app.get("/thepiratebay/search/:name", function (req, res) {
 
                         // Filter size : If torrent size <= config size reject the torrent
                         if (torrent.size <= config.thepiratebay.filters.size_min) {
-                            console.log("TPB -      Torrent reject : Size too small (" + torrent.size + ")");
+                            winston.info("TPB -      Torrent reject : Size too small (" + torrent.size + ")");
                             favorite_torrent = null;
                         }
 
                         // Filter seeders : If torrent seeders <= config seeders reject the torrent
                         if (torrent.seeders <= config.thepiratebay.filters.seeders) {
-                            console.log("TPB -      Torrent reject : Seeders too small (" + torrent.seeders + ")");
+                            winston.info("TPB -      Torrent reject : Seeders too small (" + torrent.seeders + ")");
                             favorite_torrent = null;
                         }
 
                         // Filter leechers : If torrent leechers <= config leechers reject the torrent
                         if (torrent.leechers <= config.thepiratebay.filters.leechers) {
-                            console.log("TPB -      Torrent reject : Leechers too small (" + torrent.leechers + ")");
+                            winston.info("TPB -      Torrent reject : Leechers too small (" + torrent.leechers + ")");
                             favorite_torrent = null;
                         }
 
@@ -103,9 +104,9 @@ app.get("/thepiratebay/search/:name", function (req, res) {
 
                             var filterDate = Date.parse(config.thepiratebay.filters.uploadDate);
 
-                            console.log("TPB -      Check date parsing :");
-                            console.log("TPB -          Torent : " + torrent.uploadDate + " = " + torrentDate.getDay() + torrentDate.getMonth() + torrentDate.getFullYear());
-                            console.log("TPB -          Filter : " + filterDate);
+                            winston.info("TPB -      Check date parsing :");
+                            winston.info("TPB -          Torent : " + torrent.uploadDate + " = " + torrentDate.getDay() + torrentDate.getMonth() + torrentDate.getFullYear());
+                            winston.info("TPB -          Filter : " + filterDate);
 
                             // Compare millisconds
                             if (torrent.uploadDate.getTime() < filterDate) {
@@ -121,15 +122,15 @@ app.get("/thepiratebay/search/:name", function (req, res) {
                 }
 
                 if (favorite_torrent) {
-                    console.log("TPB - Return torrent is : " + favorite_torrent.name);
+                    winston.info("TPB - Return torrent is : " + favorite_torrent.name);
                     CODE.SUCCESS.torrent = favorite_torrent;
                     res.send(CODE.SUCCESS);
                 } else {
-                    console.log('TPB - No torrent found for ' + name + ' !');
+                    winston.info('TPB - No torrent found for ' + name + ' !');
                     res.send(CODE.NOT_FOUND);
                 }
             } else {
-                console.log('TPB - No torrent found for ' + name + ' !');
+                winston.info('TPB - No torrent found for ' + name + ' !');
                 res.send(CODE.NOT_FOUND);
             }
         })

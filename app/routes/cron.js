@@ -1,5 +1,6 @@
 var search_cron = require('../../app/crons/search.js');
 var PythonShell = require('python-shell');
+var winston = require('winston');
 
 var options = {
     mode: 'text',
@@ -16,6 +17,6 @@ app.get("/cron/search", function (req, res) {
             console.error(err);
 
         // Results is an array consisting of messages collected during execution
-        console.log('results: %j', results);
+        winston.info('results: %j', results);
     });
 });

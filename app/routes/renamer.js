@@ -1,76 +1,108 @@
 var fs = require('fs');
 var ini = require('ini');
 var request = require('request');
+var mkdirp = require('mkdirp');
+var winston = require('winston');
 
-app.get("/renamer/games/scan", function (req, res) {
+// Nedb - Embedded database package
+var Datastore = require('nedb');
+var collection_db = new Datastore('collection.nedb');
 
+// Renamer - Post-processing downloaded video games
+app.get("/renamer/games/postprocessing", function (req, res) {
+
+    collection_db.loadDatabase();
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
     // TODO : Need to detect network or not
 
-    console.log("-- From : " + config.renamer.from);
-    console.log("-- To : " + config.renamer.from);
+    winston.info("Renamer - Scan \\" + config.collection.directory);
 
-    var files = getFiles(config.renamer.from);
+    var files = getFiles("\\" + config.collection.directory);
 
-    for (var i = 0; i < files.length; i++) {
+    recursiveRename(0, config, files, function () {
+        winston.info('Renamer - Scan ended !')
+        res.send();
+    });
+});
+
+// Recursive rename
+function recursiveRename(i, config, files, callback) {
+    if (i < files.length) {
+
+        var file = files[i];
 
         var regex = /.*\.((iso)$)/;
 
         // Detect a file ended by .iso
-        if (files[i].match(regex)) {
-
-            //console.log(files[i]);
-            console.log("-- Potential video game file : " + files[i]);
+        if (file.match(regex)) {
 
             // Extract filename (no path, no format, no dot)
-            var filename = files[i].split(/(\\|\/)/g).pop();
+            var filename = file.split(/(\\|\/)/g).pop();
             filename = filename.split('.').reverse().pop();
 
-            console.log("-- Datagamer - Searching a game for : " + filename);
+            winston.info("Renamer - Potential video game file : " + filename);
 
-            request('http://192.168.0.21:8084/api/games/by/name/' + escape(filename), {
-                    headers: {
-                        "apiKey": "b3dae6c0-83a0-4721-9901-bf0ee7011af8"
-                    }
-                }, function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
+            // Search current video game on Datagamer
+            request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + filename, {
+                headers: {
+                    "apiKey": config.search.datagamer.apikey
+                }
+            }, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
 
-                        var obj = JSON.parse(body);
+                    var result = JSON.parse(body);
 
-                        if (obj.games.length > 0) {
+                    if (result.code == 200) {
+                        //winston.info('Renamer - Game found on Datagamer : ');
 
-                            // First game found
-                            var game = obj.games[0];
+                        var bestGame = {};
+                        bestGame.percentage = 0;
 
-                            console.log(obj);
-                            console.log(game);
+                        for (var j = 0; j < result.games.length; j++) {
 
-                            console.log("-- Find '" + game.name + "' game !");
+                            //winston.info('Renamer --- ' + result.games[j].name + ' - ' + result.games[j].percentage);
 
-                            // Check if game already in collection
-                            collection_db.findOne({name: game.name}, function (err, newDoc) {
-                                if (!err) {
-                                    console.log(newDoc);
-                                    if (newDoc) {
-                                        console.log("-- Game already in collection, do nothing.");
-                                    } else {
-                                        console.log("-- Clean the directory with proper game name & move the directory...");
-                                        // TODO : Clean the directory with proper game name & move the directory
-                                    }
-                                }
-                            });
-                        } else {
-                            console.log("-- No game found with this name in Datagamer !");
-                            // TODO : If no game found with a potential game, added it to Datagamer through the Metacritic API.
+                            if (result.games[j].percentage > bestGame.percentage) {
+                                bestGame = result.games[j];
+                            }
                         }
+
+                        // Take highest score and rename the file
+                        winston.info('Renamer - Highest similar game found : ' + bestGame.name);
+
+                        // WINDOWS FIX, TO DELETE FOR UNIX USERS
+                        //bestGame.name.replace(/:/,' ');
+
+                        var directory = config.renamer.to + '/' + bestGame.name + ' (' + new Date(bestGame.releaseDate).getFullYear() + ')';
+                        winston.info('Renamer - Try to create : ' + directory);
+
+                        try {
+                            fs.mkdir(directory, 0777, function (err) {
+                                if (err)
+                                    console.error(err);
+                            });
+                        } catch(e) {
+                            if ( e.code != 'EEXIST' ) console.error(e);
+                        }
+
+
+                        recursiveRename(i + 1, config, files, callback);
+                    } else {
+                        console.error('Renamer - No game found on Datagamer for : ' + filename);
+                        recursiveRename(i + 1, config, files, callback);
                     }
                 }
-            )
-            ;
+            });
+        } else {
+            //winston.info('Collection - ' + file + ' is not an .iso, next !');
+            recursiveRename(i + 1, config, files, callback);
         }
+    } else {
+        callback();
     }
-});
+}
+
 
 /**
  * Return a list of files
