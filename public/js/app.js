@@ -73,23 +73,34 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav
 app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, LxProgressService) {
 
     $scope.config = {};
+    $scope.lastRelease = {};
+    $scope.isUpdate = false;
 
-    // Get last git commit
-    $http.get('/update/last/commit').
+    // Check update
+    $http.get('/update/available').
         success(function (result) {
-            if(result.code == 200) {
-                $scope.lastCommit = result.lastCommit;
+            if (result.code == 200) {
+                $scope.isUpdate = true;
+                $scope.lastRelease = result.releases[0];
             }
         }).
         error(function (err) {
             console.error(err);
         });
 
+    // Update Datagamer with new release
     $scope.updateApp = function () {
+
+        LxNotificationService.info('Updating...');
+
         // Get update
-        $http.get('/update/git').
+        $http.get('/update/release/' + $scope.lastRelease.tag_name).
             success(function (result) {
                 console.log(result);
+                if (result.code == 200) {
+                    LxNotificationService.success('Update done !');
+                    $scope.isUpdate = false;
+                }
             }).
             error(function (err) {
                 console.error(err);
