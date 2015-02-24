@@ -100,6 +100,15 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
                 if (result.code == 200) {
                     LxNotificationService.success('Update done !');
                     $scope.isUpdate = false;
+
+                    // Update config on UI
+                    $http.get('/config').
+                        success(function (result) {
+                            $scope.config = result;
+                        }).
+                        error(function (err) {
+                            console.error(err);
+                        });
                 }
             }).
             error(function (err) {

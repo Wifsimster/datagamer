@@ -33,7 +33,7 @@ form(name="configGorm")
         #Update.grid__col4.card
             div(class="p+")
                 strong.fs-headline.display-block Update
-                strong.fs-subhead.tc-black-2.display-block Application update options
+                strong.fs-subhead.tc-black-2.display-block Current release {{ config.update.release }}
 
             div.tc-white-1(class="p+ bgc-blue-400", ng-show="isUpdate")
                 strong.fs-headline.display-block New release available !
