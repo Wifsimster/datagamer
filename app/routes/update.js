@@ -25,6 +25,7 @@ app.get("/update/release/:name", function (req, res) {
 
     res.send(CODE.SUCCESS);
 
+    // Call update.sh script
     //function puts(error, stdout, stderr) {
     //    sys.puts(stdout)
     //}

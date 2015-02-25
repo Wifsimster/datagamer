@@ -52,9 +52,11 @@ app.get("/datagamer/games/count", function (req, res) {
         }
     }, function (error, response, body) {
         if (!error) {
+            // Body contains CODE SUCCESS
             res.send(JSON.parse(body));
         } else {
             console.error(error);
+            res.send(CODE.SERVER_ERROR);
         }
     })
 });

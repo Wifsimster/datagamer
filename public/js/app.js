@@ -21,7 +21,7 @@ app.config(['$routeProvider', '$locationProvider',
     }]);
 
 // App controller
-app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav', function ($scope, $http, $routeParams, $location, $mdSidenav) {
+app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav', 'LxNotificationService', function ($scope, $http, $routeParams, $location, $mdSidenav, LxNotificationService) {
 
     // Hide/Show subnav on click
     $scope.show = false;
@@ -63,10 +63,32 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav
             subnav: ["General", "Advanced", "Update", "Collection", "Search", "Providers", "Transmission", "Renamer"]
         }];
 
-// Hide sidebar left on action
+    // Hide sidebar left on action
     $scope.openLeftMenu = function () {
         $mdSidenav('left').toggle();
     };
+
+    // Get the config.ini
+    $http.get('/config').
+        success(function (config) {
+            // If user want to display notification for available update
+            if (config.update.notification) {
+                // Check update, if update display notification
+                $http.get('/update/available').
+                    success(function (result) {
+                        // If success code : update available
+                        if (result.code == 200) {
+                            LxNotificationService.info('Update available !', true);
+                        }
+                    }).
+                    error(function (err) {
+                        LxNotificationService.error(err);
+                    });
+            }
+        }).
+        error(function (err) {
+            LxNotificationService.error(err);
+        });
 }])
 ;
 
@@ -116,7 +138,7 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
             });
     };
 
-    // Get the unique settings in database
+    // Get the config.ini
     $http.get('/config').
         success(function (result) {
             //console.log(result);
@@ -228,7 +250,11 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
     $http.get('/datagamer/games/count').
         success(function (result) {
             //console.log(result);
-            $scope.datagamerCount = result.count;
+            if(result.code == 200) {
+                $scope.datagamerCount = result.count;
+            } else {
+                LxNotificationService.error('Check your Datagamer API URL !');
+            }
         }).
         error(function (err) {
             LxNotificationService.error(err);
