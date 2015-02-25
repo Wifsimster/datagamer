@@ -1,6 +1,6 @@
 # Datagamer
 
-Datagamer is a personal and lcoal web app, who provide management of your video games.
+Datagamer is a personal and local web app, who provides management of your video games.
 
 Like Couchpotato or Sickbeard, Datagamer provides :
 * Search feature (on Datagamer-api-v2) ;
