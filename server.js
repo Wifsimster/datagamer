@@ -34,8 +34,8 @@ var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
 // If debug is enable
 if (config.advanced.debug) {
-    winston.info('Datagamer is logging on ' + config.advanced.debug_directory + '\\datagamer.log');
     winston.add(winston.transports.File, {filename: config.advanced.debug_directory + '\\datagamer.log'});
+    winston.info('Datagamer is logging on ' + config.advanced.debug_directory + '\\datagamer.log');
 }
 
 // If basic authentication is enable
@@ -72,19 +72,21 @@ app.listen(port);
 // -----------------------------------------------------
 // ----                     CRON                    ----
 // -----------------------------------------------------
-
 // Inject CRONs
 var search = require('./app/crons/search.js');
+var collection = require('./app/crons/collection.js');
+var renamer = require('./app/crons/renamer.js');
+var update = require('./app/crons/update.js');
 
 winston.info('Datagamer is running on port ' + port);
 
 if (config.search.scan_auto || config.collection.scan_auto || config.renamer.scan_auto || config.update.scan_auto) {
     winston.info('Initialazing CRON :');
-    require('./app/crons/collection.js');
-    require('./app/crons/renamer.js');
-    require('./app/crons/update.js');
 
     search.start();
+    collection.start();
+    renamer.start();
+    update.start();
 
 } else {
     winston.info('No CRON activated.');
