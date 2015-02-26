@@ -16,45 +16,6 @@ var transmission = new Transmission({
     url: config.transmission.rpc_url        // /transmission/rpc
 });
 
-function getTorrent(id) {
-    transmission.get(id, function (err, result) {
-        if (err) {
-            throw err;
-        }
-        winston.info('bt.get returned ' + result.torrents.length + ' torrents');
-        result.torrents.forEach(function (torrent) {
-            winston.info('hashString', torrent.hashString);
-        });
-    });
-}
-
-function removeTorrent(id) {
-    transmission.remove(id, function (err) {
-        if (err) {
-            throw err;
-        }
-        winston.info('Transmission - Torrent was removed !');
-    });
-}
-
-function addTorrent(url, downloadDirectory) {
-    transmission.addUrl(url, {
-        "download-dir": downloadDirectory
-    }, function (err, result) {
-        if (err) {
-            console.error(err);
-            return err;
-        }
-
-        winston.info('Transmission - New torrent added - ID: ' + result.id);
-        return result.id;
-    });
-}
-
-function addTorrent(url) {
-
-}
-
 // -----------------------------------------------------
 // ----                 ROUTES                      ----
 // -----------------------------------------------------
@@ -64,23 +25,16 @@ app.get("/transmission/test", function (req, res) {
 
     transmission.get(function (err, data) {
         if (!err) {
-            if (data) {
-                if (data.torrents) {
-                    //winston.info("Get torrent list !");
-                    res.send(data);
-                }
-            } else {
-                console.error(err);
-                res.send(err);
-            }
+            winston.info("Transmission - Get torrent list for test !");
+            res.send(CODE.SUCCESS);
         } else {
             console.error(err);
-            res.send(err);
+            res.send(CODE.BAD_REQUEST);
         }
     });
 });
 
-// Add a new tracker to Transmission
+// Add a new torrent to Transmission
 app.post("/transmission/add", function (req, res) {
 
     var url = req.body.url;
@@ -93,8 +47,27 @@ app.post("/transmission/add", function (req, res) {
             res.status(500).send(CODE.BAD_REQUEST);
         } else {
             winston.info('Transmission - New torrent added - ID: ' + result.name);
-            CODE.SUCCESS.torrent = result;
-            res.send(CODE.SUCCESS);
+            CODE.SUCCESS_POST.torrent = result;
+            res.send(CODE.SUCCESS_POST);
+        }
+    });
+});
+
+
+// Remove torrent to Transmission
+app.post("/transmission/remove/:id", function (req, res) {
+
+    var id = req.params.id;
+
+    winston.info("Transmission - Try to remove '" + id);
+
+    transmission.remove(id, function (err) {
+        if (err) {
+            console.error(err);
+            res.status(500).send(CODE.BAD_REQUEST);
+        } else {
+            winston.info('Transmission - Torrent removed with success !');
+            res.send(CODE.SUCCESS_DELETE);
         }
     });
 });
