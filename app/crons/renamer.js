@@ -18,7 +18,7 @@ module.exports.start = function () {
 
             winston.info('CRON - Renamer :');
 
-            request('http://localhost:' + config.general.port + '/renamer/games/scan', function (error, response, body) {
+            request('http://localhost:' + config.general.port + '/renamer/games/postprocessing', function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     winston.info("200");
                 }
