@@ -1,5 +1,7 @@
 # Datagamer
 
+<img src="https://travis-ci.org/Wifsimster/datagamer.svg?branch=master" />
+
 Datagamer is a personal and local web app, who provides management of your video games.
 
 Like <a href="https://couchpota.to/">Couchpotato</a> or <a href="http://sickbeard.com/">Sickbeard</a>, Datagamer provides :
