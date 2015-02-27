@@ -69,7 +69,6 @@ function recursiveRename(i, config, files, callback) {
         // MULTi
         var multi = /(multi)/i.exec(filename);
         if (multi) {
-            multi = multi[1];
             winston.info("Renamer - Multilangue");
         }
 
@@ -104,16 +103,15 @@ function recursiveRename(i, config, files, callback) {
             team = team[1];
             winston.info("Renamer - Team : " + team);
         } else {
-            team = /-(\^\^nosTEAM\^\^)/.exec(filename);
+            team = /(\^\^nosTEAM\^\^|TeamExtremeMc|TeRMiNaToR|TeRM!NaToR)/.exec(filename);
             if (team) {
                 team = team[1];
                 winston.info("Renamer - Team : " + team);
             }
         }
 
-
         // Delete dot
-        filename = filename.split('.').reverse().pop();
+        //filename = filename.split('.').reverse().pop();
 
         winston.info("Renamer - Potential video game file : " + filename);
 
@@ -151,19 +149,22 @@ function recursiveRename(i, config, files, callback) {
                     var directory = config.renamer.to + '/' + bestGame.name + ' (' + new Date(bestGame.releaseDate).getFullYear() + ')';
                     winston.info('Renamer - Try to create : ' + directory);
 
-                    try {
-                        fs.mkdir(directory, 0777, function (err) {
-                            if (err)
-                                console.error(err);
-                        });
-                    } catch (e) {
-                        if (e.code != 'EEXIST') console.error(e);
-                    }
+                    //try {
+                    //    fs.mkdir(directory, 0777, function (err) {
+                    //        if (err)
+                    //            console.error(err);
+                    //    });
+                    //} catch (e) {
+                    //    if (e.code != 'EEXIST') console.error(e);
+                    //}
                     recursiveRename(i + 1, config, files, callback);
                 } else {
                     console.error('Renamer - No game found on Datagamer for : ' + filename);
                     recursiveRename(i + 1, config, files, callback);
                 }
+            } else {
+                console.error(error);
+                recursiveRename(i + 1, config, files, callback);
             }
         });
         //} else {
