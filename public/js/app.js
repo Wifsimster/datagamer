@@ -294,10 +294,12 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
         });
 
     // Get the total video games on Datagamer db
+    LxProgressService.circular.show('#5fa2db', '#datagamer_progress');
     $http.get('/datagamer/games/count').
         success(function (result) {
             if (result.code == 200) {
                 $scope.datagamerCount = result.count;
+                LxProgressService.circular.hide();
             } else {
                 LxNotificationService.error('Datagamer - ' + result.message);
             }
