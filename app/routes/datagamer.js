@@ -20,7 +20,7 @@ app.get("/datagamer/search/:name", function (req, res) {
             "apiKey": config.search.datagamer.apikey
         }
     }, function (error, response, body) {
-        if (!error) {
+        if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
 
             if (result.code == CODE.SUCCESS.code) {
@@ -51,7 +51,7 @@ app.get("/datagamer/games/count", function (req, res) {
             "apiKey": config.search.datagamer.apikey
         }
     }, function (error, response, body) {
-        if (!error) {
+        if (!error && response.statusCode == 200) {
             // Body contains CODE SUCCESS
             res.send(JSON.parse(body));
         } else {
@@ -75,7 +75,7 @@ app.get("/datagamer/games/similar/:name", function (req, res) {
             "apiKey": config.search.datagamer.apikey
         }
     }, function (error, response, body) {
-        if (!error) {
+        if (!error && response.statusCode == 200) {
             res.send(JSON.parse(body));
         } else {
             console.error(error);
@@ -98,7 +98,7 @@ app.get("/datagamer/game/info/:id", function (req, res) {
             "apiKey": config.search.datagamer.apikey
         }
     }, function (error, response, body) {
-        if (!error) {
+        if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
 
             if (result.code == 200) {
