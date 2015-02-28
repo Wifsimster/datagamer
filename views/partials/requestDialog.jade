@@ -1,0 +1,13 @@
+md-dialog(aria-label="Request an API key for Datagamer", RequestDialogCtrl)
+    form(name="requestForm")
+        md-content
+            md-subheader.md-sticky-no-effect Request an API key for Datagamer
+
+            lx-text-field(label="Username")
+                input(type="text" ng-model="username" required)
+
+            lx-text-field(label="Email")
+                input(type="text" ng-model="email" required)
+        .md-actions(layout="row")
+            md-button(ng-click="requestCancel()") Cancel
+            button.btn.btn--m.btn--blue.btn--raised(lx-ripple ng-click="request(datagamer)" required) Request

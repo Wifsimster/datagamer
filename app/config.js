@@ -52,8 +52,8 @@ module.exports.init = function () {
         config.search.cron.minute = "*";
 
         // [search.datagamer]
-        config.search.datagamer.apikey = "b3dae6c0-83a0-4721-9901-bf0ee7011af8";
-        config.search.datagamer.url = "localhost:8084";
+        config.search.datagamer.apikey = "";
+        config.search.datagamer.url = "movie-discover.com:8084";
 
         // [thepiratebay]
         config.thepiratebay.proxy_server = "";

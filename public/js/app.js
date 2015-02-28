@@ -92,9 +92,9 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav
 }])
 ;
 
-app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, LxProgressService) {
+app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, LxNotificationService, LxProgressService) {
 
-    $scope.config = {};
+    $rootScope.config = {};
     $scope.lastRelease = {};
     $scope.isUpdate = false;
 
@@ -126,7 +126,7 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
                     // Update config on UI
                     $http.get('/config').
                         success(function (result) {
-                            $scope.config = result;
+                            $rootScope.config = result;
                         }).
                         error(function (err) {
                             console.error(err);
@@ -142,7 +142,7 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
     $http.get('/config').
         success(function (result) {
             //console.log(result);
-            $scope.config = result;
+            $rootScope.config = result;
         }).
         error(function (err) {
             console.error(err);
@@ -178,25 +178,6 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
             error(function (err) {
                 console.error(err);
                 LxNotificationService.error('Something is wrong with search configuration !');
-            });
-    }
-
-    $scope.requestApiKey = function () {
-        LxProgressService.linear.show('#5fa2db', '#apikey_progress');
-
-        $http.get('/datagamer/request/user').
-            success(function (result) {
-                if (result.code == 200) {
-                    LxProgressService.linear.hide();
-                    LxNotificationService.success('Your Datagamer API key is ' + result.user.apikey);
-                } else {
-                    LxNotificationService.error('Cannot get an API key from Datagamer !');
-                }
-            }).
-            error(function (err) {
-                console.error(err);
-                LxProgressService.linear.hide();
-                LxNotificationService.error('Something is wrong with Datagamer configuration !');
             });
     }
 
@@ -250,7 +231,54 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
                 LxNotificationService.error('Something is wrong with Transmission configuration !');
             });
     }
+
+    // Show request dialog
+    $scope.showRequestDialog = function (ev) {
+        $mdDialog.show({
+            controller: RequestDialogController,
+            templateUrl: 'partials/requestDialog.jade',
+            targetEvent: ev
+        });
+    }
 });
+
+function RequestDialogController($scope, $rootScope, $mdDialog, $http, LxProgressService, LxNotificationService) {
+
+    $scope.request = function () {
+        if ($scope.username && $scope.email) {
+
+            LxProgressService.linear.show('#5fa2db', '#apikey_progress');
+
+            $http.post('/datagamer/request/user', {name: $scope.username, email: $scope.email}).
+                success(function (result) {
+
+                    console.log(result);
+
+                    LxProgressService.linear.hide();
+                    if (result.code == 201) {
+                        $mdDialog.hide();
+                        LxNotificationService.success('Your API key has been generated and saved !');
+
+                        // Update config datagamer api key
+                        $rootScope.config.search.datagamer.apikey = result.user.apiKey;
+
+                    } else {
+                        LxNotificationService.error(result.message);
+                    }
+                }).
+                error(function (err) {
+                    LxNotificationService.error('Something is wrong with Datagamer configuration !');
+                    LxProgressService.linear.hide();
+                });
+        } else {
+            LxNotificationService.error('Fields are mandatory !');
+        }
+    }
+
+    $scope.requestCancel = function () {
+        $mdDialog.cancel();
+    };
+}
 
 app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxProgressService) {
 
@@ -268,11 +296,10 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
     // Get the total video games on Datagamer db
     $http.get('/datagamer/games/count').
         success(function (result) {
-            //console.log(result);
             if (result.code == 200) {
                 $scope.datagamerCount = result.count;
             } else {
-                LxNotificationService.error('Check your Datagamer API URL !');
+                LxNotificationService.error('Datagamer - ' + result.message);
             }
         }).
         error(function (err) {
@@ -292,7 +319,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                         $scope.ajax.loading = false;
                     }).
                     error(function (err) {
-                        console.error(err);
+                        //console.error(err);
                         $scope.ajax.loading = false;
                     });
             }
@@ -382,7 +409,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
                                         $http.put('/wanted/games', selectedGame).
                                             success(function () {
-                                                console.log('Game snatched !');
+                                                //console.log('Game snatched !');
 
                                                 // If ok, refresh wanted games list
                                                 $http.get('/wanted/games').
@@ -394,7 +421,8 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                                                     });
                                             }).
                                             error(function (err) {
-                                                console.error(err);
+                                                //console.error(err);
+                                                LxNotificationService.error(err);
                                             });
                                     } else {
                                         LxNotificationService.error('No torrent added to Transmission !');
@@ -402,7 +430,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                                 }).
                                 error(function (err) {
                                     if (err) {
-                                        console.error(err.result);
+                                        //console.error(err.result);
                                         LxNotificationService.error(JSON.parse(err.result).result);
                                     }
                                 });
@@ -413,11 +441,13 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                         }
                     }).
                     error(function (err) {
-                        console.error(err);
+                        //console.error(err);
+                        LxNotificationService.error(err);
                     });
             }).
             error(function (err) {
-                console.error(err);
+                //console.error(err);
+                LxNotificationService.error(err);
             });
     };
 
@@ -462,12 +492,13 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                 }
             }).
             error(function (err) {
-                console.error(err);
+                //console.error(err);
+                LxNotificationService.error(err);
             });
     };
 
     $scope.scanNewReleases = function () {
-        console.log('Start new relealses scan...');
+        //console.log('Start new relealses scan...');
         LxNotificationService.success('Starting new releases scan...');
     };
 });
@@ -483,7 +514,8 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
             $scope.games = result;
         }).
         error(function (err) {
-            console.error(err);
+            //console.error(err);
+            LxNotificationService.error(err);
         });
 
     $scope.scanGames = function () {
@@ -502,12 +534,12 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                         LxNotificationService.success('Scan ended. Collection updated !');
                     }).
                     error(function (err) {
-                        console.error(err);
+                        //console.error(err);
                         LxNotificationService.error('Scan ended with error !');
                     });
             }).
             error(function (err) {
-                console.error(err);
+                //console.error(err);
                 LxProgressService.linear.hide();
                 LxNotificationService.error('Scan ended with error ! Need to check your conf.');
             });
@@ -524,18 +556,16 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                 // Refresh game list
                 $http.get('/collection/games').
                     success(function (result) {
-                        console.log(result);
-
                         $scope.postProcessingResult = result;
                         LxNotificationService.success('Post-processing ended. Collection updated !');
                     }).
                     error(function (err) {
-                        console.error(err);
+                        //console.error(err);
                         LxNotificationService.error('Post-processing ended with error !');
                     });
             }).
             error(function (err) {
-                console.error(err);
+                //console.error(err);
                 LxProgressService.linear.hide();
                 LxNotificationService.error('Post-processing ended with error ! Need to check your conf.');
             });
@@ -551,13 +581,15 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                         $scope.games = result;
                     }).
                     error(function (err) {
-                        console.error(err);
+                        //console.error(err);
+                        LxNotificationService.error(err);
                     });
 
                 LxNotificationService.success('Game deleted from collection !');
             }).
             error(function (err) {
-                console.error(err);
+                //console.error(err);
+                LxNotificationService.error(err);
             });
     };
 });

@@ -23,7 +23,7 @@ app.get("/datagamer/search/:name", function (req, res) {
         if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
 
-            if (result.code == CODE.SUCCESS.code) {
+            if (result.code == 200) {
                 winston.info('Datagamer - Games found : ' + result.games);
                 CODE.SUCCESS.games = result.games;
                 res.send(CODE.SUCCESS);
@@ -32,8 +32,8 @@ app.get("/datagamer/search/:name", function (req, res) {
                 res.send(CODE.NOT_FOUND);
             }
         } else {
-            console.error(error);
-            res.send(CODE.SERVER_ERROR);
+            winston.error(error);
+            res.json(CODE.SERVER_ERROR);
         }
     })
 });
@@ -51,12 +51,13 @@ app.get("/datagamer/games/count", function (req, res) {
             "apiKey": config.search.datagamer.apikey
         }
     }, function (error, response, body) {
+
         if (!error && response.statusCode == 200) {
             // Body contains CODE SUCCESS
-            res.send(JSON.parse(body));
+            res.json(JSON.parse(body));
         } else {
-            console.error(error);
-            res.send(CODE.SERVER_ERROR);
+            winston.error(error);
+            res.json(CODE.SERVER_ERROR);
         }
     })
 });
@@ -78,7 +79,8 @@ app.get("/datagamer/games/similar/:name", function (req, res) {
         if (!error && response.statusCode == 200) {
             res.send(JSON.parse(body));
         } else {
-            console.error(error);
+            winston.error(error);
+            res.json(CODE.SERVER_ERROR);
         }
     })
 });
@@ -108,7 +110,47 @@ app.get("/datagamer/game/info/:id", function (req, res) {
                 res.json(CODE.SERVER_ERROR);
             }
         } else {
-            console.error(error);
+            winston.error(error);
+            res.json(CODE.SERVER_ERROR);
+        }
+    })
+});
+
+// Add a new user
+app.post("/datagamer/request/user", function (req, res) {
+
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+    var name = req.body.name;
+    var email = req.body.email;
+
+    winston.info("Datagamer - Adding '" + name + "' as a new user...");
+
+    request.post('http://' + config.search.datagamer.url + '/api/users', {
+        form: {
+            name: name,
+            email: email
+        }
+    }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var result = JSON.parse(body);
+
+            if (result.code == 201) {
+                winston.info('Datagamer - ' + result.user.name + ' added !');
+
+                // Update config datagamer api key
+                var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+                config.search.datagamer.apikey = result.user.apiKey;
+                fs.writeFileSync('./config.ini', ini.stringify(config));
+
+                res.json(result);
+            } else {
+                winston.error('Datagamer - ' + result.message);
+                res.json(result);
+            }
+        } else {
+            winston.error(error);
+            res.json(CODE.SERVER_ERROR);
         }
     })
 });
