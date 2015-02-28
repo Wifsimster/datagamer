@@ -47,7 +47,7 @@ function recursiveRename(i, config, files, callback) {
         // Extract filename from path
         var filename = file.split(/(\\|\/)/g).pop();
 
-        winston.info('Renamer ------------------------------------');
+        winston.info('Renamer --------------------------------------------');
         winston.info('Renamer - Original filename : ' + filename);
 
         // Delete " PC " from filename
@@ -150,7 +150,10 @@ function recursiveRename(i, config, files, callback) {
         // Delete dot after version detection
         filename = filename.replace(/\./, '');
 
-        winston.info("Renamer --- Potential filename : " + filename);
+        // Delete "()" after release date detection
+        filename = filename.replace(/\(\)/, '');
+
+        winston.info("Renamer --- Searching for " + filename) + " on Datagamer...";
 
         // Search current video game on Datagamer
         request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + filename, {
@@ -194,6 +197,7 @@ function recursiveRename(i, config, files, callback) {
                     //} catch (e) {
                     //    if (e.code != 'EEXIST') console.error(e);
                     //}
+
                     recursiveRename(i + 1, config, files, callback);
                 } else {
                     console.error('Renamer - No game found on Datagamer for : ' + filename);

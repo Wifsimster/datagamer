@@ -181,6 +181,25 @@ app.controller('SettingsCtrl', function ($scope, $http, LxNotificationService, L
             });
     }
 
+    $scope.requestApiKey = function () {
+        LxProgressService.linear.show('#5fa2db', '#apikey_progress');
+
+        $http.get('/datagamer/request/user').
+            success(function (result) {
+                if (result.code == 200) {
+                    LxProgressService.linear.hide();
+                    LxNotificationService.success('Your Datagamer API key is ' + result.user.apikey);
+                } else {
+                    LxNotificationService.error('Cannot get an API key from Datagamer !');
+                }
+            }).
+            error(function (err) {
+                console.error(err);
+                LxProgressService.linear.hide();
+                LxNotificationService.error('Something is wrong with Datagamer configuration !');
+            });
+    }
+
     $scope.thepiratebay_test = function () {
         LxProgressService.linear.show('#5fa2db', '#thepiratebay_progress');
 
@@ -250,7 +269,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
     $http.get('/datagamer/games/count').
         success(function (result) {
             //console.log(result);
-            if(result.code == 200) {
+            if (result.code == 200) {
                 $scope.datagamerCount = result.count;
             } else {
                 LxNotificationService.error('Check your Datagamer API URL !');
@@ -268,7 +287,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                 $scope.ajax.loading = true;
                 $http.get("/datagamer/search/" + escape(newFilter)).
                     success(function (data) {
-                        console.log('Datagmer response !');
+                        //console.log('Datagmer response !');
                         $scope.ajax.list = data.games;
                         $scope.ajax.loading = false;
                     }).

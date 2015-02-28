@@ -77,10 +77,11 @@ form(name="configGorm")
 
         #Search.grid__col4.card
             div(class="p+")
+                button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", , ng-click="requestApiKey()", lx-tooltip="Register on Datagamer and get an API key.", tooltip-position="left") Request an API key
                 strong.fs-headline.display-block Search
                 strong.fs-subhead.tc-black-2.display-block Need to refresh before CRON changes take effect.
-
-                //button.btn.btn--xs.btn--blue.btn--raised(lx-ripple, lx-tooltip="Register on Datagamer and get an API key.", tooltip-position="left") Request an API key
+                .grid
+                    #apikey_progress
 
                 lx-text-field(label="Datagamer URL", lx-tooltip="Datagamer URL", tooltip-position="bottom")
                     input(type="text" ng-model="config.search.datagamer.url", ng-blur="update(config)")

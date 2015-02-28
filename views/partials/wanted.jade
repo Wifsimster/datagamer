@@ -26,7 +26,7 @@ div
             selection-to-model="ajax.toModel(data, callback)"
             model-to-selection="ajax.toSelection(data, callback)")
                 lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate| date:'yyyy' }})
-                lx-select-choices  {{ $choice.name }} ({{ $choice.releaseDate| date:'yyyy' }})
+                lx-select-choices  {{ $choice.name }} ({{ $choice.releaseDate| date:'yyyy' }}) - {{ $choice.percentage }}%
 
     .grid
         .grid__col6
