@@ -54,7 +54,7 @@ app.get("/datagamer/games/count", function (req, res) {
 
         if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
-            winston.info(result.count);
+            winston.info('Datagamer - Count : ' + result.count);
             res.json(result);
         } else {
             winston.error(error);

@@ -24,13 +24,13 @@ var transmission = new Transmission({
 app.get("/transmission/test", function (req, res) {
 
     transmission.get(function (err, data) {
-        if (!err) {
-            winston.info("Transmission - Get torrent list for test !");
-            res.send(CODE.SUCCESS);
-        } else {
-            console.error(err);
+        if (err) {
+            winston.error(err);
             res.send(CODE.BAD_REQUEST);
         }
+
+        winston.info("Transmission - Get torrent list for test !");
+        res.send(CODE.SUCCESS);
     });
 });
 
@@ -43,31 +43,30 @@ app.post("/transmission/add", function (req, res) {
 
     transmission.addUrl(url, function (err, result) {
         if (err) {
-            console.error(err);
-            res.status(500).send(CODE.BAD_REQUEST);
-        } else {
-            winston.info('Transmission - New torrent added - ID: ' + result.name);
-            CODE.SUCCESS_POST.torrent = result;
-            res.send(CODE.SUCCESS_POST);
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
         }
+
+        winston.info('Transmission - New torrent added - ID: ' + result.name);
+        CODE.SUCCESS_POST.torrent = result;
+        res.json(CODE.SUCCESS_POST);
     });
 });
 
 
 // Remove torrent to Transmission
-app.post("/transmission/remove/:id", function (req, res) {
-
+app.delete("/transmission/remove/:id", function (req, res) {
     var id = req.params.id;
 
     winston.info("Transmission - Try to remove '" + id);
 
     transmission.remove(id, function (err) {
         if (err) {
-            console.error(err);
-            res.status(500).send(CODE.BAD_REQUEST);
-        } else {
-            winston.info('Transmission - Torrent removed with success !');
-            res.send(CODE.SUCCESS_DELETE);
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
         }
+
+        winston.info('Transmission - Torrent removed with success !');
+        res.json(CODE.SUCCESS_DELETE);
     });
 });

@@ -11,7 +11,13 @@ app.get("/wanted/games", function (req, res) {
     winston.info("Getting wanted video games...");
 
     wanted_db.find({}, function (err, games) {
-        res.send(games)
+        if (!err) {
+            CODE.SUCCESS.games = games;
+            res.json(CODE.SUCCESS);
+        } else {
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
+        }
     });
 });
 
@@ -24,6 +30,10 @@ app.get("/wanted/games/:id", function (req, res) {
         if (!err) {
             CODE.SUCCESS.game = game;
             res.send(CODE.SUCCESS);
+        } else {
+
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
         }
     });
 });
@@ -31,16 +41,24 @@ app.get("/wanted/games/:id", function (req, res) {
 app.post("/wanted/games", function (req, res) {
     wanted_db.loadDatabase();
     wanted_db.find({name: req.body.name}, function (err, games) {
+        if (!err) {
+            if (games.length == 0) {
+                wanted_db.insert(req.body, function (err, newDoc) {
+                    if (!err) {
+                        CODE.SUCCESS_POST.game = newDoc;
+                        res.json(CODE.SUCCESS_POST);
+                    } else {
 
-        if (games.length == 0) {
-            wanted_db.insert(req.body, function (err, newDoc) {
-                if (!err) {
-                    CODE.SUCCESS_POST.game = newDoc;
-                    res.json(CODE.SUCCESS_POST);
-                }
-            });
+                        winston.error(err);
+                        res.json(CODE.BAD_REQUEST);
+                    }
+                });
+            } else {
+                res.json(CODE.ALREADY_EXIST);
+            }
         } else {
-            res.json(CODE.ALREADY_EXIST);
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
         }
     });
 });
@@ -52,9 +70,11 @@ app.put("/wanted/games", function (req, res) {
 
     wanted_db.update({name: req.body.name}, req.body, function (err, newDoc) {
         if (!err) {
+            CODE.SUCCESS_PUT.game = newDoc;
             res.json(CODE.SUCCESS_PUT);
         } else {
-            console.error(err);
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
         }
     });
 });
@@ -64,7 +84,11 @@ app.delete("/wanted/games/:id", function (req, res) {
     var id = req.params.id;
 
     wanted_db.remove({_id: id}, {}, function (err) {
-        if (!err)
-            res.json(CODE.SUCCESS);
+        if (!err) {
+            res.json(CODE.SUCCESS_DELETE);
+        } else {
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
+        }
     });
 });

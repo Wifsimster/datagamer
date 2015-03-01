@@ -287,7 +287,11 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
     // Get wanted video games
     $http.get('/wanted/games').
         success(function (result) {
-            $scope.wantedGames = result;
+            if (result.code == 200) {
+                $scope.wantedGames = result.games;
+            } else {
+                LxNotificationService.error(result.message);
+            }
         }).
         error(function (err) {
             LxNotificationService.error(err);
@@ -354,7 +358,11 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                         // If ok, refresh wanted games list
                         $http.get('/wanted/games').
                             success(function (result) {
-                                $scope.wantedGames = result;
+                                if (result.code == 200) {
+                                    $scope.wantedGames = result.games;
+                                } else {
+                                    LxNotificationService.error(result.message);
+                                }
                             }).
                             error(function (err) {
                                 LxNotificationService.error(err);
@@ -371,16 +379,23 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
         // Delete wanted game from database
         $http.delete('/wanted/games/' + id).
             success(function (result) {
-                // If ok, refresh wanted games list
-                $http.get('/wanted/games').
-                    success(function (result) {
-                        $scope.wantedGames = result;
-                    }).
-                    error(function (err) {
-                        LxNotificationService.error(err);
-                    });
-
-                LxNotificationService.notify('Wanted game deleted !', 'delete', false, 'grey');
+                if (result.code == 204) {
+                    // If ok, refresh wanted games list
+                    $http.get('/wanted/games').
+                        success(function (result) {
+                            if (result.code == 200) {
+                                $scope.wantedGames = result.games;
+                            } else {
+                                LxNotificationService.error(result.message);
+                            }
+                        }).
+                        error(function (err) {
+                            LxNotificationService.error(err);
+                        });
+                    LxNotificationService.notify('Wanted game deleted !', 'delete', false, 'grey');
+                } else {
+                    LxNotificationService.error(result.message);
+                }
             }).
             error(function (err) {
                 LxNotificationService.error(err);
@@ -388,8 +403,6 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
     };
 
     $scope.searchTorrents = function (id) {
-        //console.log('Search for torrents');
-
         $http.get('/wanted/games/' + id).
             success(function (result) {
 
@@ -405,8 +418,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
                             $http.post('/transmission/add/', {url: result.torrent.magnetLink}).
                                 success(function (res) {
-                                    if (res) {
-                                        //console.log('Torrent added to Transmission !');
+                                    if (res.code == 201) {
                                         LxNotificationService.success(res.game.name + ' added to Transmission !');
 
                                         selectedGame.snatched = true;
@@ -433,10 +445,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                                     }
                                 }).
                                 error(function (err) {
-                                    if (err) {
-                                        //console.error(err.result);
-                                        LxNotificationService.error(JSON.parse(err.result).result);
-                                    }
+                                    LxNotificationService.error(err.message);
                                 });
 
                         }
@@ -461,10 +470,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
         $http.get('/datagamer/game/info/' + datagamer_id).
             success(function (res) {
-
-                // SUCCESS
                 if (res.code == 200) {
-
                     // Save the datagamer id
                     res.game.datagamer_id = res.game._id;
                     res.game.name = res.game.defaultTitle;
@@ -476,17 +482,24 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                     // Update wanted game info
                     $http.put('/wanted/games', res.game)
                         .success(function (res) {
-                            // Get wanted video games
-                            $http.get('/wanted/games').
-                                success(function (result) {
-                                    $scope.wantedGames = result;
-                                    // LxNotificationService.success('Game info refreshed !');
-                                    LxProgressService.circular.hide();
-                                }).
-                                error(function (err) {
-                                    LxNotificationService.error(err);
-                                    LxProgressService.circular.hide();
-                                });
+                            if (res.code == 202) {
+                                // Get wanted video games
+                                $http.get('/wanted/games').
+                                    success(function (result) {
+                                        if (result.code == 200) {
+                                            $scope.wantedGames = result.games;
+                                            LxProgressService.circular.hide();
+                                        } else {
+                                            LxNotificationService.error(result.message);
+                                        }
+                                    }).
+                                    error(function (err) {
+                                        LxNotificationService.error(err);
+                                        LxProgressService.circular.hide();
+                                    });
+                            } else {
+                                LxNotificationService.error(res.message);
+                            }
                         })
                         .error(function (err) {
                             LxNotificationService.error(err);

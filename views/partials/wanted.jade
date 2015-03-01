@@ -44,8 +44,15 @@ div
                         img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://niesr.ac.uk/sites/default/files/styles/large/adaptive-image/public/default_images/thumbnail-default_2_0.jpg?itok=zti20ldd")
 
                     .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}})
-                        p(ng-show="game.genres[0].name || game.metacritic.score") {{game.genres[0].name}} - {{game.metacritic.score}}
-                        p(ng-show="game.developers[0].name || game.editors[0].name") {{game.developers[0].name}}, {{game.editors[0].name}}
+                        ul
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.metacritic.score")
+                                .label.label-danger {{game.metacritic.score}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.genres[0].name")
+                                .label.label-primary {{game.genres[0].name}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.developers[0].name")
+                                .label.label-warning {{game.developers[0].name}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.editors[0].name")
+                                .label.label-info {{game.editors[0].name}}
 
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game.datagamer_id)",

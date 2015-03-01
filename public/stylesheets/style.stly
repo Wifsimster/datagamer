@@ -213,5 +213,17 @@ tv
   vertical-align: baseline;
   border-radius: .25em;
 
+.label-primary
+  background-color: #337ab7;
+
+.label-info
+  background-color: #5bc0de;
+
+.label-success
+  background-color: #5cb85c;
+
 .label-warning
   background-color: #f0ad4e;
+
+.label-danger
+  background-color: #d9534f;
