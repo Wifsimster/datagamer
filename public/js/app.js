@@ -334,6 +334,8 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
             // Save the Datagamer id
             data.datagamer_id = data._id;
+            data.name = data.defaultTitle;
+            data.releaseDate = data.releaseDates[0].date;
 
             // Add new game to wanted database
             $http.post('/wanted/games', data).
@@ -465,6 +467,8 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
                     // Save the datagamer id
                     res.game.datagamer_id = res.game._id;
+                    res.game.name = res.game.defaultTitle;
+                    res.game.releaseDate = res.game.releaseDates[0].date;
 
                     // Reset snatched info
                     res.game.snatched = false;
