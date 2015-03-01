@@ -15,7 +15,7 @@ app.get("/datagamer/search/:name", function (req, res) {
 
     winston.info("Datagamer - Searching game : " + name);
 
-    request('http://' + config.search.datagamer.url + '/api/games/by/name/' + name, {
+    request('http://' + config.search.datagamer.url + '/api/games/by/defaultTitle/' + name, {
         headers: {
             "apiKey": config.search.datagamer.apikey
         }
@@ -53,8 +53,9 @@ app.get("/datagamer/games/count", function (req, res) {
     }, function (error, response, body) {
 
         if (!error && response.statusCode == 200) {
-            // Body contains CODE SUCCESS
-            res.json(JSON.parse(body));
+            var result = JSON.parse(body);
+            winston.info(result.count);
+            res.json(result);
         } else {
             winston.error(error);
             res.json(CODE.SERVER_ERROR);

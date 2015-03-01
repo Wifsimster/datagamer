@@ -25,8 +25,8 @@ div
             change="ajax.exec(newValue, oldValue)"
             selection-to-model="ajax.toModel(data, callback)"
             model-to-selection="ajax.toSelection(data, callback)")
-                lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate| date:'yyyy' }})
-                lx-select-choices  {{ $choice.name }} ({{ $choice.releaseDate| date:'yyyy' }}) - {{ $choice.percentage }}%
+                lx-select-selected {{ $selected.defaultTitle }} ({{ $selected.releaseDates[0].date | date:'yyyy' }})
+                lx-select-choices  {{ $choice.defaultTitle }} ({{ $choice.releaseDates[0].date | date:'yyyy' }}) - {{ $choice.percentage }}%
 
     .grid
         .grid__col6

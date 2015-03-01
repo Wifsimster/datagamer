@@ -15,7 +15,7 @@ var GameSchema = new Schema({
         thumbnails: [String],
         logos: [String],
         banners: [String],
-        fanArt: [String],
+        fanArts: [String],
         screenshots: [String],
         trailers: [String]
     },
@@ -34,6 +34,7 @@ var GameSchema = new Schema({
         score: Number,
         url: String
     },
+    versions: [{number: String, date: Date}],
     snatched: false,
     downloaded: false
 });
