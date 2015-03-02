@@ -403,6 +403,9 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
     };
 
     $scope.searchTorrents = function (id) {
+
+        LxProgressService.linear.show('#5fa2db', '#scan_progress_' + id);
+
         $http.get('/wanted/games/' + id).
             success(function (result) {
 
@@ -431,46 +434,55 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                                                 $http.get('/wanted/games').
                                                     success(function (result) {
                                                         $scope.wantedGames = result;
+                                                        LxProgressService.linear.hide();
                                                     }).
                                                     error(function (err) {
                                                         LxNotificationService.error(err);
+                                                        LxProgressService.linear.hide();
                                                     });
                                             }).
                                             error(function (err) {
                                                 //console.error(err);
                                                 LxNotificationService.error(err);
+                                                LxProgressService.linear.hide();
                                             });
                                     } else {
                                         LxNotificationService.error('No torrent added to Transmission !');
+                                        LxProgressService.linear.hide();
                                     }
                                 }).
                                 error(function (err) {
                                     LxNotificationService.error(err.message);
+                                    LxProgressService.linear.hide();
                                 });
 
                         }
                         if (result.code == 404) {
-                            LxNotificationService.error('No torrent found ' + selectedGame.name + ' !');
+                            LxNotificationService.error('No torrent found for ' + selectedGame.name + ' !');
+                            LxProgressService.linear.hide();
                         }
                     }).
                     error(function (err) {
                         //console.error(err);
                         LxNotificationService.error(err);
+                        LxProgressService.linear.hide();
                     });
             }).
             error(function (err) {
                 //console.error(err);
                 LxNotificationService.error(err);
+                LxProgressService.linear.hide();
             });
     };
 
-    $scope.updateGameInfo = function (datagamer_id) {
+    $scope.updateGameInfo = function (id, datagamer_id) {
 
-        LxProgressService.circular.show('#5fa2db', '#scan_progress');
+        LxProgressService.linear.show('#5fa2db', '#scan_progress_' + id);
 
         $http.get('/datagamer/game/info/' + datagamer_id).
             success(function (res) {
                 if (res.code == 200) {
+
                     // Save the datagamer id
                     res.game.datagamer_id = res.game._id;
                     res.game.name = res.game.defaultTitle;
@@ -488,31 +500,34 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                                     success(function (result) {
                                         if (result.code == 200) {
                                             $scope.wantedGames = result.games;
-                                            LxProgressService.circular.hide();
+                                            LxProgressService.linear.hide();
                                         } else {
                                             LxNotificationService.error(result.message);
+                                            LxProgressService.linear.hide();
                                         }
                                     }).
                                     error(function (err) {
                                         LxNotificationService.error(err);
-                                        LxProgressService.circular.hide();
+                                        LxProgressService.linear.hide();
                                     });
                             } else {
                                 LxNotificationService.error(res.message);
+                                LxProgressService.linear.hide();
                             }
                         })
                         .error(function (err) {
                             LxNotificationService.error(err);
-                            LxProgressService.circular.hide();
+                            LxProgressService.linear.hide();
                         });
                 } else {
                     LxNotificationService.error(res.message);
-                    LxProgressService.circular.hide();
+                    LxProgressService.linear.hide();
                 }
             }).
             error(function (err) {
                 //console.error(err);
                 LxNotificationService.error(err);
+                LxProgressService.linear.hide();
             });
     };
 

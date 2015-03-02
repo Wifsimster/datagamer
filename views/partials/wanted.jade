@@ -36,6 +36,7 @@ div
 
             ul.list
                 li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames")
+                    div(id="scan_progress_{{game._id}}")
 
                     span.label.label-warning(ng-show="game.snatched" style="float:right; margin-top:15px;") Snatched !
 
@@ -55,7 +56,7 @@ div
                                 .label.label-info {{game.editors[0].name}}
 
                     .list-secondary-tile
-                        button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game.datagamer_id)",
+                        button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game._id, game.datagamer_id)",
                         lx-tooltip="Reset video game information", tooltip-position="bottom", style="margin-right: 5px")
                             i.mdi.mdi--refresh
 
