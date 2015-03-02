@@ -92,6 +92,19 @@ function recursiveRename(i, config, files, callback) {
             //winston.info("Renamer --- Filename after multi : " + filename);
         }
 
+        // Detect potential release date
+        // (yyyy)
+        // Do it before version detection
+        var release_regex = /(\d{4})/;
+        var releaseDate = release_regex.exec(filename);
+        if (releaseDate) {
+            releaseDate = releaseDate[1];
+            game.releaseDate = releaseDate;
+            winston.info("Renamer --- Release date : " + releaseDate);
+            filename = filename.replace(release_regex, '');
+            //winston.info("Renamer --- Filename after release date : " + filename);
+        }
+
         // Detect potential version
         // 1.20.14
         var version_regex = /(\d+[[\.\d+]+]*)/;
@@ -102,18 +115,6 @@ function recursiveRename(i, config, files, callback) {
             winston.info("Renamer --- Version : " + version);
             filename = filename.replace(version_regex, '');
             //winston.info("Renamer --- Filename after version : " + filename);
-        }
-
-        // Detect potential release date
-        // (yyyy)
-        var release_regex = /(\d{4})/;
-        var releaseDate = release_regex.exec(filename);
-        if (releaseDate) {
-            releaseDate = releaseDate[1];
-            game.releaseDate = releaseDate;
-            winston.info("Renamer --- Release date : " + releaseDate);
-            filename = filename.replace(release_regex, '');
-            //winston.info("Renamer --- Filename after release date : " + filename);
         }
 
         // Detect potential language
@@ -147,7 +148,7 @@ function recursiveRename(i, config, files, callback) {
             }
         }
 
-        // Delete dot after version detection
+        // Delete dots after version detection
         filename = filename.replace(/\./, '');
 
         // Delete "()" after release date detection
