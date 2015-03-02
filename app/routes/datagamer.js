@@ -78,7 +78,7 @@ app.get("/datagamer/games/similar/:name", function (req, res) {
         }
     }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            res.send(JSON.parse(body));
+            res.json(JSON.parse(body));
         } else {
             winston.error(error);
             res.json(CODE.SERVER_ERROR);

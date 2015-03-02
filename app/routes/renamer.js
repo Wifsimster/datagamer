@@ -154,7 +154,7 @@ function recursiveRename(i, config, files, callback) {
         // Delete "()" after release date detection
         filename = filename.replace(/\(\)/, '');
 
-        winston.info("Renamer --- Searching for " + filename) + " on Datagamer...";
+        winston.info("Renamer --- Searching for " + filename + " on Datagamer...");
 
         // Search current video game on Datagamer
         request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + filename, {
@@ -167,7 +167,7 @@ function recursiveRename(i, config, files, callback) {
                 var result = JSON.parse(body);
 
                 if (result.code == 200) {
-                    //winston.info('Renamer - Game found on Datagamer : ');
+                    winston.info('Renamer --- Game found on Datagamer : ' + result.games.length);
 
                     var bestGame = {};
                     bestGame.percentage = 0;
@@ -182,12 +182,12 @@ function recursiveRename(i, config, files, callback) {
                     }
 
                     // Take highest score and rename the file
-                    winston.info('Renamer --- Highest similar game found : ' + bestGame.name);
+                    winston.info('Renamer --- Highest similar game found : ' + bestGame.defaultTitle);
 
                     // WINDOWS FIX, TO DELETE FOR UNIX USERS
                     //bestGame.name.replace(/:/,' ');
 
-                    var directory = config.renamer.to + '/' + bestGame.name + ' (' + new Date(bestGame.releaseDate).getFullYear() + ')';
+                    var directory = config.renamer.to + '/' + bestGame.defaultTitle + ' (' + new Date(bestGame.releaseDates[0].date).getFullYear() + ')';
                     winston.info('Renamer --- Try to create : ' + directory);
 
                     //try {
