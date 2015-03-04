@@ -55,6 +55,18 @@ div
                             li(style="display:inline; margin-right: 5px;" ng-show="game.editors[0].name")
                                 .label.label-info {{game.editors[0].name}}
 
+                        ul
+                            li(ng-repeat="torrent in game.torrents")
+                                ul
+                                    li(style="display:inline; margin-right: 5px;" ng-show="torrent.name")
+                                        .label.label-danger {{torrent.name}}
+                                    li(style="display:inline; margin-right: 5px;" ng-show="torrent.releaseDate")
+                                        .label.label-primary {{torrent.releaseDate}}
+                                    li(style="display:inline; margin-right: 5px;" ng-show="torrent.team")
+                                        .label.label-warning {{torrent.team}}
+                                    li(style="display:inline; margin-right: 5px;" ng-show="torrent.version")
+                                        .label.label-info {{torrent.version}}
+
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game._id, game.datagamer_id)",
                         lx-tooltip="Reset video game information", tooltip-position="bottom", style="margin-right: 5px")

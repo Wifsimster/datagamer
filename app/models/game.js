@@ -34,9 +34,18 @@ var GameSchema = new Schema({
         score: Number,
         url: String
     },
-    versions: [{number: String, date: Date}],
+
+    // Wanted info
     snatched: false,
-    downloaded: false
+    downloaded: false,
+
+    // Collection info
+    versions: String,
+    repack: String,
+    crack: String,
+    language: String,
+    multi: String,
+    team: String
 });
 
 module.exports = mongoose.model('Game', GameSchema);

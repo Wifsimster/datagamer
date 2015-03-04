@@ -544,40 +544,16 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
     // Get collection video games
     $http.get('/collection/games').
         success(function (result) {
-            //console.log(result);
-            $scope.games = result;
+            if (result.code == 200) {
+                $scope.games = result.games;
+            } else {
+                LxNotificationService.error(result.message);
+            }
         }).
         error(function (err) {
             //console.error(err);
             LxNotificationService.error(err);
         });
-
-    $scope.scanGames = function () {
-        LxProgressService.linear.show('#5fa2db', '#scan_progress');
-        LxNotificationService.info('Scan started...');
-
-        $http.get('/collection/games/scan').
-            success(function (result) {
-                LxProgressService.linear.hide();
-
-                // Refresh game list
-                $http.get('/collection/games').
-                    success(function (result) {
-                        //console.log(result);
-                        $scope.games = result;
-                        LxNotificationService.success('Scan ended. Collection updated !');
-                    }).
-                    error(function (err) {
-                        //console.error(err);
-                        LxNotificationService.error('Scan ended with error !');
-                    });
-            }).
-            error(function (err) {
-                //console.error(err);
-                LxProgressService.linear.hide();
-                LxNotificationService.error('Scan ended with error ! Need to check your conf.');
-            });
-    };
 
     $scope.postProcessing = function () {
         LxProgressService.linear.show('#5fa2db', '#scan_progress');
@@ -587,19 +563,26 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
             success(function (result) {
                 LxProgressService.linear.hide();
 
-                // Refresh game list
-                $http.get('/collection/games').
-                    success(function (result) {
-                        $scope.postProcessingResult = result;
-                        LxNotificationService.success('Post-processing ended. Collection updated !');
-                    }).
-                    error(function (err) {
-                        //console.error(err);
-                        LxNotificationService.error('Post-processing ended with error !');
-                    });
+                if (result.code == 201) {
+                    $scope.postProcessingResult = result;
+                    LxNotificationService.success('Post-processing ended !');
+
+                    $http.get('/collection/games').
+                        success(function (result) {
+                            if (result.code == 200) {
+                                $scope.games = result.games;
+                            } else {
+                                LxNotificationService.error(result.message);
+                            }
+                        }).
+                        error(function (err) {
+                            LxNotificationService.error(err);
+                        });
+                } else {
+                    LxNotificationService.error(result.message);
+                }
             }).
             error(function (err) {
-                //console.error(err);
                 LxProgressService.linear.hide();
                 LxNotificationService.error('Post-processing ended with error ! Need to check your conf.');
             });
@@ -609,17 +592,24 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
         // Delete game from collection database
         $http.delete('/collection/games/' + id).
             success(function (result) {
-                // If ok, refresh collection games list
-                $http.get('/collection/games').
-                    success(function (result) {
-                        $scope.games = result;
-                    }).
-                    error(function (err) {
-                        //console.error(err);
-                        LxNotificationService.error(err);
-                    });
-
-                LxNotificationService.success('Game deleted from collection !');
+                if (result.code == 204) {
+                    // If ok, refresh collection games list
+                    $http.get('/collection/games').
+                        success(function (result) {
+                            if (result.code == 200) {
+                                $scope.games = result.games;
+                            } else {
+                                LxNotificationService.error(result.message);
+                            }
+                        }).
+                        error(function (err) {
+                            //console.error(err);
+                            LxNotificationService.error(err);
+                        });
+                    LxNotificationService.success('Game deleted from collection !');
+                } else {
+                    LxNotificationService.error(result.message);
+                }
             }).
             error(function (err) {
                 //console.error(err);

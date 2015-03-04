@@ -7,6 +7,8 @@ var winston = require('winston');
 var Datastore = require('nedb');
 var collection_db = new Datastore('collection.nedb');
 
+var CODE = require('../../app/enums/codes');
+
 app.get("/collection/games/scan", function (req, res) {
 
     collection_db.loadDatabase();
@@ -22,7 +24,6 @@ app.get("/collection/games/scan", function (req, res) {
         winston.info('Scan ended !')
         res.send();
     });
-
 });
 
 // Recursive loop with callback to process correctly each filename
@@ -134,7 +135,8 @@ app.get("/collection/games", function (req, res) {
     collection_db.loadDatabase();
     //winston.info("Getting collection video games...");
     collection_db.find({}, function (err, games) {
-        res.send(games)
+        CODE.SUCCESS.games = games;
+        res.send(CODE.SUCCESS);
     });
 });
 
@@ -161,8 +163,11 @@ app.delete("/collection/games/:id", function (req, res) {
     var id = req.params.id;
 
     collection_db.remove({_id: id}, {}, function (err) {
-        if (!err)
-            res.json({message: "OK"});
+        if (!err) {
+            res.json(CODE.SUCCESS_DELETE);
+        } else {
+            res.json(CODE.BAD_REQUEST);
+        }
     });
 });
 

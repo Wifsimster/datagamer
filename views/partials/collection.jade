@@ -1,5 +1,4 @@
 div
-    button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanGames()", lx-tooltip="Detect your video games in your collection directory", tooltip-position="left") Scan your collection
     button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="postProcessing()", lx-tooltip="Post-processing downloaded video games", tooltip-position="left", style="margin-right:10px;") Post-processing
     .grid
         .grid__col6
@@ -17,8 +16,26 @@ div
                         img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://niesr.ac.uk/sites/default/files/styles/large/adaptive-image/public/default_images/thumbnail-default_2_0.jpg?itok=zti20ldd")
 
                     .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}})
-                        p(ng-show="game.genres[0].name || game.metacritic.score") {{game.genres[0].name}} - {{game.metacritic.score}}
-                        p(ng-show="game.developers[0].name || game.editors[0].name") {{game.developers[0].name}}, {{game.editors[0].name}}
+                        ul
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.metacritic.score")
+                                .label.label-danger {{game.metacritic.score}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.genres[0].name")
+                                .label.label-primary {{game.genres[0].name}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.developers[0].name")
+                                .label.label-warning {{game.developers[0].name}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.editors[0].name")
+                                .label.label-info {{game.editors[0].name}}
+                        ul
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.repack")
+                                .label.label-primary {{game.repack}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.crack")
+                                .label.label-primary {{game.crack}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.multi")
+                                .label.label-primary {{game.multi}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.team")
+                                .label.label-warning {{game.team}}
+                            li(style="display:inline; margin-right: 5px;" ng-show="game.version")
+                                .label.label-info {{game.version}}
 
                     .list-secondary-tile
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteGame(game._id)",
@@ -29,7 +46,7 @@ div
                 p.text-center.card(class="p+") No game found in your collection !
 
 
-md-bottom-sheet.md-list.md-has-header
+//md-bottom-sheet.md-list.md-has-header
     md-subheader Post-processing results
     md-list
         p {{ postProcessingResult }}

@@ -4,6 +4,8 @@ var request = require('request');
 var mkdirp = require('mkdirp');
 var winston = require('winston');
 
+var CODE = require('../../app/enums/codes');
+
 // Nedb - Embedded database package
 var Datastore = require('nedb');
 var collection_db = new Datastore('collection.nedb');
@@ -21,8 +23,8 @@ app.get("/renamer/games/postprocessing", function (req, res) {
     var files = getDirectories("\\" + config.renamer.from);
 
     recursiveRename(0, config, files, function () {
-        winston.info('Renamer - Scan ended !')
-        res.send();
+        winston.info('Renamer - Scan ended !');
+        res.json(CODE.SUCCESS_POST);
     });
 });
 
@@ -184,6 +186,39 @@ function recursiveRename(i, config, files, callback) {
                     // Take highest score and rename the file
                     winston.info('Renamer --- Highest similar game found : ' + bestGame.defaultTitle);
 
+                    winston.info(bestGame);
+
+                    // Add this game to collection database
+                    var collectionGame = {};
+                    // Info from Datagamer
+                    collectionGame.name = bestGame.defaultTitle;
+                    collectionGame.overview = bestGame.overview;
+                    collectionGame.media = {};
+                    collectionGame.media.thumbnails = bestGame.media.thumbnails;
+                    collectionGame.platforms = bestGame.platforms;
+                    collectionGame.genres = bestGame.genres;
+                    collectionGame.developers = bestGame.developers;
+                    collectionGame.editors = bestGame.editors;
+                    collectionGame.score = bestGame.score;
+
+                    // Info from torrent
+                    collectionGame.team = team;
+                    collectionGame.version = version;
+                    collectionGame.releaseDate = releaseDate;
+                    collectionGame.language = language;
+                    collectionGame.multi = multi;
+                    collectionGame.repack = repack;
+                    collectionGame.crack = crack;
+
+                    collection_db.insert(collectionGame, function (err) {
+                        if (err) {
+                            winston.error(err);
+                            callback();
+                        } else {
+                            winston.info('Collection game added !')
+                        }
+                    })
+
                     // WINDOWS FIX, TO DELETE FOR UNIX USERS
                     //bestGame.name.replace(/:/,' ');
 
@@ -201,11 +236,11 @@ function recursiveRename(i, config, files, callback) {
 
                     recursiveRename(i + 1, config, files, callback);
                 } else {
-                    console.error('Renamer - No game found on Datagamer for : ' + filename);
+                    winston.error('Renamer - No game found on Datagamer for : ' + filename);
                     recursiveRename(i + 1, config, files, callback);
                 }
             } else {
-                console.error('Renamer - No game found on Datagamer for : ' + filename);
+                winston.error('Renamer - No game found on Datagamer for : ' + filename);
                 recursiveRename(i + 1, config, files, callback);
             }
         });
