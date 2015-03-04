@@ -588,6 +588,61 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
             });
     };
 
+    $scope.updateGameInfo = function (id, datagamer_id) {
+
+        LxProgressService.linear.show('#5fa2db', '#scan_progress_' + id);
+
+        $http.get('/datagamer/game/info/' + datagamer_id).
+            success(function (res) {
+                if (res.code == 200) {
+
+                    console.log(res.game);
+
+                    // Save the datagamer id
+                    res.game.datagamer_id = res.game._id;
+                    res.game.name = res.game.defaultTitle;
+                    res.game.releaseDate = res.game.releaseDates[0].date;
+
+                    // Update wanted game info
+                    $http.put('/collection/games', res.game)
+                        .success(function (res) {
+                            if (res.code == 202) {
+                                // Get wanted video games
+                                $http.get('/collection/games').
+                                    success(function (result) {
+                                        if (result.code == 200) {
+                                            $scope.games = result.games;
+                                            LxProgressService.linear.hide();
+                                        } else {
+                                            LxNotificationService.error(result.message);
+                                            LxProgressService.linear.hide();
+                                        }
+                                    }).
+                                    error(function (err) {
+                                        LxNotificationService.error(err);
+                                        LxProgressService.linear.hide();
+                                    });
+                            } else {
+                                LxNotificationService.error(res.message);
+                                LxProgressService.linear.hide();
+                            }
+                        })
+                        .error(function (err) {
+                            LxNotificationService.error(err);
+                            LxProgressService.linear.hide();
+                        });
+                } else {
+                    LxNotificationService.error(res.message);
+                    LxProgressService.linear.hide();
+                }
+            }).
+            error(function (err) {
+                //console.error(err);
+                LxNotificationService.error(err);
+                LxProgressService.linear.hide();
+            });
+    };
+
     $scope.deleteGame = function (id) {
         // Delete game from collection database
         $http.delete('/collection/games/' + id).
@@ -606,7 +661,7 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                             //console.error(err);
                             LxNotificationService.error(err);
                         });
-                    LxNotificationService.success('Game deleted from collection !');
+                    LxNotificationService.notify('Game deleted from collection !', 'delete', false, 'grey');
                 } else {
                     LxNotificationService.error(result.message);
                 }

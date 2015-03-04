@@ -10,7 +10,9 @@ div
             h1.fs-title(ng-show="games.length > 0") Your video games
 
             ul.list
-                li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games")
+                li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games")
+                    div(id="scan_progress_{{game._id}}")
+
                     .list-primary-tile
                         img.list-primary-tile__img(ng-show="game.media.thumbnails[0]" ng-src="{{ game.media.thumbnails[0] }}")
                         img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://niesr.ac.uk/sites/default/files/styles/large/adaptive-image/public/default_images/thumbnail-default_2_0.jpg?itok=zti20ldd")
@@ -38,6 +40,9 @@ div
                                 .label.label-info {{game.version}}
 
                     .list-secondary-tile
+                        button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game._id, game.datagamer_id)",
+                        lx-tooltip="Add video game information", tooltip-position="bottom", style="margin-right: 5px")
+                            i.mdi.mdi--refresh
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteGame(game._id)",
                         lx-tooltip="Delete a game from collection database", tooltip-position="right")
                             i.mdi.mdi--delete

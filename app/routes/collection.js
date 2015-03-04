@@ -143,18 +143,25 @@ app.get("/collection/games", function (req, res) {
 app.post("/collection/games", function (req, res) {
     collection_db.loadDatabase();
     //winston.info(req.body);
-    collection_db.insert(req.body, function (err, newDoc) {
-        if (!err)
-            res.json({message: "OK"});
+    collection_db.insert(req.body, function (err, game) {
+        if (!err) {
+            CODE.SUCCESS_POST.game = game;
+            res.json(CODE.SUCCESS_POST);
+        } else {
+            res.json(CODE.BAD_REQUEST);
+        }
     });
 });
 
 app.put("/collection/games", function (req, res) {
     collection_db.loadDatabase();
-    //winston.info(req.body._id);
+
     collection_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
-        if (!err)
-            res.json({message: "OK"});
+        if (!err) {
+            res.json(CODE.SUCCESS_PUT);
+        } else {
+            res.json(CODE.BAD_REQUEST);
+        }
     });
 });
 

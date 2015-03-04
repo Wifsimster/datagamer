@@ -171,70 +171,94 @@ function recursiveRename(i, config, files, callback) {
                 if (result.code == 200) {
                     winston.info('Renamer --- Game found on Datagamer : ' + result.games.length);
 
-                    var bestGame = {};
-                    bestGame.percentage = 0;
+                    if (result.games.length > 0) {
+                        var bestGame = {};
+                        bestGame.percentage = 0;
 
-                    for (var j = 0; j < result.games.length; j++) {
+                        for (var j = 0; j < result.games.length; j++) {
 
-                        //winston.info('Renamer --- ' + result.games[j].name + ' - ' + result.games[j].percentage);
+                            //winston.info('Renamer --- ' + result.games[j].name + ' - ' + result.games[j].percentage);
 
-                        if (result.games[j].percentage > bestGame.percentage) {
-                            bestGame = result.games[j];
+                            if (result.games[j].percentage > bestGame.percentage) {
+                                bestGame = result.games[j];
+                            }
                         }
+
+                        // Take highest score and rename the file
+                        winston.info('Renamer --- Highest similar game found : ' + bestGame.defaultTitle);
+
+                        // Add this game to collection database
+                        var collectionGame = {};
+                        // Info from Datagamer
+                        collectionGame.datagamer_id = bestGame._id;
+                        collectionGame.name = bestGame.defaultTitle;
+                        collectionGame.overview = bestGame.overview;
+                        collectionGame.media = {};
+                        if (bestGame.media) {
+                            collectionGame.media.thumbnails = bestGame.media.thumbnails;
+                        }
+                        collectionGame.platforms = bestGame.platforms;
+                        collectionGame.genres = bestGame.genres;
+                        collectionGame.developers = bestGame.developers;
+                        collectionGame.editors = bestGame.editors;
+                        collectionGame.score = bestGame.score;
+                        if (bestGame.releaseDates) {
+                            collectionGame.releaseDate = bestGame.releaseDates[0].date;
+                        }
+
+                        // Info from torrent
+                        if (releaseDate) {
+                            collectionGame.releaseDate = releaseDate;
+                        }
+                        collectionGame.team = team;
+                        collectionGame.version = version;
+                        collectionGame.language = language;
+                        collectionGame.multi = multi;
+                        collectionGame.repack = repack;
+                        collectionGame.crack = crack;
+
+                        collection_db.find({name: collectionGame.name}, function (err, doc) {
+                            if (!err) {
+                                // If no game with this name exist in collection database
+                                if (doc.length == 0) {
+                                    // Add this new game to the collection database
+                                    collection_db.insert(collectionGame, function (err) {
+                                        if (err) {
+                                            winston.error(err);
+                                            callback();
+                                        } else {
+                                            winston.info('Collection game added !');
+                                            recursiveRename(i + 1, config, files, callback);
+                                        }
+                                    });
+                                } else {
+                                    winston.info(collectionGame.name + ' already exist in collection database !');
+                                    recursiveRename(i + 1, config, files, callback);
+                                }
+                            } else {
+                                winston.error(err);
+                                callback();
+                            }
+                        });
+
+                        // WINDOWS FIX, TO DELETE FOR UNIX USERS
+                        //bestGame.name.replace(/:/,' ');
+
+                        var directory = config.renamer.to + '/' + collectionGame.name + ' (' + new Date(collectionGame.releaseDate).getFullYear() + ')';
+                        winston.info('Renamer --- Try to create : ' + directory);
+
+                        //try {
+                        //    fs.mkdir(directory, 0777, function (err) {
+                        //        if (err)
+                        //            console.error(err);
+                        //    });
+                        //} catch (e) {
+                        //    if (e.code != 'EEXIST') console.error(e);
+                        //}
+                    } else {
+                        winston.info('Renamer - No game found on Datagamer for : ' + filename);
+                        recursiveRename(i + 1, config, files, callback);
                     }
-
-                    // Take highest score and rename the file
-                    winston.info('Renamer --- Highest similar game found : ' + bestGame.defaultTitle);
-
-                    winston.info(bestGame);
-
-                    // Add this game to collection database
-                    var collectionGame = {};
-                    // Info from Datagamer
-                    collectionGame.name = bestGame.defaultTitle;
-                    collectionGame.overview = bestGame.overview;
-                    collectionGame.media = {};
-                    collectionGame.media.thumbnails = bestGame.media.thumbnails;
-                    collectionGame.platforms = bestGame.platforms;
-                    collectionGame.genres = bestGame.genres;
-                    collectionGame.developers = bestGame.developers;
-                    collectionGame.editors = bestGame.editors;
-                    collectionGame.score = bestGame.score;
-
-                    // Info from torrent
-                    collectionGame.team = team;
-                    collectionGame.version = version;
-                    collectionGame.releaseDate = releaseDate;
-                    collectionGame.language = language;
-                    collectionGame.multi = multi;
-                    collectionGame.repack = repack;
-                    collectionGame.crack = crack;
-
-                    collection_db.insert(collectionGame, function (err) {
-                        if (err) {
-                            winston.error(err);
-                            callback();
-                        } else {
-                            winston.info('Collection game added !')
-                        }
-                    })
-
-                    // WINDOWS FIX, TO DELETE FOR UNIX USERS
-                    //bestGame.name.replace(/:/,' ');
-
-                    var directory = config.renamer.to + '/' + bestGame.defaultTitle + ' (' + new Date(bestGame.releaseDates[0].date).getFullYear() + ')';
-                    winston.info('Renamer --- Try to create : ' + directory);
-
-                    //try {
-                    //    fs.mkdir(directory, 0777, function (err) {
-                    //        if (err)
-                    //            console.error(err);
-                    //    });
-                    //} catch (e) {
-                    //    if (e.code != 'EEXIST') console.error(e);
-                    //}
-
-                    recursiveRename(i + 1, config, files, callback);
                 } else {
                     winston.error('Renamer - No game found on Datagamer for : ' + filename);
                     recursiveRename(i + 1, config, files, callback);
