@@ -156,10 +156,13 @@ function recursiveRename(i, config, files, callback) {
         // Delete "()" after release date detection
         filename = filename.replace(/\(\)/, '');
 
+        // Delete useless spaces
+        filename = filename.trim();
+
         winston.info("Renamer --- Searching for " + filename + " on Datagamer...");
 
         // Search current video game on Datagamer
-        request('http://localhost:' + config.general.port + '/datagamer/search/' + filename, {
+        request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + filename, {
             headers: {
                 "apiKey": config.search.datagamer.apikey
             }
@@ -177,7 +180,7 @@ function recursiveRename(i, config, files, callback) {
 
                         for (var j = 0; j < result.games.length; j++) {
 
-                            winston.info('Renamer ----- ' + result.games[j].defaultTitle + ' - ' + result.games[j].percentage);
+                            //winston.info('Renamer ----- ' + result.games[j].defaultTitle + ' - ' + result.games[j].percentage);
 
                             if (result.games[j].percentage > bestGame.percentage) {
                                 bestGame = result.games[j];
@@ -185,7 +188,7 @@ function recursiveRename(i, config, files, callback) {
                         }
 
                         // Take highest score and rename the file
-                        winston.info('Renamer --- Highest similar game found : ' + bestGame.defaultTitle);
+                        winston.info('Renamer --- Highest similar game found : ' + bestGame.defaultTitle + ' - ' + bestGame.percentage);
 
                         // Add this game to collection database
                         var collectionGame = {};
@@ -193,6 +196,7 @@ function recursiveRename(i, config, files, callback) {
                         collectionGame.datagamer_id = bestGame._id;
                         collectionGame.name = bestGame.defaultTitle;
                         collectionGame.overview = bestGame.overview;
+                        collectionGame.percentage = bestGame.percentage;
                         collectionGame.media = {};
                         if (bestGame.media) {
                             collectionGame.media.thumbnails = bestGame.media.thumbnails;

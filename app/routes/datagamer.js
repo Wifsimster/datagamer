@@ -71,7 +71,7 @@ app.get("/datagamer/games/similar/:name", function (req, res) {
 
     winston.info("Datagamer - Searching games similar to " + name);
 
-    request('http://' + config.search.datagamer.url + '/api/games/similar/by/75/for/' + name, {
+    request('http://' + config.search.datagamer.url + '/api/games/similar/by/80/for/' + name, {
         headers: {
             "apiKey": config.search.datagamer.apikey
         }
