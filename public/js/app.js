@@ -338,40 +338,45 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
             // Save the Datagamer id
             data.datagamer_id = data._id;
+            delete data._id;
             data.name = data.defaultTitle;
             data.releaseDate = data.releaseDates[0].date;
 
-            // Add new game to wanted database
-            $http.post('/wanted/games', data).
-                success(function (result) {
-                    //if (result.code == 412) {
-                    //    LxNotificationService.warning(data.name + ' already in wanted list !');
-                    //}
+            if (data.datagamer_id) {
+                // Add new game to wanted database
+                $http.post('/wanted/games', data).
+                    success(function (result) {
+                        //if (result.code == 412) {
+                        //    LxNotificationService.warning(data.name + ' already in wanted list !');
+                        //}
 
-                    // SUCCESS POST CODE
-                    if (result.code == 201) {
+                        // SUCCESS POST CODE
+                        if (result.code == 201) {
 
-                        LxNotificationService.success(result.game.name + ' added to wanted game !');
+                            LxNotificationService.success(result.game.name + ' added to wanted game !');
 
-                        $scope.updateGameInfo(result.game.datagamer_id);
+                            $scope.updateGameInfo(result.game._id, result.game.datagamer_id);
 
-                        // If ok, refresh wanted games list
-                        $http.get('/wanted/games').
-                            success(function (result) {
-                                if (result.code == 200) {
-                                    $scope.wantedGames = result.games;
-                                } else {
-                                    LxNotificationService.error(result.message);
-                                }
-                            }).
-                            error(function (err) {
-                                LxNotificationService.error(err);
-                            });
-                    }
-                }).
-                error(function (err) {
-                    LxNotificationService.error(err);
-                });
+                            // If ok, refresh wanted games list
+                            $http.get('/wanted/games').
+                                success(function (result) {
+                                    if (result.code == 200) {
+                                        $scope.wantedGames = result.games;
+                                    } else {
+                                        LxNotificationService.error(result.message);
+                                    }
+                                }).
+                                error(function (err) {
+                                    LxNotificationService.error(err);
+                                });
+                        } else {
+                            LxNotificationService.error(result.message);
+                        }
+                    }).
+                    error(function (err) {
+                        LxNotificationService.error(err);
+                    });
+            }
         }
     };
 
@@ -485,40 +490,43 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
                     // Save the datagamer id
                     res.game.datagamer_id = res.game._id;
+                    delete res.game._id;
                     res.game.name = res.game.defaultTitle;
                     res.game.releaseDate = res.game.releaseDates[0].date;
 
                     // Reset snatched info
                     res.game.snatched = false;
 
-                    // Update wanted game info
-                    $http.put('/wanted/games', res.game)
-                        .success(function (res) {
-                            if (res.code == 202) {
-                                // Get wanted video games
-                                $http.get('/wanted/games').
-                                    success(function (result) {
-                                        if (result.code == 200) {
-                                            $scope.wantedGames = result.games;
+                    if (res.game.datagamer_id) {
+                        // Update wanted game info
+                        $http.put('/wanted/games', res.game)
+                            .success(function (res) {
+                                if (res.code == 202) {
+                                    // Get wanted video games
+                                    $http.get('/wanted/games').
+                                        success(function (result) {
+                                            if (result.code == 200) {
+                                                $scope.wantedGames = result.games;
+                                                LxProgressService.linear.hide();
+                                            } else {
+                                                LxNotificationService.error(result.message);
+                                                LxProgressService.linear.hide();
+                                            }
+                                        }).
+                                        error(function (err) {
+                                            LxNotificationService.error(err);
                                             LxProgressService.linear.hide();
-                                        } else {
-                                            LxNotificationService.error(result.message);
-                                            LxProgressService.linear.hide();
-                                        }
-                                    }).
-                                    error(function (err) {
-                                        LxNotificationService.error(err);
-                                        LxProgressService.linear.hide();
-                                    });
-                            } else {
-                                LxNotificationService.error(res.message);
+                                        });
+                                } else {
+                                    LxNotificationService.error(res.message);
+                                    LxProgressService.linear.hide();
+                                }
+                            })
+                            .error(function (err) {
+                                LxNotificationService.error(err);
                                 LxProgressService.linear.hide();
-                            }
-                        })
-                        .error(function (err) {
-                            LxNotificationService.error(err);
-                            LxProgressService.linear.hide();
-                        });
+                            });
+                    }
                 } else {
                     LxNotificationService.error(res.message);
                     LxProgressService.linear.hide();

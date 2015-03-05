@@ -24,7 +24,7 @@ app.get("/datagamer/search/:name", function (req, res) {
             var result = JSON.parse(body);
 
             if (result.code == 200) {
-                winston.info('Datagamer - Games found : ' + result.games);
+                //winston.info('Datagamer - Games found : ' + result.games);
                 CODE.SUCCESS.games = result.games;
                 res.send(CODE.SUCCESS);
             } else {
@@ -63,7 +63,6 @@ app.get("/datagamer/games/count", function (req, res) {
     })
 });
 
-
 app.get("/datagamer/games/similar/:name", function (req, res) {
 
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
@@ -72,7 +71,7 @@ app.get("/datagamer/games/similar/:name", function (req, res) {
 
     winston.info("Datagamer - Searching games similar to " + name);
 
-    request('http://' + config.search.datagamer.url + '/api/games/similar/by/5/for/' + name, {
+    request('http://' + config.search.datagamer.url + '/api/games/similar/by/75/for/' + name, {
         headers: {
             "apiKey": config.search.datagamer.apikey
         }

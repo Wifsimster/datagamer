@@ -159,7 +159,7 @@ function recursiveRename(i, config, files, callback) {
         winston.info("Renamer --- Searching for " + filename + " on Datagamer...");
 
         // Search current video game on Datagamer
-        request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + filename, {
+        request('http://localhost:' + config.general.port + '/datagamer/search/' + filename, {
             headers: {
                 "apiKey": config.search.datagamer.apikey
             }
@@ -177,7 +177,7 @@ function recursiveRename(i, config, files, callback) {
 
                         for (var j = 0; j < result.games.length; j++) {
 
-                            //winston.info('Renamer --- ' + result.games[j].name + ' - ' + result.games[j].percentage);
+                            winston.info('Renamer ----- ' + result.games[j].defaultTitle + ' - ' + result.games[j].percentage);
 
                             if (result.games[j].percentage > bestGame.percentage) {
                                 bestGame = result.games[j];
