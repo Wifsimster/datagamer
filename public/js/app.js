@@ -575,6 +575,7 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                     $scope.postProcessingResult = result;
                     LxNotificationService.success('Post-processing ended !');
 
+                    // Update collection games list
                     $http.get('/collection/games').
                         success(function (result) {
                             if (result.code == 200) {
@@ -608,6 +609,7 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
 
                     // Save the datagamer id
                     res.game.datagamer_id = res.game._id;
+                    delete res.game._id;
                     res.game.name = res.game.defaultTitle;
                     res.game.releaseDate = res.game.releaseDates[0].date;
 

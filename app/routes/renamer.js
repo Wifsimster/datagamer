@@ -151,7 +151,7 @@ function recursiveRename(i, config, files, callback) {
         }
 
         // Delete dots after version detection
-        filename = filename.replace(/\./, '');
+        filename = filename.replace(/\./, ' ');
 
         // Delete "()" after release date detection
         filename = filename.replace(/\(\)/, '');
