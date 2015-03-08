@@ -103,9 +103,12 @@ app.get("/datagamer/game/info/:id", function (req, res) {
         if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
 
+            winston.info(result);
+
             if (result.code == 200) {
-                winston.info('Datagamer responds with game info !');
-                res.json(result);
+                winston.info('Datagamer responds with game info from ' + result.game.name);
+                CODE.SUCCESS.game = result.game;
+                res.json(CODE.SUCCESS);
             } else {
                 res.json(CODE.SERVER_ERROR);
             }

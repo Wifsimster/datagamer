@@ -35,7 +35,7 @@ div
             h1.fs-title(ng-show="wantedGames.length > 0") Wanted video games
 
             ul.list
-                li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames")
+                li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames | orderBy:'name'")
                     div(id="scan_progress_{{game._id}}")
 
                     span.label.label-warning(ng-show="game.snatched" style="float:right; margin-top:15px;") Snatched !

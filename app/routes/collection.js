@@ -156,6 +156,8 @@ app.post("/collection/games", function (req, res) {
 app.put("/collection/games", function (req, res) {
     collection_db.loadDatabase();
 
+    winston.debug('Collection - Update game : ' + req.body);
+
     collection_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
         if (!err) {
             res.json(CODE.SUCCESS_PUT);

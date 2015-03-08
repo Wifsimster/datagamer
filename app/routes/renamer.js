@@ -192,6 +192,18 @@ function recursiveRename(i, config, files, callback) {
 
                         // Add this game to collection database
                         var collectionGame = {};
+
+                        // Info from torrent
+                        if (releaseDate) {
+                            collectionGame.releaseDate = releaseDate;
+                        }
+                        collectionGame.team = team;
+                        collectionGame.version = version;
+                        collectionGame.language = language;
+                        collectionGame.multi = multi;
+                        collectionGame.repack = repack;
+                        collectionGame.crack = crack;
+
                         // Info from Datagamer
                         collectionGame.datagamer_id = bestGame._id;
                         collectionGame.name = bestGame.defaultTitle;
@@ -209,17 +221,6 @@ function recursiveRename(i, config, files, callback) {
                         if (bestGame.releaseDates) {
                             collectionGame.releaseDate = bestGame.releaseDates[0].date;
                         }
-
-                        // Info from torrent
-                        if (releaseDate) {
-                            collectionGame.releaseDate = releaseDate;
-                        }
-                        collectionGame.team = team;
-                        collectionGame.version = version;
-                        collectionGame.language = language;
-                        collectionGame.multi = multi;
-                        collectionGame.repack = repack;
-                        collectionGame.crack = crack;
 
                         collection_db.find({name: collectionGame.name}, function (err, doc) {
                             if (!err) {
@@ -248,8 +249,8 @@ function recursiveRename(i, config, files, callback) {
                         // WINDOWS FIX, TO DELETE FOR UNIX USERS
                         //bestGame.name.replace(/:/,' ');
 
-                        var directory = config.renamer.to + '/' + collectionGame.name + ' (' + new Date(collectionGame.releaseDate).getFullYear() + ')';
-                        winston.info('Renamer --- Try to create : ' + directory);
+                        //var directory = config.renamer.to + '/' + collectionGame.name + ' (' + new Date(collectionGame.releaseDate).getFullYear() + ')';
+                        //winston.info('Renamer --- Try to create : ' + directory);
 
                         //try {
                         //    fs.mkdir(directory, 0777, function (err) {
