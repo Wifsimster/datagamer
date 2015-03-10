@@ -1,4 +1,4 @@
-var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute']);
+var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute', 'treeControl']);
 
 // App configuration
 app.config(['$routeProvider', '$locationProvider',

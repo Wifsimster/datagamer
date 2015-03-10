@@ -37,6 +37,11 @@ html(lang="en", ng-app="StarterApp")
         script(src="/js/controllers/settings.js")
         script(src="/js/controllers/wanted.js")
 
+        // Tree control
+        script(src="/bower_components/angular-tree-control/angular-tree-control.js")
+        link(rel="stylesheet" href="/bower_components/angular-tree-control/css/tree-control.css")
+        link(rel="stylesheet" href="/bower_components/angular-tree-control/css/tree-control-attribute.css")
+
     body(ng-controller="AppCtrl", layout="row")
         // Sidebar left
         md-sidenav.md-sidenav-left.md-whiteframe-z2(layout="column", md-component-id="left", md-is-locked-open="$mdMedia('gt-sm')", tabindex="-1")
