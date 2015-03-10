@@ -160,7 +160,63 @@ app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, L
             // Trigger update config file
             $scope.update($scope.config);
         });
-    }
+    };
+
+    $scope.scanTreeViewDialog = function (ev) {
+        $mdDialog.show({
+            controller: TreeViewDialogController,
+            templateUrl: 'partials/treeViewDialog.jade',
+            targetEvent: ev
+        }).then(function(node){
+            // Set selected directory
+            $scope.config.collection.directory = node.rel_path;
+
+            // Trigger update config file
+            $scope.update($scope.config);
+        });
+    };
+
+    $scope.transmissionTreeViewDialog = function (ev) {
+        $mdDialog.show({
+            controller: TreeViewDialogController,
+            templateUrl: 'partials/treeViewDialog.jade',
+            targetEvent: ev
+        }).then(function(node){
+            // Set selected directory
+            $scope.config.transmission.directory = node.rel_path;
+
+            // Trigger update config file
+            $scope.update($scope.config);
+        });
+    };
+
+    $scope.renamerFromTreeViewDialog = function (ev) {
+        $mdDialog.show({
+            controller: TreeViewDialogController,
+            templateUrl: 'partials/treeViewDialog.jade',
+            targetEvent: ev
+        }).then(function(node){
+            // Set selected directory
+            $scope.config.renamer.from = node.rel_path;
+
+            // Trigger update config file
+            $scope.update($scope.config);
+        });
+    };
+
+    $scope.renamerToTreeViewDialog = function (ev) {
+        $mdDialog.show({
+            controller: TreeViewDialogController,
+            templateUrl: 'partials/treeViewDialog.jade',
+            targetEvent: ev
+        }).then(function(node){
+            // Set selected directory
+            $scope.config.renamer.to = node.rel_path;
+
+            // Trigger update config file
+            $scope.update($scope.config);
+        });
+    };
 });
 
 function RequestDialogController($scope, $rootScope, $mdDialog, $http, LxProgressService, LxNotificationService) {
@@ -173,9 +229,8 @@ function RequestDialogController($scope, $rootScope, $mdDialog, $http, LxProgres
             $http.post('/datagamer/request/user', {name: $scope.username, email: $scope.email}).
                 success(function (result) {
 
-                    console.log(result);
-
                     LxProgressService.linear.hide();
+
                     if (result.code == 201) {
                         $mdDialog.hide();
                         LxNotificationService.success('Your API key has been generated and saved !');

@@ -59,11 +59,15 @@ form(name="configForm")
             div(class="p+")
                 strong.fs-headline.display-block Collection
                 strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
-                md-input-container
-                    lx-text-field(label="Directory to scan *", lx-tooltip="Directory of your games collection", tooltip-position="bottom")
-                        input(type="text" ng-model="config.collection.directory", ng-blur="update(config)", required)
-                        div(ng-messages="configForm.config.collection.directory.$error", ng-show="configForm.config.collection.directory.$dirty")
-                            div(ng-messages="required") This is required !
+                .grid
+                    .grid__col10
+                        lx-text-field(label="Directory to scan *", lx-tooltip="Directory of your games collection", tooltip-position="bottom")
+                            input(type="text" ng-model="config.collection.directory", ng-blur="update(config)", required)
+                            div(ng-messages="configForm.config.collection.directory.$error", ng-show="configForm.config.collection.directory.$dirty")
+                                div(ng-messages="required") This is required !
+                    .grid__col2
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="scanTreeViewDialog()") Select
+
                 .checkbox.mt
                     input.checkbox__input(type="checkbox", id="collection_cron", ng-model="config.collection.scan_auto", ng-change="update(config)")
                     label.checkbox__label(for="collection_cron") Automatically scan
@@ -181,29 +185,31 @@ form(name="configForm")
             .grid
                 #transmission_progress
             div(class="p+")
-                .grid__col8
-                    lx-text-field(label="Address", lx-tooltip="Address, usually localhost", tooltip-position="bottom")
-                        input(type="text", ng-model="config.transmission.address", ng-blur="update(config)")
-                .grid__col4
-                    lx-text-field(label="Port", lx-tooltip="Port, usually 9091", tooltip-position="bottom")
-                        input(type="text", ng-model="config.transmission.port", ng-blur="update(config)")
-            div(class="p+")
-                .grid__col12
+                .grid
+                    .grid__col8
+                        lx-text-field(label="Address", lx-tooltip="Address, usually localhost", tooltip-position="bottom")
+                            input(type="text", ng-model="config.transmission.address", ng-blur="update(config)")
+                    .grid__col4
+                        lx-text-field(label="Port", lx-tooltip="Port, usually 9091", tooltip-position="bottom")
+                            input(type="text", ng-model="config.transmission.port", ng-blur="update(config)")
+                .grid
                     lx-text-field(label="Rpc url", lx-tooltip="Change if you don't run Transmission RPC at the default url.", tooltip-position="bottom")
                         input(type="text", ng-model="config.transmission.rpc_url", ng-blur="update(config)")
-
-                .grid__col6
-                    lx-text-field(label="Username")
-                        input(type="text", ng-model="config.transmission.username", ng-blur="update(config)")
-                .grid__col6
-                    lx-text-field(label="Password")
-                        input(type="text", ng-model="config.transmission.password", ng-blur="update(config)")
-            div(class="p+")
-                .grid__col12
-                    lx-text-field(label="Directory to download")
-                        input(type="text", ng-model="config.transmission.directory", ng-blur="update(config)",
-                        lx-tooltip="Transmission'll download to this directory. Keep empty for default Transmission directory.", tooltip-position="bottom")
-
+                .grid
+                    .grid__col6
+                        lx-text-field(label="Username")
+                            input(type="text", ng-model="config.transmission.username", ng-blur="update(config)")
+                    .grid__col6
+                        lx-text-field(label="Password")
+                            input(type="text", ng-model="config.transmission.password", ng-blur="update(config)")
+                .grid
+                    .grid__col10
+                        lx-text-field(label="Directory to download")
+                            input(type="text", ng-model="config.transmission.directory", ng-blur="update(config)",
+                            lx-tooltip="Transmission'll download to this directory. Keep empty for default Transmission directory.", tooltip-position="bottom")
+                    .grid__col2
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="transmissionTreeViewDialog()") Select
+                .grid
                     div.checkbox.mt
                         input.checkbox__input(type="checkbox", id="remove_torrent", ng-model="config.transmission.remove_torrent", ng-change="update(config)")
                         label.checkbox__label(for="remove_torrent") Remove torrent
@@ -218,25 +224,34 @@ form(name="configForm")
                 strong.fs-headline.display-block Renamer
                 strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
 
-                lx-text-field(label="From a directory...")
-                    input(type="text", ng-model="config.renamer.from", lx-tooltip="Folder where Datagamer searches for video games.", tooltip-position="bottom", ng-blur="update(config)")
-                lx-text-field(label="To a directory...")
-                    input(type="text", ng-model="config.renamer.to", lx-tooltip="Folder where the video games are moved to.", tooltip-position="bottom", ng-blur="update(config)")
-
-                .checkbox.mt
-                    input.checkbox__input(type="checkbox", id="renamer_cron", ng-model="config.renamer.scan_auto", ng-change="update(config)")
-                    label.checkbox__label(for="renamer_cron") Automatically scan
-                    span.checkbox__help Automatically search for downloaded video games.
-
-                .grid__col6
-                    lx-text-field(label="Folder naming", disabled="true")
-                        input(type="text", ng-model="config.renamer.folder_naming", ng-disabled="true")
-                .grid__col6
-                    lx-text-field(label="Run every")
-                        input(type="text", ng-model="config.renamer.detect_minute", ng-blur="update(config)",
-                        lx-tooltip="Detect downloaded video games every X minutes.", tooltip-position="bottom")
-                .grid__col12
-                    div.checkbox.mt
-                        input.checkbox__input(type="checkbox", id="unrar", ng-model="config.renamer.unrar", ng-change="update(config)")
-                        label.checkbox__label(for="unrar") Unrar
-                        span.checkbox__help Extract rar files if found.
+                .grid
+                    .grid__col10
+                        lx-text-field(label="From a directory...")
+                            input(type="text", ng-model="config.renamer.from", lx-tooltip="Folder where Datagamer searches for video games.", tooltip-position="bottom", ng-blur="update(config)")
+                    .grid__col2
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="renamerFromTreeViewDialog()") Select
+                .grid
+                    .grid__col10
+                        lx-text-field(label="To a directory...")
+                            input(type="text", ng-model="config.renamer.to", lx-tooltip="Folder where the video games are moved to.", tooltip-position="bottom", ng-blur="update(config)")
+                    .grid__col2
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="renamerToTreeViewDialog()") Select
+                .grid
+                    .checkbox.mt
+                        input.checkbox__input(type="checkbox", id="renamer_cron", ng-model="config.renamer.scan_auto", ng-change="update(config)")
+                        label.checkbox__label(for="renamer_cron") Automatically scan
+                        span.checkbox__help Automatically search for downloaded video games.
+                .grid
+                    .grid__col6
+                        lx-text-field(label="Folder naming", disabled="true")
+                            input(type="text", ng-model="config.renamer.folder_naming", ng-disabled="true")
+                    .grid__col6
+                        lx-text-field(label="Run every")
+                            input(type="text", ng-model="config.renamer.detect_minute", ng-blur="update(config)",
+                            lx-tooltip="Detect downloaded video games every X minutes.", tooltip-position="bottom")
+                .grid
+                    .grid__col12
+                        div.checkbox.mt
+                            input.checkbox__input(type="checkbox", id="unrar", ng-model="config.renamer.unrar", ng-change="update(config)")
+                            label.checkbox__label(for="unrar") Unrar
+                            span.checkbox__help Extract rar files if found.
