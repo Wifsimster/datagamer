@@ -55,7 +55,7 @@ app.get("/directories/", function (req, res) {
 
     var srcpath = req.param('path');
 
-    console.log('Search directories for : ' + srcpath);
+    winston.debug('Search directories for : ' + srcpath);
 
     // Get directories
     var directories = getDirectories(srcpath);
@@ -65,7 +65,7 @@ app.get("/directories/", function (req, res) {
     if (directories) {
         for (var i = 0; i < directories.length; i++) {
 
-            console.log('Search children for directory : ' + directories[i]);
+            winston.debug('Search children for directory : ' + directories[i]);
 
             // If children
             var has_children = getChildren(srcpath + '/' + directories[i]);
@@ -74,16 +74,15 @@ app.get("/directories/", function (req, res) {
             //console.log(json_directories);
 
             if (has_children && has_children.length > 0) {
-                console.log('-- ' + directories[i] + ' has children');
+                winston.debug('-- ' + directories[i] + ' has children');
                 json_directories.push({name: directories[i], rel_path: srcpath + '/' + directories[i], children: [{}]});
             } else {
-                console.log('-- ' + directories[i] + ' don\'t have children');
+                winston.debug('-- ' + directories[i] + ' don\'t have children');
                 json_directories.push({name: directories[i], rel_path: srcpath + '/' + directories[i]});
             }
         }
-
     } else {
-        console.error('No directory !');
+        winston.error('No directory !');
     }
 
     //console.log(json_directories);
@@ -95,8 +94,8 @@ function getDirectories(srcpath) {
     try {
         return fs.readdirSync(srcpath).filter(function (file) {
             try {
-                console.log("-- getDirectories for " + path.join(srcpath, file));
-                return fs.statSync(path.join(srcpath, file)).isDirectory();
+            //console.log("-- getDirectories for " + path.join(srcpath, file));
+            return fs.statSync(path.join(srcpath, file)).isDirectory();
             } catch (err) {
                 console.error(err);
             }
@@ -110,8 +109,8 @@ function getChildren(srcpath) {
     try {
         return fs.readdirSync(srcpath).filter(function (file) {
             try {
-                //console.log("-- getchildren for " + path.join(srcpath, file));
-                return fs.statSync(path.join(srcpath, file)).isDirectory();
+            //console.log("-- getchildren for " + path.join(srcpath, file));
+            return fs.statSync(path.join(srcpath, file)).isDirectory();
             } catch (err) {
                 console.error(err);
             }

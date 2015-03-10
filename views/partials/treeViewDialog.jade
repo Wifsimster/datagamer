@@ -1,0 +1,16 @@
+md-dialog(aria-label="Request an API key for Datagamer", RequestDialogCtrl)
+    form(name="requestForm")
+        md-content
+            md-subheader.md-sticky-no-effect Select a directory
+
+            lx-text-field(label="Directory")
+                input(type="text" ng-model="srcpath" ng-change="srcpathChange()")
+
+            div(style="max-height: 400px;")
+                treecontrol.tree-classic(tree-model="dataForTheTree" options="treeOptions" on-selection="showSelected(node)"
+                on-node-toggle="showToggle(node, expanded)"  selected-node="node1") {{node.name}}
+
+                #progress
+
+        .md-actions(layout="row")
+            md-button(ng-click="cancel()") Cancel

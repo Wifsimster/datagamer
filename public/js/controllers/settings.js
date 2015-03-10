@@ -146,6 +146,21 @@ app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, L
             targetEvent: ev
         });
     }
+
+    // Show tree view dialog
+    $scope.debugTreeViewDialog = function (ev) {
+        $mdDialog.show({
+            controller: TreeViewDialogController,
+            templateUrl: 'partials/treeViewDialog.jade',
+            targetEvent: ev
+        }).then(function(node){
+            // Set selected directory
+            $scope.config.advanced.debug_directory = node.rel_path;
+
+            // Trigger update config file
+            $scope.update($scope.config);
+        });
+    }
 });
 
 function RequestDialogController($scope, $rootScope, $mdDialog, $http, LxProgressService, LxNotificationService) {
@@ -182,6 +197,94 @@ function RequestDialogController($scope, $rootScope, $mdDialog, $http, LxProgres
     }
 
     $scope.requestCancel = function () {
+        $mdDialog.cancel();
+    };
+}
+
+function TreeViewDialogController($scope, $rootScope, $mdDialog, $http, LxProgressService, LxNotificationService) {
+    $scope.treeOptions = {
+        nodeChildren: "children",
+        dirSelectable: true,
+        injectClasses: {
+            ul: "a1",
+            li: "a2",
+            liSelected: "a7",
+            iExpanded: "a3",
+            iCollapsed: "a4",
+            iLeaf: "a5",
+            label: "a6",
+            labelSelected: "a8"
+        }
+    }
+
+    $scope.srcpath = "c:/";
+
+    // Initialize tree view to root path
+    $http.get('/directories/?path=' + $scope.srcpath).
+        success(function (response) {
+            if (response.code == 200) {
+                $scope.dataForTheTree = response.directories;
+            } else {
+                LxNotificationService.error(response.message);
+            }
+        }).
+        error(function () {
+            callback();
+        });
+
+    // Recursive populate
+    populateChildren = function (tree, node, response) {
+        if (tree) {
+            for (var i = 0; i < tree.length; i++) {
+                if (tree[i].rel_path == node.rel_path) {
+                    tree[i].children = response.directories;
+                    return;
+                }
+                populateChildren(tree[i].children, node, response);
+            }
+        }
+    };
+
+    $scope.showToggle = function (node, expanded) {
+
+        LxProgressService.circular.show('#5fa2db', '#progress');
+
+        $http.get('/directories/?path=' + node.rel_path).
+            success(function (response) {
+                if (response.code == 200) {
+
+                    // Populate children
+                    populateChildren($scope.dataForTheTree, node, response);
+                } else {
+                    LxNotificationService.error(response.message);
+                }
+                LxProgressService.circular.hide();
+            }).
+            error(function () {
+                callback();
+            });
+
+    };
+
+    $scope.showSelected = function (node) {
+        $mdDialog.hide(node);
+    };
+
+    $scope.srcpathChange = function () {
+        $http.get('/directories/?path=' + $scope.srcpath).
+            success(function (response) {
+                if (response.code == 200) {
+                    $scope.dataForTheTree = response.directories;
+                } else {
+                    LxNotificationService.error(response.message);
+                }
+            }).
+            error(function () {
+                callback();
+            });
+    };
+
+    $scope.cancel = function () {
         $mdDialog.cancel();
     };
 }

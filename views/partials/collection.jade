@@ -9,12 +9,6 @@ div
 
             h1.fs-title(ng-show="games.length > 0") Your video games
 
-            input(ng-model="srcpath" ng-change="srcpathChange()")
-            treecontrol.tree-classic(tree-model="dataForTheTree" options="treeOptions" on-selection="showSelected(node)" on-node-toggle="showToggle(node, expanded)"  selected-node="node1") {{node.name}}
-
-            p {{ selectedNode }}
-
-
             ul.list
                 li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games | orderBy:'name'")
                     div(id="scan_progress_{{game._id}}")

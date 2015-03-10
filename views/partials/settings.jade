@@ -1,5 +1,6 @@
 form(name="configForm")
     .grid
+
         #General.grid__col4.card
             div(class="p+")
                 strong.fs-headline.display-block General
@@ -27,8 +28,12 @@ form(name="configForm")
                     input.checkbox__input(type="checkbox", id="debug", ng-model="config.advanced.debug", ng-change="update(config)")
                     label.checkbox__label(for="debug") Debug
                     span.checkbox__help Check for generate a debug file
-                lx-text-field(label="Log directory")
-                    input(type="text", ng-model="config.advanced.debug_directory", ng-blur="update(config)")
+                .grid
+                    .grid__col10
+                        lx-text-field(label="Log directory")
+                            input(type="text", ng-model="config.advanced.debug_directory", ng-blur="update(config)")
+                    .grid__col2
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="debugTreeViewDialog()") Select
 
         #Update.grid__col4.card
             div(class="p+")
