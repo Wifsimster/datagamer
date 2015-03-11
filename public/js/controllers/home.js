@@ -21,20 +21,6 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
             LxProgressService.circular.hide();
         });
 
-    $scope.parseTorrent = function (name) {
-        $http.get('renamer/parse/' + name).
-            success(function (res) {
-                if (res.code == 200) {
-                    console.log(res.game);
-                } else {
-                    LxNotificationService.error(res.message);
-                }
-            }).
-            error(function (err) {
-                LxNotificationService.error(err);
-            });
-    }
-
     $scope.add2Transmission = function (magnetLink) {
         $http.post('/transmission/add', {url: magnetLink}).
             success(function (result) {

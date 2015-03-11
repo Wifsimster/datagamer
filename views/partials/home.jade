@@ -2,22 +2,23 @@ div
     .grid
         .grid__col6
 
-            h1 ThePirateBay Top 10
+            .fs-title ThePirateBay Top 10
 
             #torrents_progress
 
-            div(style="max-height: 350px;" lx-scrollbar)
+            div
                 ul.list
                     li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="torrent in torrents | orderBy:'seeders' | limitTo:10")
                         .list-primary-tile
 
-                        .list-content-tile.list-content-tile--one-line {{torrent.name}} - {{torrent.uploadDate}}
-                            p {{torrent.size}} | {{torrent.seeders}} | {{torrent.leechers}}
+                        .list-content-tile.list-content-tile--one-line {{torrent.name}}
+                            br
+                            .label.label-info(style="display:inline; margin-right: 5px;" lx-tooltip="Release date", tooltip-position="bottom") {{torrent.uploadDate}}
+                            .label.label-danger(style="display:inline; margin-right: 5px;" lx-tooltip="Size", tooltip-position="bottom") {{torrent.size}}
+                            .label.label-primary(style="display:inline; margin-right: 5px;" lx-tooltip="Seeders", tooltip-position="bottom"){{torrent.seeders}}
+                            .label.label-warning(style="display:inline; margin-right: 5px;" lx-tooltip="Leechers", tooltip-position="bottom") {{torrent.leechers}}
 
                         .list-secondary-tile
-                            button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="parseTorrent(torrent.name)",
-                            lx-tooltip="Refresh", tooltip-position="right")
-                                i.mdi.mdi--refresh
                             button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="add2Transmission(torrent.magnetLink)",
                             lx-tooltip="Add to Transmission", tooltip-position="right")
                                 i.mdi.mdi--add
