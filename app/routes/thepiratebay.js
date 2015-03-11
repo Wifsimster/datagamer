@@ -5,21 +5,50 @@ var winston = require('winston');
 
 var CODE = require('../../app/enums/codes');
 
+// Test TPB communication
 app.get("/thepiratebay/test", function (req, res) {
 
-    // Open config.ini
-    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+    winston.info("TPB - Test call");
 
     tpb.recentTorrents()
-        .then(function (results) {
-            res.send(results);
+        .then(function () {
+            res.json(CODE.SUCCESS);
         })
-        .catch(function () {
-            console.error(err);
-            res.send(err);
+        .catch(function (err) {
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
         });
 });
 
+// Get the top 10 actual favorite video games on TPB
+app.get("/thepiratebay/top", function (req, res) {
+
+    winston.info("TPB - Getting TOP torrents");
+
+    tpb.topTorrents('400')
+        .then(function (results) {
+
+
+            winston.info(results);
+
+            winston.info("TPB - Top torrent OK");
+            var favorite_games = [];
+
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].subcategory.name == "PC") {
+                    favorite_games.push(results[i]);
+                }
+            }
+
+            winston.info("TPB - Filtering PC torrents OK");
+            CODE.SUCCESS.torrents = favorite_games;
+            res.json(CODE.SUCCESS);
+        })
+        .catch(function () {
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
+        });
+});
 
 // Example :
 //    name: 'Far.Cry.4.[v1.5].Repack-R.G.Mechanics',
@@ -124,18 +153,18 @@ app.get("/thepiratebay/search/:name", function (req, res) {
                 if (favorite_torrent) {
                     winston.info("TPB - Return torrent is : " + favorite_torrent.name);
                     CODE.SUCCESS.torrent = favorite_torrent;
-                    res.send(CODE.SUCCESS);
+                    res.json(CODE.SUCCESS);
                 } else {
                     winston.info('TPB - No torrent found for ' + name + ' !');
-                    res.send(CODE.NOT_FOUND);
+                    res.json(CODE.NOT_FOUND);
                 }
             } else {
                 winston.info('TPB - No torrent found for ' + name + ' !');
-                res.send(CODE.NOT_FOUND);
+                res.json(CODE.NOT_FOUND);
             }
         })
         .catch(function () {
-            console.error(err);
-            res.send(err);
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
         });
 });

@@ -26,11 +26,11 @@ app.get("/transmission/test", function (req, res) {
     transmission.get(function (err, data) {
         if (err) {
             winston.error(err);
-            res.send(CODE.BAD_REQUEST);
+            res.json(CODE.BAD_REQUEST);
         }
 
         winston.info("Transmission - Get torrent list for test !");
-        res.send(CODE.SUCCESS);
+        res.json(CODE.SUCCESS);
     });
 });
 

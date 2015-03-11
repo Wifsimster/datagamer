@@ -4,6 +4,10 @@ var app = angular.module('StarterApp', ['ngMaterial', 'lumx', 'ngRoute', 'treeCo
 app.config(['$routeProvider', '$locationProvider',
     function ($routeProvider, $locationProvider) {
         $routeProvider
+            .when('/', {
+                templateUrl: '/partials/home',
+                controller: 'HomeCtrl'
+            })
             .when('/collection', {
                 templateUrl: '/partials/collection',
                 controller: 'CollectionCtrl'
