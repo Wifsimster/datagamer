@@ -22,15 +22,14 @@ var transmission = new Transmission({
 
 // Check if Transmission is OK
 app.get("/transmission/test", function (req, res) {
-
     transmission.get(function (err, data) {
         if (err) {
             winston.error(err);
             res.json(CODE.BAD_REQUEST);
+        } else {
+            winston.info("Transmission - Get torrent list for test !");
+            res.json(CODE.SUCCESS);
         }
-
-        winston.info("Transmission - Get torrent list for test !");
-        res.json(CODE.SUCCESS);
     });
 });
 
@@ -45,14 +44,13 @@ app.post("/transmission/add", function (req, res) {
         if (err) {
             winston.error(err);
             res.json(CODE.BAD_REQUEST);
+        } else {
+            winston.info('Transmission - New torrent added - ID: ' + result.name);
+            CODE.SUCCESS_POST.torrent = result;
+            res.json(CODE.SUCCESS_POST);
         }
-
-        winston.info('Transmission - New torrent added - ID: ' + result.name);
-        CODE.SUCCESS_POST.torrent = result;
-        res.json(CODE.SUCCESS_POST);
     });
 });
-
 
 // Remove torrent to Transmission
 app.delete("/transmission/remove/:id", function (req, res) {
@@ -64,9 +62,9 @@ app.delete("/transmission/remove/:id", function (req, res) {
         if (err) {
             winston.error(err);
             res.json(CODE.BAD_REQUEST);
+        } else {
+            winston.info('Transmission - Torrent removed with success !');
+            res.json(CODE.SUCCESS_DELETE);
         }
-
-        winston.info('Transmission - Torrent removed with success !');
-        res.json(CODE.SUCCESS_DELETE);
     });
 });
