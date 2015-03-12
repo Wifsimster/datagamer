@@ -1,6 +1,6 @@
 div
     .grid
-        .grid__col6
+        .grid__col6.card(class="p+")
 
             .fs-title ThePirateBay Top 10
 
@@ -9,8 +9,6 @@ div
             div
                 ul.list
                     li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="torrent in torrents | orderBy:'seeders' | limitTo:10")
-                        .list-primary-tile
-
                         .list-content-tile.list-content-tile--one-line {{torrent.name}}
                             br
                             .label.label-info(style="display:inline; margin-right: 5px;" lx-tooltip="Release date", tooltip-position="bottom") {{torrent.uploadDate}}
