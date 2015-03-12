@@ -37,16 +37,21 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
         list: [],
         update: function (newFilter, oldFilter) {
             if (newFilter) {
+
                 $scope.ajax.loading = true;
+                LxProgressService.linear.show('#5fa2db', '#scan_progress');
+
                 $http.get("/datagamer/search/" + escape(newFilter)).
                     success(function (data) {
                         //console.log('Datagmer response !');
                         $scope.ajax.list = data.games;
                         $scope.ajax.loading = false;
+                        LxProgressService.linear.hide();
                     }).
                     error(function (err) {
                         //console.error(err);
                         $scope.ajax.loading = false;
+                        LxProgressService.linear.hide();
                     });
             }
             else {
@@ -257,10 +262,5 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                 LxNotificationService.error(err);
                 LxProgressService.linear.hide();
             });
-    };
-
-    $scope.scanNewReleases = function () {
-        //console.log('Start new relealses scan...');
-        LxNotificationService.success('Starting new releases scan...');
     };
 });

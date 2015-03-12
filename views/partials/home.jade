@@ -1,10 +1,12 @@
 div
     .grid
-        .grid__col6.card(class="p+")
+        .grid__col6(ng-hide="torrents.length > 0")
+            br
+            #torrents_progress
+
+        .grid__col6.card(class="p+" ng-show="torrents.length > 0")
 
             .fs-title ThePirateBay Top 10
-
-            #torrents_progress
 
             div
                 ul.list
