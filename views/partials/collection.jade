@@ -1,16 +1,13 @@
 div
-    button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="postProcessing()", lx-tooltip="Post-processing downloaded video games", tooltip-position="left", style="margin-right:10px;") Post-processing
     .grid
-        .grid__col6
-
-            br
-
+        .grid__col6.card(class="p+")
+            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="postProcessing()", lx-tooltip="Post-processing downloaded video games", tooltip-position="left", style="margin-right:10px;") Post-processing
             #scan_progress
 
             h1.fs-title(ng-show="games.length > 0") Your video games
 
             ul.list
-                li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games | orderBy:'name'")
+                li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games | orderBy:'name'")
                     div(id="scan_progress_{{game._id}}")
 
                     .list-primary-tile

@@ -1,6 +1,7 @@
 app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxProgressService) {
 
     $scope.wantedGames = [];
+    $scope.datagamerCount = -1;
 
     // Get wanted video games
     $http.get('/wanted/games').
@@ -24,6 +25,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                 LxProgressService.circular.hide();
             } else {
                 LxNotificationService.error('Datagamer - ' + result.message);
+                $scope.datagamerCount = null;
             }
         }).
         error(function (err) {

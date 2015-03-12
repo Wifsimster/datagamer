@@ -1,18 +1,28 @@
 div
-    button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanNewReleases()") Scan for new releases
     .grid
-        .grid__col6
+        .grid__col6(class="p+" ng-show="datagamerCount == -1")
             #datagamer_progress
-            div.tc-white-1(class="p+ bgc-blue-500" ng-show="datagamerCount")
+        .grid__col6.card
+            div.tc-white-1(class="p+ bgc-blue-500" ng-show="datagamerCount != -1")
                 p Datagamer API has currently <strong>{{ datagamerCount }}</strong> video games on his database and counting...
                 p If video game does not exist in the list, Datagamer API will automatically search the game on the internet and added it to his database !
                 p You just need to make an other research to see the game appear ;)
 
-        //.grid__col7(ng-hide="datagamerCount")
+        .grid__col6.card(ng-hide="datagamerCount")
             div.tc-white-1(class="p+ bgc-red-200")
                 p Something is not right with Datagamer ! Please, check your settings.
+
+    br
+
     .grid
-        .grid__col6
+        .grid__col6.card(class="p+")
+
+            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scanNewReleases()") Scan for new releases
+
+            h1.fs-title(ng-show="wantedGames.length > 0") Wanted video games
+
+            #scan_progress
+
             lx-select(
             placeholder="Search a video game...",
             loading="{{ ajax.loading }}",
@@ -28,14 +38,8 @@ div
                 lx-select-selected {{ $selected.defaultTitle }} ({{ $selected.releaseDates[0].date | date:'yyyy' }})
                 lx-select-choices  {{ $choice.defaultTitle }} ({{ $choice.releaseDates[0].date | date:'yyyy' }}) - {{ $choice.percentage }}%
 
-    .grid
-        .grid__col6
-            #scan_progress
-
-            h1.fs-title(ng-show="wantedGames.length > 0") Wanted video games
-
             ul.list
-                li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames | orderBy:'name'")
+                li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames | orderBy:'name'")
                     div(id="scan_progress_{{game._id}}")
 
                     span.label.label-warning(ng-show="game.snatched" style="float:right; margin-top:15px;") Snatched !

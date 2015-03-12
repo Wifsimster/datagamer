@@ -18,9 +18,9 @@ app.get("/renamer/games/postprocessing", function (req, res) {
 
     // TODO : Need to detect network or not
 
-    winston.info("Renamer - Scan \\" + config.renamer.from);
+    winston.info("Renamer - Scan " + config.renamer.from);
 
-    var files = getDirectories("\\" + config.renamer.from);
+    var files = getDirectories(config.renamer.from);
 
     recursiveRename(0, config, files, function () {
         winston.info('Renamer - Scan ended !');
@@ -164,121 +164,114 @@ function extractInfoFromName(name) {
     return game;
 }
 
-// Compile info from torrent file and Datagamer database
-function parseNameToGame(filename) {
-    collection_db.loadDatabase();
-    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
-
-    var game = extractInfoFromName(filename)
-
-    winston.info("Renamer --- Searching for " + game.name + " on Datagamer...");
-
-    // Search current video game on Datagamer
-    request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + game.name, {
-        headers: {
-            "apiKey": config.search.datagamer.apikey
-        }
-    }, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-
-            var result = JSON.parse(body);
-
-            if (result.code == 200) {
-                winston.info('Renamer --- Game found on Datagamer : ' + result.games.length);
-
-                if (result.games.length > 0) {
-                    var bestGame = {};
-                    bestGame.percentage = 0;
-
-                    for (var j = 0; j < result.games.length; j++) {
-
-                        //winston.info('Renamer ----- ' + result.games[j].defaultTitle + ' - ' + result.games[j].percentage);
-
-                        if (result.games[j].percentage > bestGame.percentage) {
-                            bestGame = result.games[j];
-                        }
-                    }
-
-                    // Take highest score and rename the file
-                    winston.info('Renamer --- Highest similar game found : ' + bestGame.defaultTitle + ' - ' + bestGame.percentage);
-
-                    // Info from Datagamer
-                    game.datagamer_id = bestGame._id;
-                    game.name = bestGame.defaultTitle;
-                    game.overview = bestGame.overview;
-                    game.percentage = bestGame.percentage;
-                    game.media = {};
-                    if (bestGame.media) {
-                        game.media.thumbnails = bestGame.media.thumbnails;
-                    }
-                    game.platforms = bestGame.platforms;
-                    game.genres = bestGame.genres;
-                    game.developers = bestGame.developers;
-                    game.editors = bestGame.editors;
-                    game.score = bestGame.score;
-                    if (bestGame.releaseDates) {
-                        game.releaseDate = bestGame.releaseDates[0].date;
-                    }
-
-                    return game;
-                }
-
-                return null;
-            }
-
-            return null;
-        }
-
-        return null;
-    });
-}
-
 // Recursive rename
 function recursiveRename(i, config, files, callback) {
     if (i < files.length) {
 
         var file = files[i];
 
-        var collectionGame = parseNameToGame(file);
+        collection_db.loadDatabase();
+        var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
-        collection_db.find({name: collectionGame.name}, function (err, doc) {
-            if (!err) {
-                // If no game with this name exist in collection database
-                if (doc.length == 0) {
-                    // Add this new game to the collection database
-                    collection_db.insert(collectionGame, function (err) {
-                        if (err) {
-                            winston.error(err);
-                            callback();
-                        } else {
-                            winston.info('Collection game added !');
-                            recursiveRename(i + 1, config, files, callback);
+        var game = extractInfoFromName(file)
+
+        winston.info("Renamer --- Searching for " + game.name + " on Datagamer...");
+
+        // Search current video game on Datagamer
+        request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + game.name, {
+            headers: {
+                "apiKey": config.search.datagamer.apikey
+            }
+        }, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+
+                var result = JSON.parse(body);
+
+                if (result.code == 200) {
+                    winston.info('Renamer --- Game found on Datagamer : ' + result.games.length);
+
+                    if (result.games.length > 0) {
+                        var bestGame = {};
+                        bestGame.percentage = 0;
+
+                        for (var j = 0; j < result.games.length; j++) {
+
+                            //winston.info('Renamer ----- ' + result.games[j].defaultTitle + ' - ' + result.games[j].percentage);
+
+                            if (result.games[j].percentage > bestGame.percentage) {
+                                bestGame = result.games[j];
+                            }
                         }
-                    });
+
+                        // Take highest score and rename the file
+                        winston.info('Renamer --- Highest similar game found : ' + bestGame.defaultTitle + ' - ' + bestGame.percentage);
+
+                        // Info from Datagamer
+                        game.datagamer_id = bestGame._id;
+                        game.name = bestGame.defaultTitle;
+                        game.overview = bestGame.overview;
+                        game.percentage = bestGame.percentage;
+                        game.media = {};
+                        if (bestGame.media) {
+                            game.media.thumbnails = bestGame.media.thumbnails;
+                        }
+                        game.platforms = bestGame.platforms;
+                        game.genres = bestGame.genres;
+                        game.developers = bestGame.developers;
+                        game.editors = bestGame.editors;
+                        game.score = bestGame.score;
+                        if (bestGame.releaseDates) {
+                            game.releaseDate = bestGame.releaseDates[0].date;
+                        }
+
+                        collection_db.find({name: game.name}, function (err, doc) {
+                            if (!err) {
+                                // If no game with this name exist in collection database
+                                if (doc.length == 0) {
+                                    // Add this new game to the collection database
+                                    collection_db.insert(game, function (err) {
+                                        if (err) {
+                                            winston.error(err);
+                                            callback();
+                                        } else {
+                                            winston.info('Renamer -- ' + game.name + ' added to collection !');
+                                            recursiveRename(i + 1, config, files, callback);
+                                        }
+                                    });
+                                } else {
+                                    winston.info('Renamer -- ' + game.name + ' already exist in collection database !');
+                                    recursiveRename(i + 1, config, files, callback);
+                                }
+                            } else {
+                                winston.error(err);
+                                callback();
+                            }
+                        });
+
+                        // WINDOWS FIX, TO DELETE FOR UNIX USERS
+                        //bestGame.name.replace(/:/,' ');
+
+                        //var directory = config.renamer.to + '/' + collectionGame.name + ' (' + new Date(collectionGame.releaseDate).getFullYear() + ')';
+                        //winston.info('Renamer --- Try to create : ' + directory);
+
+                        //try {
+                        //    fs.mkdir(directory, 0777, function (err) {
+                        //        if (err)
+                        //            winston.error(err);
+                        //    });
+                        //} catch (e) {
+                        //    if (e.code != 'EEXIST') winston.error(e);
+                        //}
+                    } else {
+                        callback();
+                    }
                 } else {
-                    winston.info(collectionGame.name + ' already exist in collection database !');
-                    recursiveRename(i + 1, config, files, callback);
+                    callback();
                 }
             } else {
-                winston.error(err);
                 callback();
             }
         });
-
-        // WINDOWS FIX, TO DELETE FOR UNIX USERS
-        //bestGame.name.replace(/:/,' ');
-
-        //var directory = config.renamer.to + '/' + collectionGame.name + ' (' + new Date(collectionGame.releaseDate).getFullYear() + ')';
-        //winston.info('Renamer --- Try to create : ' + directory);
-
-        //try {
-        //    fs.mkdir(directory, 0777, function (err) {
-        //        if (err)
-        //            console.error(err);
-        //    });
-        //} catch (e) {
-        //    if (e.code != 'EEXIST') console.error(e);
-        //}
     } else {
         callback();
     }
@@ -307,7 +300,7 @@ function getFiles(dir, files_) {
             }
         }
     } catch (err) {
-        console.error(err);
+        winston.error(err);
     }
     return files_;
 }
@@ -334,7 +327,7 @@ function getDirectories(dir, files_) {
             }
         }
     } catch (err) {
-        console.error(err);
+        winston.error(err);
     }
     return files_;
 }
