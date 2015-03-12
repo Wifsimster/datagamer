@@ -34,8 +34,8 @@ app.get("/renamer/parse/:name", function (req, res) {
     res.json(CODE.SUCCESS);
 });
 
-// Parse a torrent filename to a complete object Game
-function parseNameToGame(name) {
+// Extract info from filename under Game object
+function extractInfoFromName(name) {
     collection_db.loadDatabase();
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
@@ -158,10 +158,23 @@ function parseNameToGame(name) {
     // Delete useless spaces
     filename = filename.trim();
 
-    winston.info("Renamer --- Searching for " + filename + " on Datagamer...");
+    // Set cleanup name
+    game.name = filename;
+
+    return game;
+}
+
+// Compile info from torrent file and Datagamer database
+function parseNameToGame(filename) {
+    collection_db.loadDatabase();
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+    var game = extractInfoFromName(filename)
+
+    winston.info("Renamer --- Searching for " + game.name + " on Datagamer...");
 
     // Search current video game on Datagamer
-    request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + filename, {
+    request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + game.name, {
         headers: {
             "apiKey": config.search.datagamer.apikey
         }
