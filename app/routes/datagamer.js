@@ -26,10 +26,10 @@ app.get("/datagamer/search/:name", function (req, res) {
             if (result.code == 200) {
                 //winston.info('Datagamer - Games found : ' + result.games);
                 CODE.SUCCESS.games = result.games;
-                res.send(CODE.SUCCESS);
+                res.json(CODE.SUCCESS);
             } else {
                 winston.info('Datagamer - No game found for : ' + name);
-                res.send(CODE.NOT_FOUND);
+                res.json(CODE.NOT_FOUND);
             }
         } else {
             winston.error(error);
@@ -102,9 +102,6 @@ app.get("/datagamer/game/info/:id", function (req, res) {
     }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
-
-            winston.info(result);
-
             if (result.code == 200) {
                 winston.info('Datagamer responds with game info from ' + result.game.name);
                 CODE.SUCCESS.game = result.game;

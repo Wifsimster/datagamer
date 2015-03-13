@@ -40,7 +40,13 @@ app.post("/transmission/add", function (req, res) {
 
     winston.info("Transmission - Try to add '" + url);
 
-    transmission.addUrl(url, function (err, result) {
+    var options = {};
+
+    if (config.transmission.directory) {
+        options = {"download-dir": config.transmission.directory};
+    }
+
+    transmission.addUrl(url, options, function (err, result) {
         if (err) {
             winston.error(err);
             res.json(CODE.BAD_REQUEST);

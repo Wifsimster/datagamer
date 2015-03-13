@@ -24,7 +24,7 @@ div
                 li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in wantedGames | orderBy:'name'")
                     div(id="scan_progress_{{game._id}}")
 
-                    span.label.label-warning(ng-show="game.snatched" style="float:right; margin-top:15px;") Snatched !
+                    span.label.label-warning(ng-show="game.snatched" style="float:right; margin:30px 100px 0 0;") Snatched !
 
                     .list-primary-tile
                         img.list-primary-tile__img(ng-show="game.media.thumbnails[0]" ng-src="{{ game.media.thumbnails[0] }}")
