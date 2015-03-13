@@ -25,12 +25,13 @@ module.exports.start = function () {
             // Get wanted games list
             request('http://localhost:' + config.general.port + '/wanted/games', function (error, response, body) {
                 if (!error && response.statusCode == 200) {
+                    var result = JSON.parse(body);
 
-                    var games = JSON.parse(body);
+                    winston.info("CRON Search - " + result.games.length + " wanted games found !")
 
-                    for (var i = 0; i < games.length; i++) {
+                    for (var i = 0; i < result.games.length; i++) {
 
-                        var game = games[i];
+                        var game = result.games[i];
 
                         // If game is not already added to Transmission
                         if (!game.snatched) {
@@ -60,35 +61,37 @@ module.exports.start = function () {
                                                         winston.info("CRON Search - Torrent added to Transmission : " + result.torrent.name);
 
                                                         wanted_db.loadDatabase();
-                                                        winston.info('Updating wanted game info ' + game.name + '...');
+                                                        winston.info('CRON Search - Updating wanted game info ' + game.name + '...');
 
                                                         // Update wanted game info
                                                         game.snatched = true;
                                                         wanted_db.update({name: game.name}, game, function (err, newDoc) {
                                                             if (!err) {
-                                                                winston.info(game.name + ' set as snatched !');
+                                                                winston.info('CRON Search - ' + game.name + ' set as snatched !');
                                                             } else {
-                                                                console.error(err);
+                                                                winston.error("CRON Search - " + error);
                                                             }
                                                         });
 
                                                     } else {
-                                                        console.error(error);
+                                                        winston.error("CRON Search - " + error);
                                                     }
                                                 } else {
-                                                    console.error(error);
+                                                    winston.error("CRON Search - " + error);
                                                 }
                                             });
                                         }
                                     }
                                 } else {
-                                    console.error(error);
+                                    winston.error("CRON Search - " + error);
                                 }
                             });
                         } else {
-                            winston.info("No wanted game to search !");
+                            winston.info("CRON Search - " + game.name + " already snatched !");
                         }
                     }
+                } else {
+                    winston.error("CRON Search - " + error);
                 }
             });
         }, null, true, "Europe/Paris");

@@ -109,11 +109,11 @@ app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, L
         $http.get('/transmission/test').
             success(function (result) {
                 if (result.code == 200) {
-                    LxProgressService.linear.hide();
                     LxNotificationService.success('Transmission is OK');
                 } else {
                     LxNotificationService.error('Something is wrong with Transmission configuration !');
                 }
+                LxProgressService.linear.hide();
             }).
             error(function (err) {
                 console.error(err);

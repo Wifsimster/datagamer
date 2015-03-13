@@ -1,6 +1,5 @@
 form(name="configForm")
     .grid
-
         #General.grid__col4.card
             div(class="p+")
                 strong.fs-headline.display-block General
@@ -33,7 +32,7 @@ form(name="configForm")
                         lx-text-field(label="Log directory")
                             input(type="text", ng-model="config.advanced.debug_directory", ng-blur="update(config)")
                     .grid__col2
-                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="debugTreeViewDialog()") Select
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="debugTreeViewDialog()" style="margin-top:30px") Select
 
         #Update.grid__col4.card
             div(class="p+")
@@ -66,7 +65,7 @@ form(name="configForm")
                             div(ng-messages="configForm.config.collection.directory.$error", ng-show="configForm.config.collection.directory.$dirty")
                                 div(ng-messages="required") This is required !
                     .grid__col2
-                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="scanTreeViewDialog()") Select
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="scanTreeViewDialog()" style="margin-top:30px") Select
 
                 .checkbox.mt
                     input.checkbox__input(type="checkbox", id="collection_cron", ng-model="config.collection.scan_auto", ng-change="update(config)")
@@ -100,14 +99,12 @@ form(name="configForm")
                     input(type="text" ng-model="config.search.datagamer.apikey", ng-blur="update(config)")
 
         #ThePirateBay.grid__col4.card
+            #thepiratebay_progress
             div(class="p+")
                 button.btn.btn--m.btn--black.btn--raised(lx-ripple, style="float:right", ng-click="thepiratebay_test()") Test
                 strong.fs-headline.display-block ThePirateBay
                 a.fs-subhead.tc-black-2.display-block(ng-href="https://thepiratebay.se/") ThePirateBay
                 strong.fs-subhead.tc-black-2.display-block Torrents provider
-                .grid
-                    #thepiratebay_progress
-
                 .grid
                     .checkbox.mt
                         input.checkbox__input(type="checkbox", id="search_cron", ng-model="config.search.scan_auto", ng-change="update(config)")
@@ -154,13 +151,12 @@ form(name="configForm")
                         input(type="text" ng-model="config.thepiratebay.filters.leechers", ng-blur="update(config)")
 
         #Transmission.grid__col4.card
+            #transmission_progress
             div(class="p+")
                 button.btn.btn--m.btn--red.btn--raised(lx-ripple, style="float:right", ng-click="transmission_test()") Test
                 strong.fs-headline.display-block Transmission
                 a.fs-subhead.tc-black-2.display-block(ng-href="https://www.transmissionbt.com/") Transmission
                 strong.fs-subhead.tc-black-2.display-block BitTorrent client for downloading torrents
-                .grid
-                    #transmission_progress
                 .grid
                     .grid__col8
                         lx-text-field(label="Address", lx-tooltip="Address, usually localhost", tooltip-position="bottom")
@@ -184,7 +180,7 @@ form(name="configForm")
                             input(type="text", ng-model="config.transmission.directory", ng-blur="update(config)",
                             lx-tooltip="Transmission'll download to this directory. Keep empty for default Transmission directory.", tooltip-position="bottom")
                     .grid__col2
-                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="transmissionTreeViewDialog()") Select
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="transmissionTreeViewDialog()" style="margin-top:30px") Select
                 .grid
                     .grid__col6
                         div.checkbox.mt
@@ -207,13 +203,13 @@ form(name="configForm")
                         lx-text-field(label="From a directory...")
                             input(type="text", ng-model="config.renamer.from", lx-tooltip="Folder where Datagamer searches for video games.", tooltip-position="bottom", ng-blur="update(config)")
                     .grid__col2
-                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="renamerFromTreeViewDialog()") Select
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="renamerFromTreeViewDialog()" style="margin-top:30px") Select
                 .grid
                     .grid__col10
                         lx-text-field(label="To a directory...")
                             input(type="text", ng-model="config.renamer.to", lx-tooltip="Folder where the video games are moved to.", tooltip-position="bottom", ng-blur="update(config)")
                     .grid__col2
-                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="renamerToTreeViewDialog()") Select
+                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="renamerToTreeViewDialog()" style="margin-top:30px") Select
                 .grid
                     .grid__col6
                         div.checkbox.mt

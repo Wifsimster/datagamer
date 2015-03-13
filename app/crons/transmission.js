@@ -17,14 +17,10 @@ module.exports.start = function () {
     if (config.transmission.remove_torrent) {
 
         // CRON conf
-        winston.info("-- Check for done torrents");
 
         // Check every hour for done torrents
         new CronJob('* * 1 * * * *', function () {
-
-            winston.info('CRON - Update :');
-
-
+            winston.info("CRON Transmission - Check for done torrents [TODO]");
         }, null, true, "Europe/Paris");
     }
 }
