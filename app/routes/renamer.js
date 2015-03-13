@@ -3,6 +3,7 @@ var ini = require('ini');
 var request = require('request');
 var mkdirp = require('mkdirp');
 var winston = require('winston');
+var path = require('path');
 
 var CODE = require('../../app/enums/codes');
 
@@ -312,11 +313,15 @@ function getFiles(dir, files_) {
  * @returns {*|Array}
  */
 function getDirectories(dir, files_) {
+
     files_ = files_ || [];
     if (typeof files_ === 'undefined') files_ = [];
-    var files = fs.readdirSync(dir);
 
     try {
+
+        //console.log(path.resolve(__dirname, dir));
+
+        var files = fs.readdirSync(dir);
         for (var i in files) {
             if (!files.hasOwnProperty(i)) continue;
             var name = dir + '/' + files[i];

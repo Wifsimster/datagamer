@@ -59,7 +59,6 @@ require('./app/routes/collection.js');
 require('./app/routes/cron.js');
 require('./app/routes/datagamer.js');
 require('./app/routes/generic.js');
-require('./app/routes/kickasstorrents.js');
 require('./app/routes/renamer.js');
 require('./app/routes/thepiratebay.js');
 require('./app/routes/transmission.js');

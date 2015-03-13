@@ -102,30 +102,14 @@ app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, L
             });
     }
 
-    $scope.kickasstorrents_test = function () {
-        LxProgressService.linear.show('#5fa2db', '#kickasstorrents_progress');
-
-        $http.get('/kickasstorrents/test').
-            success(function () {
-                LxProgressService.linear.hide();
-                LxNotificationService.warning('KickAssTorrents provider is not implemented yet.');
-            }).
-            error(function (err) {
-                console.error(err);
-                LxProgressService.linear.hide();
-                LxNotificationService.error('Something is wrong with KickAssTorrents configuration !');
-            });
-    }
-
     $scope.transmission_test = function () {
 
         LxProgressService.linear.show('#5fa2db', '#transmission_progress');
 
         $http.get('/transmission/test').
             success(function (result) {
-                LxProgressService.linear.hide();
-
-                if (result.torrents) {
+                if (result.code == 200) {
+                    LxProgressService.linear.hide();
                     LxNotificationService.success('Transmission is OK');
                 } else {
                     LxNotificationService.error('Something is wrong with Transmission configuration !');
@@ -153,7 +137,7 @@ app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, L
             controller: TreeViewDialogController,
             templateUrl: 'partials/treeViewDialog.jade',
             targetEvent: ev
-        }).then(function(node){
+        }).then(function (node) {
             // Set selected directory
             $scope.config.advanced.debug_directory = node.rel_path;
 
@@ -167,7 +151,7 @@ app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, L
             controller: TreeViewDialogController,
             templateUrl: 'partials/treeViewDialog.jade',
             targetEvent: ev
-        }).then(function(node){
+        }).then(function (node) {
             // Set selected directory
             $scope.config.collection.directory = node.rel_path;
 
@@ -181,7 +165,7 @@ app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, L
             controller: TreeViewDialogController,
             templateUrl: 'partials/treeViewDialog.jade',
             targetEvent: ev
-        }).then(function(node){
+        }).then(function (node) {
             // Set selected directory
             $scope.config.transmission.directory = node.rel_path;
 
@@ -195,7 +179,7 @@ app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, L
             controller: TreeViewDialogController,
             templateUrl: 'partials/treeViewDialog.jade',
             targetEvent: ev
-        }).then(function(node){
+        }).then(function (node) {
             // Set selected directory
             $scope.config.renamer.from = node.rel_path;
 
@@ -209,7 +193,7 @@ app.controller('SettingsCtrl', function ($scope, $rootScope, $http, $mdDialog, L
             controller: TreeViewDialogController,
             templateUrl: 'partials/treeViewDialog.jade',
             targetEvent: ev
-        }).then(function(node){
+        }).then(function (node) {
             // Set selected directory
             $scope.config.renamer.to = node.rel_path;
 

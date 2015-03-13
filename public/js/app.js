@@ -64,7 +64,7 @@ app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', '$mdSidenav
         }, {
             title: "Settings",
             url: "settings",
-            subnav: ["General", "Advanced", "Update", "Collection", "Search", "Providers", "Transmission", "Renamer"]
+            subnav: ["General", "Advanced", "Update", "Collection", "Datagamer", "ThePirateBay", "Transmission", "Renamer"]
         }];
 
     // Hide sidebar left on action
