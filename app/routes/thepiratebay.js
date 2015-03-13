@@ -27,10 +27,6 @@ app.get("/thepiratebay/top", function (req, res) {
 
     tpb.topTorrents('400')
         .then(function (results) {
-
-
-            winston.info(results);
-
             winston.info("TPB - Top torrent OK");
             var favorite_games = [];
 

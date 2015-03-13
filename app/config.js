@@ -91,7 +91,7 @@ module.exports.init = function () {
         config.ranamer.scan_auto = true;
         config.renamer.folder_naming = "<name> (<year>)";
         config.renamer.detect_minute = "15";
-        config.renamer.unrar = false;
+        config.renamer.unzip = false;
 
         // Write in config.ini file
         fs.writeFileSync('./config.ini', ini.stringify(config));

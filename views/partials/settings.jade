@@ -213,9 +213,9 @@ form(name="configForm")
                 .grid
                     .grid__col6
                         div.checkbox.mt
-                            input.checkbox__input(type="checkbox", id="unrar", ng-model="config.renamer.unrar", ng-change="update(config)")
-                            label.checkbox__label(for="unrar") Unrar
-                            span.checkbox__help Extract rar files if found.
+                            input.checkbox__input(type="checkbox", id="unzip", ng-model="config.renamer.unzip", ng-change="update(config)")
+                            label.checkbox__label(for="unzip") Unzip
+                            span.checkbox__help Extract zip files if found.
                     .grid__col6
                         lx-text-field(label="Folder naming", disabled="true")
                             input(type="text", ng-model="config.renamer.folder_naming", ng-disabled="true")

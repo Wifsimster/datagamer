@@ -5,10 +5,10 @@ var CronJob = require('cron').CronJob;
 var winston = require('winston');
 
 module.exports.start = function () {
-// Open conf file
+    // Open conf file
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
-// Renamer cron
+    // Renamer cron
     if (config.renamer.scan_auto) {
 
         // CRON conf

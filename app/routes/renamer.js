@@ -4,6 +4,7 @@ var request = require('request');
 var mkdirp = require('mkdirp');
 var winston = require('winston');
 var path = require('path');
+var unzip = require('unzip');
 
 var CODE = require('../../app/enums/codes');
 
@@ -314,13 +315,12 @@ function getFiles(dir, files_) {
  */
 function getDirectories(dir, files_) {
 
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
     files_ = files_ || [];
     if (typeof files_ === 'undefined') files_ = [];
 
     try {
-
-        //console.log(path.resolve(__dirname, dir));
-
         var files = fs.readdirSync(dir);
         for (var i in files) {
             if (!files.hasOwnProperty(i)) continue;
@@ -328,7 +328,21 @@ function getDirectories(dir, files_) {
             if (fs.statSync(name).isDirectory()) {
                 files_.push(name);
             } else {
-                getFiles(name, files_);
+                // If this is a zip file and user want to unzip it
+                if (config.renamer.unzip && name.match(/.*\.zip$/)) {
+                    // Extract zip file
+                    winston.info('Unzip ' + name + ' to : ' + dir);
+                    fs.createReadStream(name).pipe(unzip.Extract({path: dir + '/'}));
+
+                    // Delete zip file
+                    fs.unlink(name, function (err) {
+                        if (!err) {
+                            winston.info('Delete ' + name);
+                        } else {
+                            throw err;
+                        }
+                    });
+                }
             }
         }
     } catch (err) {
