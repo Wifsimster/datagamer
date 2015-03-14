@@ -41,11 +41,7 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
     $http.get('/datagamer/games/top').
         success(function (result) {
             if (result.code == 200) {
-                $scope.games = result.games;
-
-                if (result.games.length < 1) {
-                    LxNotificationService.warning("No data for the top 10 !");
-                }
+                $scope.topGames = result.games;
             } else {
                 LxNotificationService.error(result.message);
             }
@@ -55,4 +51,25 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
             LxNotificationService.error(err);
             LxProgressService.circular.hide();
         });
+
+    $scope.add2WantedList = function (data) {
+
+        // Save the Datagamer id
+        data.datagamer_id = data._id;
+        delete data._id;
+        data.name = data.defaultTitle;
+        data.releaseDate = data.releaseDates[0].date;
+
+        $http.post('/wanted/games', data).
+            success(function (result) {
+                if (result.code == 201) {
+                    LxNotificationService.success(data.defaultTitle + " added to wanted list !");
+                } else {
+                    LxNotificationService.error(result.message);
+                }
+            }).
+            error(function (err) {
+                LxNotificationService.error(err);
+            });
+    };
 });

@@ -152,18 +152,16 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                             $http.post('/transmission/add/', {url: result.torrent.magnetLink}).
                                 success(function (res) {
                                     if (res.code == 201) {
-                                        LxNotificationService.success(res.game.name + ' added to Transmission !');
+                                        LxNotificationService.success(result.torrent.name + ' added to Transmission !');
 
                                         selectedGame.snatched = true;
 
                                         $http.put('/wanted/games', selectedGame).
                                             success(function () {
-                                                //console.log('Game snatched !');
-
                                                 // If ok, refresh wanted games list
                                                 $http.get('/wanted/games').
                                                     success(function (result) {
-                                                        $scope.wantedGames = result;
+                                                        $scope.wantedGames = result.games;
                                                         LxProgressService.linear.hide();
                                                     }).
                                                     error(function (err) {

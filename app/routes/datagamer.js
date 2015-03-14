@@ -79,6 +79,7 @@ app.get("/datagamer/games/top", function (req, res) {
 
         if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
+            winston.info('Datagamer - Result : ' + result.limit);
             res.json(result);
         } else {
             winston.error(error);
