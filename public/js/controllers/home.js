@@ -8,7 +8,7 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
             if (result.code == 200) {
                 $scope.torrents = result.torrents;
 
-                if(result.torrents.length < 1) {
+                if (result.torrents.length < 1) {
                     LxNotificationService.warning("No data for the top 10 !");
                 }
             } else {
@@ -33,5 +33,26 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
             error(function (err) {
                 LxNotificationService.error(err);
             });
-    }
+    };
+
+
+    LxProgressService.circular.show('#5fa2db', '#datagamer_progress');
+
+    $http.get('/datagamer/games/top').
+        success(function (result) {
+            if (result.code == 200) {
+                $scope.games = result.games;
+
+                if (result.games.length < 1) {
+                    LxNotificationService.warning("No data for the top 10 !");
+                }
+            } else {
+                LxNotificationService.error(result.message);
+            }
+            LxProgressService.circular.hide();
+        }).
+        error(function (err) {
+            LxNotificationService.error(err);
+            LxProgressService.circular.hide();
+        });
 });

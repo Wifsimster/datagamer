@@ -63,6 +63,30 @@ app.get("/datagamer/games/count", function (req, res) {
     })
 });
 
+
+// Ask for top score video games
+app.get("/datagamer/games/top", function (req, res) {
+
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+    winston.info("Datagamer - Asking top score games...");
+
+    request('http://' + config.search.datagamer.url + '/api/games/top/10', {
+        headers: {
+            "apiKey": config.search.datagamer.apikey
+        }
+    }, function (error, response, body) {
+
+        if (!error && response.statusCode == 200) {
+            var result = JSON.parse(body);
+            res.json(result);
+        } else {
+            winston.error(error);
+            res.json(CODE.SERVER_ERROR);
+        }
+    })
+});
+
 app.get("/datagamer/games/similar/:name", function (req, res) {
 
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));

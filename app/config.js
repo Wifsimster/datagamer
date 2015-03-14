@@ -68,13 +68,6 @@ module.exports.init = function () {
         config.thepiratebay.filters.seeders = "";
         config.thepiratebay.filters.leechers = "";
 
-        // [kickasstorrents]
-        config.kickasstorrents.proxy_server = "";
-        config.kickasstorrents.seed_ration = "";
-        config.kickasstorrents.seed_time = "";
-        config.kickasstorrents.min_score = "";
-        config.kickasstorrents.verified = false;
-
         // [transmission]
         config.transmission.address = "localhost";
         config.transmission.port = 9091;
@@ -89,8 +82,7 @@ module.exports.init = function () {
         config.renamer.from = "";
         config.renamer.to = "";
         config.ranamer.scan_auto = true;
-        config.renamer.folder_naming = "<name> (<year>)";
-        config.renamer.detect_minute = "15";
+        config.renamer.detect_hours = "1";
         config.renamer.unzip = false;
 
         // Write in config.ini file

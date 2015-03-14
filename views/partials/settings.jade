@@ -222,16 +222,12 @@ form(name="configForm")
                             label.checkbox__label(for="overwrite") Overwrite
                             span.checkbox__help Overwrite games if already exist.
                 .grid
-                    .grid__col6
-                        lx-text-field(label="Folder naming", disabled="true")
-                            input(type="text", ng-model="config.renamer.folder_naming", ng-disabled="true")
-                .grid
-                    .grid__col6
+                    .grid__col8
                         .checkbox.mt
                             input.checkbox__input(type="checkbox", id="renamer_cron", ng-model="config.renamer.scan_auto", ng-change="update(config)")
                             label.checkbox__label(for="renamer_cron") Automatically scan
                             span.checkbox__help Automatically search directory for video games.
-                    .grid__col6(ng-show="config.renamer.scan_auto")
-                        lx-text-field(label="Run every")
-                            input(type="text", ng-model="config.renamer.detect_minute", ng-blur="update(config)",
-                            lx-tooltip="Detect downloaded video games every X minutes.", tooltip-position="bottom")
+                    .grid__col4(ng-show="config.renamer.scan_auto")
+                        lx-text-field(label="Run every X hours")
+                            input(type="text", ng-model="config.renamer.detect_hours", ng-blur="update(config)",
+                            lx-tooltip="Detect downloaded video games every X hours.", tooltip-position="bottom")

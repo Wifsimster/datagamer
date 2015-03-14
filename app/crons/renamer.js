@@ -12,9 +12,9 @@ module.exports.start = function () {
     if (config.renamer.scan_auto) {
 
         // CRON conf
-        winston.info("-- Renamer : " + config.renamer.detect_minute + " * *");
+        winston.info("-- Renamer : * " + config.renamer.detect_hours + " *");
 
-        new CronJob('* ' + config.renamer.detect_minute + ' * * * * *', function () {
+        new CronJob('* * ' + config.renamer.detect_hours + ' * * * *', function () {
 
             winston.info('CRON - Renamer :');
 

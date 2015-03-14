@@ -1,12 +1,16 @@
 div
     .grid
+        .grid__col6
+            div.card(class="p+")
+                p Datagamer manage automatically your PC video games, just need to tell him what your want ;)
+    .grid
         .grid__col6(ng-hide="torrents.length > 0")
             br
             #torrents_progress
 
         .grid__col6.card(class="p+" ng-show="torrents.length > 0")
 
-            .fs-title ThePirateBay Top 10
+            .fs-title ThePirateBay Top 10 torrents
 
             div
                 ul.list
@@ -21,4 +25,27 @@ div
                         .list-secondary-tile
                             button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="add2Transmission(torrent.magnetLink)",
                             lx-tooltip="Add to Transmission", tooltip-position="right")
+                                i.mdi.mdi--add
+    .grid
+        .grid__col6(ng-hide="topGames.length > 0")
+            br
+            #datagamer_progress
+
+        .grid__col6.card(class="p+" ng-show="topGames.length > 0")
+
+            .fs-title Datagamer Top 10 scores
+
+            div
+                ul.list
+                    li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in topGames | orderBy:'score' | limitTo:10")
+                        .list-content-tile.list-content-tile--one-line {{game.name}}
+                            br
+                            .label.label-info(style="display:inline; margin-right: 5px;" lx-tooltip="Release date", tooltip-position="bottom") {{game.uploadDate}}
+                            .label.label-danger(style="display:inline; margin-right: 5px;" lx-tooltip="Size", tooltip-position="bottom") {{game.size}}
+                            .label.label-primary(style="display:inline; margin-right: 5px;" lx-tooltip="Seeders", tooltip-position="bottom") {{game.seeders}}
+                            .label.label-warning(style="display:inline; margin-right: 5px;" lx-tooltip="Leechers", tooltip-position="bottom") {{game.leechers}}
+
+                        .list-secondary-tile
+                            button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="add2WantedList(game._id)",
+                            lx-tooltip="Add to wanted list", tooltip-position="right")
                                 i.mdi.mdi--add
