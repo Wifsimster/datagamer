@@ -1,7 +1,10 @@
 div
     .grid
         .grid__col6.card(class="p+")
-            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="postProcessing()", lx-tooltip="Post-processing downloaded video games", tooltip-position="left", style="margin-right:10px;") Post-processing
+            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="postProcessing()", lx-tooltip="Post-processing downloaded video games to your collection directory.", tooltip-position="left", style="margin-right:10px;") Post-processing
+
+            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scan()", lx-tooltip="Scan your collection directory to found new games.", tooltip-position="left", style="margin-right:10px;") Full scan
+
             #scan_progress
 
             h1.fs-title(ng-show="games.length > 0") Your video games ({{ games.length }})

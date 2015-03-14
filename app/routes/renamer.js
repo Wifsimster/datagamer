@@ -1,4 +1,5 @@
-var fs = require('fs');
+var fs = require('fs')
+var fse = require('fs-extra')
 var ini = require('ini');
 var request = require('request');
 var mkdirp = require('mkdirp');
@@ -18,13 +19,27 @@ app.get("/renamer/games/postprocessing", function (req, res) {
     collection_db.loadDatabase();
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
-    // TODO : Need to detect network or not
-
-    winston.info("Renamer - Scan " + config.renamer.from);
+    winston.info("Renamer - Post-processing " + config.renamer.from);
 
     var files = getDirectories(config.renamer.from);
 
     recursiveRename(0, config, files, function () {
+        winston.info('Renamer - Post-processing ended !');
+        res.json(CODE.SUCCESS_POST);
+    });
+});
+
+// Renamer - Scan for new video games on collection directory
+app.get("/renamer/games/scan", function (req, res) {
+
+    collection_db.loadDatabase();
+    var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+    winston.info("Renamer - Scan " + config.renamer.from);
+
+    var files = getDirectories(config.collection.directory);
+
+    recursiveScan(0, config, files, function () {
         winston.info('Renamer - Scan ended !');
         res.json(CODE.SUCCESS_POST);
     });
@@ -226,22 +241,143 @@ function recursiveRename(i, config, files, callback) {
                             game.releaseDate = bestGame.releaseDates[0].date;
                         }
 
+                        // Move and rename game directory only if the game percentage is 100%
+                        if (game.percentage == 100) {
+                            collection_db.find({name: game.name}, function (err, doc) {
+                                if (!err) {
+                                    // If no game with this name exist in collection database
+                                    if (doc.length == 0) {
+
+                                        //var oldDirectory = config.renamer.from + '/' + game.name;
+                                        var oldDirectory = file + "/";
+                                        var newDirectory = config.renamer.to + '/' + game.name + ' (' + new Date(game.releaseDate).getFullYear() + ')';
+                                        winston.info('Renamer --- Try to move "' + oldDirectory + '" to "' + newDirectory + '"');
+
+                                        var options = [];
+                                        if (config.renamer.overwrite) {
+                                            options.clobber = true;
+                                        }
+
+                                        // Move game directory
+                                        fse.move(oldDirectory, newDirectory, options, function (err) {
+                                            if (err) {
+                                                winston.error(err);
+                                                recursiveRename(i + 1, config, files, callback);
+                                            } else {
+                                                winston.info(game.name + "moved to " + newDirectory + ' !');
+
+                                                // Add this new game to the collection database
+                                                collection_db.insert(game, function (err) {
+                                                    if (!err) {
+                                                        winston.info('Renamer - ' + game.name + ' added to collection !');
+                                                        recursiveRename(i + 1, config, files, callback);
+                                                    } else {
+                                                        winston.error(err);
+                                                        callback();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        winston.info('Renamer - ' + game.name + ' already exist in collection database !');
+                                        recursiveRename(i + 1, config, files, callback);
+                                    }
+                                } else {
+                                    winston.error(err);
+                                    callback();
+                                }
+                            });
+                        } else {
+                            winston.info('Renamer - ' + game.name + ' percentage (' + game.percentage + ') is not high enought to be moved !');
+                            recursiveRename(i + 1, config, files, callback);
+                        }
+                    } else {
+                        callback();
+                    }
+                } else {
+                    callback();
+                }
+            } else {
+                callback();
+            }
+        });
+    } else {
+        callback();
+    }
+}
+
+function recursiveScan(i, config, files, callback) {
+    if (i < files.length) {
+
+        var file = files[i];
+
+        collection_db.loadDatabase();
+        var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
+        var game = extractInfoFromName(file)
+
+        winston.info("Renamer --- Searching for " + game.name + " on Datagamer...");
+
+        // Search current video game on Datagamer
+        request('http://localhost:' + config.general.port + '/datagamer/games/similar/' + game.name, {
+            headers: {
+                "apiKey": config.search.datagamer.apikey
+            }
+        }, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+
+                var result = JSON.parse(body);
+
+                if (result.code == 200) {
+                    winston.info('Renamer --- Game found on Datagamer : ' + result.games.length);
+
+                    if (result.games.length > 0) {
+                        var bestGame = {};
+                        bestGame.percentage = 0;
+
+                        for (var j = 0; j < result.games.length; j++) {
+                            if (result.games[j].percentage > bestGame.percentage) {
+                                bestGame = result.games[j];
+                            }
+                        }
+
+                        // Take highest score and rename the file
+                        winston.info('Renamer --- Highest similar game found : ' + bestGame.defaultTitle + ' - ' + bestGame.percentage);
+
+                        // Info from Datagamer
+                        game.datagamer_id = bestGame._id;
+                        game.name = bestGame.defaultTitle;
+                        game.overview = bestGame.overview;
+                        game.percentage = bestGame.percentage;
+                        game.media = {};
+                        if (bestGame.media) {
+                            game.media.thumbnails = bestGame.media.thumbnails;
+                        }
+                        game.platforms = bestGame.platforms;
+                        game.genres = bestGame.genres;
+                        game.developers = bestGame.developers;
+                        game.editors = bestGame.editors;
+                        game.score = bestGame.score;
+                        if (bestGame.releaseDates) {
+                            game.releaseDate = bestGame.releaseDates[0].date;
+                        }
+
                         collection_db.find({name: game.name}, function (err, doc) {
                             if (!err) {
                                 // If no game with this name exist in collection database
                                 if (doc.length == 0) {
                                     // Add this new game to the collection database
                                     collection_db.insert(game, function (err) {
-                                        if (err) {
+                                        if (!err) {
+                                            winston.info('Renamer - ' + game.name + ' added to collection !');
+                                            recursiveRename(i + 1, config, files, callback);
+                                        } else {
                                             winston.error(err);
                                             callback();
-                                        } else {
-                                            winston.info('Renamer -- ' + game.name + ' added to collection !');
-                                            recursiveRename(i + 1, config, files, callback);
                                         }
                                     });
                                 } else {
-                                    winston.info('Renamer -- ' + game.name + ' already exist in collection database !');
+                                    winston.info('Renamer - ' + game.name + ' already exist in collection database !');
                                     recursiveRename(i + 1, config, files, callback);
                                 }
                             } else {
@@ -249,21 +385,6 @@ function recursiveRename(i, config, files, callback) {
                                 callback();
                             }
                         });
-
-                        // WINDOWS FIX, TO DELETE FOR UNIX USERS
-                        //bestGame.name.replace(/:/,' ');
-
-                        //var directory = config.renamer.to + '/' + collectionGame.name + ' (' + new Date(collectionGame.releaseDate).getFullYear() + ')';
-                        //winston.info('Renamer --- Try to create : ' + directory);
-
-                        //try {
-                        //    fs.mkdir(directory, 0777, function (err) {
-                        //        if (err)
-                        //            winston.error(err);
-                        //    });
-                        //} catch (e) {
-                        //    if (e.code != 'EEXIST') winston.error(e);
-                        //}
                     } else {
                         callback();
                     }

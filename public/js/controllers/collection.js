@@ -54,6 +54,40 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
             });
     };
 
+    $scope.scan = function () {
+        LxProgressService.linear.show('#5fa2db', '#scan_progress');
+        LxNotificationService.info('Scanning collection directory ...');
+
+        $http.get('/renamer/games/scan').
+            success(function (result) {
+                LxProgressService.linear.hide();
+
+                if (result.code == 201) {
+                    $scope.postProcessingResult = result;
+                    LxNotificationService.success('Scan ended !');
+
+                    // Update collection games list
+                    $http.get('/collection/games').
+                        success(function (result) {
+                            if (result.code == 200) {
+                                $scope.games = result.games;
+                            } else {
+                                LxNotificationService.error(result.message);
+                            }
+                        }).
+                        error(function (err) {
+                            LxNotificationService.error(err);
+                        });
+                } else {
+                    LxNotificationService.error(result.message);
+                }
+            }).
+            error(function (err) {
+                LxProgressService.linear.hide();
+                LxNotificationService.error('Scan ended with error ! Need to check your conf.');
+            });
+    };
+
     $scope.updateGameInfo = function (id, datagamer_id) {
 
         LxProgressService.linear.show('#5fa2db', '#scan_progress_' + id);

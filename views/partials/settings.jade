@@ -217,6 +217,12 @@ form(name="configForm")
                             label.checkbox__label(for="unzip") Unzip
                             span.checkbox__help Extract zip files if found.
                     .grid__col6
+                        div.checkbox.mt
+                            input.checkbox__input(type="checkbox", id="overwrite", ng-model="config.renamer.overwrite", ng-change="update(config)")
+                            label.checkbox__label(for="overwrite") Overwrite
+                            span.checkbox__help Overwrite games if already exist.
+                .grid
+                    .grid__col6
                         lx-text-field(label="Folder naming", disabled="true")
                             input(type="text", ng-model="config.renamer.folder_naming", ng-disabled="true")
                 .grid
