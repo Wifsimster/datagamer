@@ -1,7 +1,6 @@
 app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotificationService) {
 
     $scope.torrents = [];
-    LxProgressService.circular.show('#5fa2db', '#torrents_progress');
 
     $http.get('/thepiratebay/top').
         success(function (result) {
@@ -14,11 +13,9 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
             } else {
                 LxNotificationService.error(result.message);
             }
-            LxProgressService.circular.hide();
         }).
         error(function (err) {
             LxNotificationService.error(err);
-            LxProgressService.circular.hide();
         });
 
     $scope.add2Transmission = function (magnetLink) {
@@ -35,9 +32,6 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
             });
     };
 
-
-    LxProgressService.circular.show('#5fa2db', '#datagamer_progress');
-
     $http.get('/datagamer/games/top').
         success(function (result) {
             if (result.code == 200) {
@@ -45,11 +39,9 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
             } else {
                 LxNotificationService.error(result.message);
             }
-            LxProgressService.circular.hide();
         }).
         error(function (err) {
             LxNotificationService.error(err);
-            LxProgressService.circular.hide();
         });
 
     $scope.add2WantedList = function (data) {

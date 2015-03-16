@@ -33,6 +33,21 @@ app.get("/transmission/test", function (req, res) {
     });
 });
 
+// Get the torrents list
+app.get("/transmission", function (req, res) {
+    transmission.get(function (err, data) {
+        if (!err) {
+            winston.info("Transmission - Get torrents list !");
+            CODE.SUCCESS.torrents = data;
+            res.json(CODE.SUCCESS);
+        } else {
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
+        }
+    });
+});
+
+
 // Add a new torrent to Transmission
 app.post("/transmission/add", function (req, res) {
 

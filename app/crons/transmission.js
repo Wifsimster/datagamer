@@ -19,8 +19,24 @@ module.exports.start = function () {
         // CRON conf
 
         // Check every hour for done torrents
-        new CronJob('* * 1 * * * *', function () {
+        new CronJob('*/30 * * * * * *', function () {
             winston.info("CRON Transmission - Check for done torrents [TODO]");
+
+            request('http://localhost:' + config.general.port + '/transmission', function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    winston.info("CRON Transmission - Get the list of torrents");
+                } else {
+                    winston.error(error);
+                }
+            });
+
+            // Get torrents list
+            for(var i = 0 ; i < torrents.length ; i++){
+                // If torrent is stop, remove it
+                if(torrent.get()) {
+
+                }
+            }
         }, null, true, "Europe/Paris");
     }
 }

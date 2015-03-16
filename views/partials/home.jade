@@ -1,57 +1,48 @@
 div
-    .grid
+    //.grid
         .grid__col12
             div.tc-white-1.card.bgc-blue-500(class="p+")
                 p Datagamer manage automatically your PC video games, just need to tell him what your want ;)
-    .grid
-        .grid__col6(ng-hide="topGames.length > 0")
-            br
-            #datagamer_progress
 
-        .grid__col6.card(class="p+" ng-show="topGames.length > 0")
+    lx-tabs
+        lx-tab(heading="Datagamer - Top 10")
+            .grid
+                .grid__col12(ng-show="topGames.length > 0")
+                    ul.list
+                        li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in topGames")
 
-            .fs-title Datagamer Top 10 scores
+                            .list-primary-tile
+                                img.list-primary-tile__img(ng-show="game.media.thumbnails[0]" ng-src="{{ game.media.thumbnails[0] }}")
+                                img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://niesr.ac.uk/sites/default/files/styles/large/adaptive-image/public/default_images/thumbnail-default_2_0.jpg?itok=zti20ldd")
 
-            div
-                ul.list
-                    li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in topGames")
+                            .list-content-tile.list-content-tile--one-line {{game.defaultTitle}} ({{game.releaseDates[0].date | date:'yyyy'}})
+                                ul
+                                    li(style="display:inline; margin-right: 5px;" ng-show="game.metacritic.score")
+                                        .label.label-danger {{game.metacritic.score}}
+                                    li(style="display:inline; margin-right: 5px;" ng-show="game.genres[0].name")
+                                        .label.label-primary {{game.genres[0].name}}
+                                    li(style="display:inline; margin-right: 5px;" ng-show="game.developers[0].name")
+                                        .label.label-warning {{game.developers[0].name}}
+                                    li(style="display:inline; margin-right: 5px;" ng-show="game.editors[0].name")
+                                        .label.label-info {{game.editors[0].name}}
+                                p {{game.overview}}
 
-                        .list-primary-tile
-                            img.list-primary-tile__img(ng-show="game.media.thumbnails[0]" ng-src="{{ game.media.thumbnails[0] }}")
-                            img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://niesr.ac.uk/sites/default/files/styles/large/adaptive-image/public/default_images/thumbnail-default_2_0.jpg?itok=zti20ldd")
-
-                        .list-content-tile.list-content-tile--one-line {{game.defaultTitle}} ({{game.releaseDates[0].date | date:'yyyy'}})
-                            ul
-                                li(style="display:inline; margin-right: 5px;" ng-show="game.metacritic.score")
-                                    .label.label-danger {{game.metacritic.score}}
-                                li(style="display:inline; margin-right: 5px;" ng-show="game.genres[0].name")
-                                    .label.label-primary {{game.genres[0].name}}
-                                li(style="display:inline; margin-right: 5px;" ng-show="game.developers[0].name")
-                                    .label.label-warning {{game.developers[0].name}}
-                                li(style="display:inline; margin-right: 5px;" ng-show="game.editors[0].name")
-                                    .label.label-info {{game.editors[0].name}}
-                            p {{game.overview}}
-
-                        .list-secondary-tile
-                            button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="add2WantedList(game)",
-                            lx-tooltip="Add to wanted list", tooltip-position="left")
-                                i.mdi.mdi--add
-
-        .grid__col6(ng-hide="torrents.length > 0")
-            br
-            #torrents_progress
-        .grid__col6.card(class="p+" ng-show="torrents.length > 0")
-            .fs-title ThePirateBay Top 10 torrents
-            div
-                ul.list
-                    li.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="torrent in torrents | orderBy:'seeders' | limitTo:10")
-                        .list-content-tile.list-content-tile--one-line {{torrent.name}}
-                            br
-                            .label.label-info(style="display:inline; margin-right: 5px;" lx-tooltip="Release date", tooltip-position="bottom") {{torrent.uploadDate}}
-                            .label.label-danger(style="display:inline; margin-right: 5px;" lx-tooltip="Size", tooltip-position="bottom") {{torrent.size}}
-                            .label.label-primary(style="display:inline; margin-right: 5px;" lx-tooltip="Seeders", tooltip-position="bottom") {{torrent.seeders}}
-                            .label.label-warning(style="display:inline; margin-right: 5px;" lx-tooltip="Leechers", tooltip-position="bottom") {{torrent.leechers}}
-                        .list-secondary-tile
-                            button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="add2Transmission(torrent.magnetLink)",
-                            lx-tooltip="Add to Transmission", tooltip-position="left")
-                                i.mdi.mdi--add
+                            .list-secondary-tile
+                                button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="add2WantedList(game)",
+                                lx-tooltip="Add to wanted list", tooltip-position="left")
+                                    i.mdi.mdi--add
+        lx-tab(heading="ThePirateBay - Top 10")
+            .grid
+                .grid__col12(ng-show="torrents.length > 0")
+                    ul.list
+                        li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="torrent in torrents | orderBy:'seeders' | limitTo:10")
+                            .list-content-tile.list-content-tile--one-line {{torrent.name}}
+                                br
+                                .label.label-info(style="display:inline; margin-right: 5px;" lx-tooltip="Release date", tooltip-position="bottom") {{torrent.uploadDate}}
+                                .label.label-danger(style="display:inline; margin-right: 5px;" lx-tooltip="Size", tooltip-position="bottom") {{torrent.size}}
+                                .label.label-primary(style="display:inline; margin-right: 5px;" lx-tooltip="Seeders", tooltip-position="bottom") {{torrent.seeders}}
+                                .label.label-warning(style="display:inline; margin-right: 5px;" lx-tooltip="Leechers", tooltip-position="bottom") {{torrent.leechers}}
+                            .list-secondary-tile
+                                button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="add2Transmission(torrent.magnetLink)",
+                                lx-tooltip="Add to Transmission", tooltip-position="left")
+                                    i.mdi.mdi--add

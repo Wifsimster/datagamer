@@ -48,7 +48,7 @@ html(lang="en", ng-app="StarterApp")
         md-sidenav.md-sidenav-left.md-whiteframe-z2(layout="column", md-component-id="left", md-is-locked-open="$mdMedia('gt-sm')", tabindex="-1")
 
             // Sidebar Title
-            md-toolbar.bgc-grey-900
+            md-toolbar
                 h1.md-toolbar-tools Datagamer
 
             // Sidebar Content
@@ -76,7 +76,7 @@ html(lang="en", ng-app="StarterApp")
         div(layout="column", layout-fill, tabindex="-1" role="main")
 
             // Toolbar
-            md-toolbar.bgc-grey-900
+            md-toolbar
                 .md-toolbar-tools(tabindex="0")
                     button.btn(hide-gt-sm="", aria-label="Toggle Menu", ng-click="openLeftMenu()")
                         i.icon.icon--l.icon--flat.mdi.mdi--menu
@@ -86,20 +86,5 @@ html(lang="en", ng-app="StarterApp")
 
                     span(flex)
 
-                    //.md-toolbar-item.md-tools(layout="row")
-                        div
-
-                        lx-select(ng-model="ajax.selected", change="cbSelect.exec(newValue, oldValue)", placeholder="Choose a game",
-                        choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}",
-                        min-length="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)",
-                        model-to-selection="ajax.toSelection(data, callback)")
-                            lx-select-selected {{ $selected.name }} ({{ $selected.releaseDate }})
-                            lx-select-choices  {{ $choice.name }} - {{ $choice.releaseDate }}
-
-
             md-content.md-padding(md-scroll-y, flex)
                 div(ng-view)
-
-
-    //footer
-        //    p Running on node with Express, Jade and Stylus - Wifsimster
