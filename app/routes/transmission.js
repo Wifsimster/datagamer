@@ -38,7 +38,7 @@ app.get("/transmission", function (req, res) {
     transmission.get(function (err, data) {
         if (!err) {
             winston.info("Transmission - Get torrents list !");
-            CODE.SUCCESS.torrents = data;
+            CODE.SUCCESS.torrents = data.torrents;
             res.json(CODE.SUCCESS);
         } else {
             winston.error(err);
@@ -77,15 +77,15 @@ app.post("/transmission/add", function (req, res) {
 app.delete("/transmission/remove/:id", function (req, res) {
     var id = req.params.id;
 
-    winston.info("Transmission - Try to remove '" + id);
+    winston.info("Transmission - Trying to remove torrent '" + id + "'...");
 
     transmission.remove(id, function (err) {
-        if (err) {
-            winston.error(err);
-            res.json(CODE.BAD_REQUEST);
-        } else {
+        if (!err) {
             winston.info('Transmission - Torrent removed with success !');
             res.json(CODE.SUCCESS_DELETE);
+        } else {
+            winston.error(err);
+            res.json(CODE.BAD_REQUEST);
         }
     });
 });

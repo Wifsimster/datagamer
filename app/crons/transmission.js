@@ -26,13 +26,13 @@ module.exports.start = function () {
 
                     if (torrents) {
                         for (var i = 0; i < torrents.length; i++) {
-                            // If torrent is finished, remove it
-                            if (torrents[i].isFinished) {
-                                request('http://localhost:' + config.general.port + '/transmission/remove/' + torrents[i].id, function (error, response, body) {
+                            //If torrent is finished, remove it
+                            if (torrents[i].isFinished && torrents[i].status == 0) {
+                                request.del('http://localhost:' + config.general.port + '/transmission/remove/' + torrents[i].id, function (error, response, body) {
                                     if (!error && response.statusCode == 200) {
                                         var result = JSON.parse(body);
                                         if (result.code == 204) {
-                                            winston.info("CRON Transmission - Remove " + torrents[i].name);
+                                            winston.info("CRON Transmission - Torrent removed !");
                                         } else {
                                             winston.error("CRON Transmission - " + result.message);
                                         }
