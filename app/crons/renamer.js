@@ -12,11 +12,11 @@ module.exports.start = function () {
     if (config.renamer.scan_auto) {
 
         // CRON conf
-        winston.info("-- Renamer : * " + config.renamer.detect_hours + " *");
+        winston.info("CRON Renamer      * " + config.renamer.detect_hours + " *");
 
         new CronJob('* * ' + config.renamer.detect_hours + ' * * * *', function () {
 
-            winston.info('CRON - Renamer :');
+            winston.info('CRON Renamer :');
 
             request('http://localhost:' + config.general.port + '/renamer/games/postprocessing', function (error, response, body) {
                 if (!error && response.statusCode == 200) {

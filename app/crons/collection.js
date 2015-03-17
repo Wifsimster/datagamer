@@ -13,7 +13,7 @@ module.exports.start = function () {
 
         // CRON conf
         var collection_cron = config.collection.cron.minute + ' ' + config.collection.cron.hour + ' ' + config.collection.cron.day;
-        winston.info("CRON Collection - " + collection_cron);
+        winston.info("CRON Collection   " + collection_cron);
 
         new CronJob('* ' + collection_cron + ' * * *', function () {
             request('http://localhost:' + config.general.port + '/renamer/games/postprocessing', function (error, response, body) {

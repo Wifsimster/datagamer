@@ -18,7 +18,7 @@ module.exports.start = function () {
 
         // CRON conf
         var search_cron = config.search.cron.minute + ' ' + config.search.cron.hour + ' ' + config.search.cron.day;
-        winston.info("CRON Search - " + search_cron);
+        winston.info("CRON Search       " + search_cron);
 
         new CronJob('/45 ' + search_cron + ' * * *', function () {
 

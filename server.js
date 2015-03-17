@@ -75,7 +75,7 @@ app.listen(port);
 var search = require('./app/crons/search.js');
 var collection = require('./app/crons/collection.js');
 var renamer = require('./app/crons/renamer.js');
-var transmission = require('./app/crons/transmission');
+var transmission = require('./app/crons/transmission.js');
 var update = require('./app/crons/update.js');
 
 winston.info('Datagamer is running on port ' + port);

@@ -9,10 +9,10 @@ var CODE = require('../../app/enums/codes');
 var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
 var transmission = new Transmission({
-    host: config.transmission.address,      // 192.168.0.21
+    host: config.transmission.address,      // address
     port: config.transmission.port,         // 9091
-    username: config.transmission.username, // wifsimster
-    password: config.transmission.password, // 192lucie
+    username: config.transmission.username, // id
+    password: config.transmission.password, // password
     url: config.transmission.rpc_url        // /transmission/rpc
 });
 
