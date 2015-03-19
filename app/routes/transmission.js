@@ -62,13 +62,23 @@ app.post("/transmission/add", function (req, res) {
     }
 
     transmission.addUrl(url, options, function (err, result) {
-        if (err) {
+        if (!err) {
+            winston.info("Transmission - New torrent added '" + result.name + "'");
+            CODE.SUCCESS_POST.torrent = result;
+
+            // Set torrent to pause after add it
+            if (config.transmission.pause_torrent) {
+                winston.info('Transmission - Torrent ' + result.name + ' paused !');
+
+                transmission.stop(result.id, function (err) {
+                    res.json(CODE.SUCCESS_POST);
+                });
+            } else {
+                res.json(CODE.SUCCESS_POST);
+            }
+        } else {
             winston.error(err);
             res.json(CODE.BAD_REQUEST);
-        } else {
-            winston.info('Transmission - New torrent added - ID: ' + result.name);
-            CODE.SUCCESS_POST.torrent = result;
-            res.json(CODE.SUCCESS_POST);
         }
     });
 });
