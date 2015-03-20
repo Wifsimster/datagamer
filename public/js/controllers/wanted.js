@@ -141,7 +141,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
                 var selectedGame = result.game;
 
-                LxNotificationService.info('Searching new torrents for ' + selectedGame.name + '...');
+                //LxNotificationService.info('Searching new torrents for ' + selectedGame.name + '...');
 
                 $http.get('/thepiratebay/search/' + selectedGame.name).
                     success(function (result) {
