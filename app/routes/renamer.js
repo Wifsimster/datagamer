@@ -77,6 +77,8 @@ function extractInfoFromName(name) {
     // Replace "_" by escape
     filename = filename.replace(/_/g, ' ');
 
+    winston.info("Renamer --- Filename after cleaning : " + filename);
+
     // Detect potential crack
     // Crackfix
     var crack_regex = /(crack)/i;
@@ -84,7 +86,7 @@ function extractInfoFromName(name) {
     if (crack) {
         game.crack = true;
         winston.info("Renamer --- With crack");
-        filename = filename.replace(crack_regex, '').pop();
+        filename = filename.replace(crack_regex, '');
         //winston.info("Renamer --- Filename after crack : " + filename);
     }
 
@@ -95,8 +97,20 @@ function extractInfoFromName(name) {
     if (repack) {
         game.repack = true;
         winston.info("Renamer --- This is a repack");
-        filename = filename.replace(repack_regex, '').pop();
+        filename = filename.replace(repack_regex, '');
         //winston.info("Renamer --- Filename after repack : " + filename);
+    }
+
+    // Detect potential team before release date 'cz Razor1911 and before language
+    // -CODEX
+    var team_regex = /(GOG|CODEX|RELOADED|FLT|R.G.Mechanics|RG Mechanics|P2P|Razor1911|SKIDROW|STEAMGAMES|GoG|XaTaB|HI2U|PROPHET|WWW|TiNYiSO|TeRM!NaToR|AnCiENT|\^\^nosTEAM\^\^|TeamExtremeMc\.com|TeRMiNaToR|TeRM!NaToR|RG Mechanics|blaze69)/;
+
+    var team = team_regex.exec(filename);
+    if (team) {
+        team = team[1];
+        game.team = team;
+        winston.info("Renamer --- Team : " + team);
+        filename = filename.replace(team_regex, '');
     }
 
     // Detect potential multilangue
@@ -106,8 +120,19 @@ function extractInfoFromName(name) {
     if (multi) {
         game.multi = true;
         winston.info("Renamer --- Multilangue");
-        filename = filename.replace(multi_regex, '').pop();
+        filename = filename.replace(multi_regex, '');
         //winston.info("Renamer --- Filename after multi : " + filename);
+    } else {
+        // Detect potential language only if not multilanguage
+        // [ENG]
+        var language = /[\[\(]([A-Z]{3})*[\]\)]/.exec(filename);
+        if (language) {
+            language = language[1];
+            game.language = language;
+            winston.info("Renamer --- Langague : " + language);
+            filename = filename.replace(/[\[\(]([A-Z]{3})*[\]\)]/, '');
+            //winston.info("Renamer --- Filename after language : " + filename);
+        }
     }
 
     // Detect potential release date
@@ -125,7 +150,7 @@ function extractInfoFromName(name) {
 
     // Detect potential version
     // 1.20.14
-    var version_regex = /(\d+[[\.\d+]+]*)/;
+    var version_regex = /(\d+\.[\.\d+]*)/;
     var version = version_regex.exec(filename);
     if (version) {
         version = version[1];
@@ -135,45 +160,36 @@ function extractInfoFromName(name) {
         //winston.info("Renamer --- Filename after version : " + filename);
     }
 
-    // Detect potential language
-    // [ENG]
-    var language = /\[([A-Z]{3})\]/.exec(filename);
-    if (language) {
-        language = language[1];
-        game.language = language;
-        winston.info("Renamer --- Langague : " + language);
-        filename = filename.replace(/\[([A-Z]{3})\]/, '');
-        //winston.info("Renamer --- Filename after language : " + filename);
-    }
+    // Remplace dot by whitespace after detection
+    filename = filename.replace(/\./g, ' ');
 
-    // Detect potential team
-    // -CODEX
-    var team_regex_1 = /-(CODEX|RELOADED|FLT|R.G.Mechanics|P2P|Razor1911|SKIDROW|STEAMGAMES|GoG|XaTaB|HI2U|PROPHET|WWW|TiNYiSO|TeRM!NaToR|AnCiENT)/;
-    var team_regex_2 = /(\^\^nosTEAM\^\^|TeamExtremeMc\.com|TeRMiNaToR|TeRM!NaToR)/;
+    // Delete v after version detection
+    //filename = filename.replace(/\s[vV]\s/, '');
 
-    var team = team_regex_1.exec(filename);
-    if (team) {
-        team = team[1];
-        winston.info("Renamer --- Team : " + team);
-        filename = filename.replace(team_regex_1, '');
-    } else {
-        team = team_regex_2.exec(filename);
-        if (team) {
-            team = team[1];
-            game.team = team;
-            winston.info("Renamer --- Team : " + team);
-            filename = filename.replace(team_regex_2, '');
-        }
-    }
+    // Delete extra info after -
+    // -R.G
+    filename = filename.replace(/(-[\a-zA-Z\s]{0,})/, '');
 
-    // Delete dots after version detection
-    filename = filename.replace(/\./, ' ');
+    // Delete extra info after +
+    // +AutoUpdate
+    filename = filename.replace(/(\+[a-zA-Z]{0,})/g, '');
 
-    // Delete "()" after release date detection
-    filename = filename.replace(/\(\)/, '');
+    // Delete "(*)" after detection
+    filename = filename.replace(/\([A-Za-z,\s]{0,}\)/g, '');
+
+    // Delete "[*]" after detection
+    filename = filename.replace(/\[[A-Za-z,\s]{0,}\]/g, '');
+
+    // Delete "{*}" after detection
+    filename = filename.replace(/\{[A-Za-z,\s]{0,}\}/g, '');
+
+    // Delete every useless whitespace
+    filename = filename.replace(/(\s{2,})/, '');
 
     // Delete useless spaces
     filename = filename.trim();
+
+    winston.info("Renamer - Clean up : " + filename);
 
     // Set cleanup name
     game.name = filename;
@@ -241,8 +257,8 @@ function recursiveRename(i, config, files, callback) {
                             game.releaseDate = bestGame.releaseDates[0].date;
                         }
 
-                        // Move and rename game directory only if the game percentage is 100%
-                        if (game.percentage == 100) {
+                        // Move and rename game directory only if the game percentage is 95% or more
+                        if (game.percentage >= 95) {
                             collection_db.find({name: game.name}, function (err, doc) {
                                 if (!err) {
                                     // If no game with this name exist in collection database
@@ -250,7 +266,11 @@ function recursiveRename(i, config, files, callback) {
 
                                         //var oldDirectory = config.renamer.from + '/' + game.name;
                                         var oldDirectory = file + "/";
-                                        var newDirectory = config.renamer.to + '/' + game.name + ' (' + new Date(game.releaseDate).getFullYear() + ')';
+
+                                        // Need to replace : caractere by - for Windows
+                                        var gameName = game.name.replace(/(:)/g, '-');
+
+                                        var newDirectory = config.renamer.to + '/' + gameName + ' (' + new Date(game.releaseDate).getFullYear() + ')';
                                         winston.info('Renamer --- Try to move "' + oldDirectory + '" to "' + newDirectory + '"');
 
                                         var options = [];
@@ -292,7 +312,8 @@ function recursiveRename(i, config, files, callback) {
                             recursiveRename(i + 1, config, files, callback);
                         }
                     } else {
-                        callback();
+                        // No game found, parse next one...
+                        recursiveRename(i + 1, config, files, callback);
                     }
                 } else {
                     callback();

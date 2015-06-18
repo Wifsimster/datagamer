@@ -1,7 +1,7 @@
 form(name="configForm")
-    .grid
-        #General.grid__col4.card
-            div(class="p+")
+    md-content.md-padding
+        md-card#General
+          md-card-content
                 strong.fs-headline.display-block General
                 strong.fs-subhead.tc-black-2.display-block Need restart before changes take effect.
                 .grid
@@ -18,8 +18,9 @@ form(name="configForm")
                                 div(ng-messages="configForm.config.general.port.$error", ng-show="configForm.config.general.port.$dirty")
                                     div(ng-messages="required") This is required !
 
-        #Advanced.grid__col4.card
-            div(class="p+")
+        br
+        md-card#Advanced
+          md-card-content
                 strong.fs-headline.display-block Advanced
                 lx-text-field(label="API Key", disabled="true")
                     input(type="text", ng-model="config.advanced.apikey", ng-blur="update(config)", ng-disabled="true")
@@ -34,7 +35,8 @@ form(name="configForm")
                     .grid__col2
                         button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="debugTreeViewDialog()" style="margin-top:30px") Select
 
-        #Update.grid__col4.card
+        br
+        md-card#Update
             div(class="p+")
                 strong.fs-headline.display-block Update
                 strong.fs-subhead.tc-black-2.display-block Current release is {{ config.update.release }}.
@@ -54,8 +56,9 @@ form(name="configForm")
                     label.checkbox__label(for="automatic") Automatic
                     span.checkbox__help Automatically update when update is available
 
-        #Collection.grid__col4.card
-            div(class="p+")
+        br
+        md-card#Collection
+          md-card-content
                 strong.fs-headline.display-block Collection
                 strong.fs-subhead.tc-black-2.display-block Your video games collection.
                 .grid
@@ -84,8 +87,9 @@ form(name="configForm")
                         tooltip-position="bottom")
                             input(type="text" ng-model="config.collection.cron.minute", ng-blur="update(config)")
 
-        #Datagamer.grid__col4.card
-            div(class="p+")
+        br
+        md-card#Datagamer
+          md-card-content
                 button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", ng-click="showRequestDialog()", lx-tooltip="Register on Datagamer and get an API key.", tooltip-position="left") Request API key
                 strong.fs-headline.display-block Datagamer
                 strong.fs-subhead.tc-black-2.display-block Video games info provider.
@@ -98,18 +102,20 @@ form(name="configForm")
                 lx-text-field(label="Datagamer API key", lx-tooltip="Datagamer API key", tooltip-position="bottom")
                     input(type="text" ng-model="config.search.datagamer.apikey", ng-blur="update(config)")
 
-        #ThePirateBay.grid__col4.card
-            #thepiratebay_progress
-            div(class="p+")
-                button.btn.btn--m.btn--black.btn--raised(lx-ripple, style="float:right", ng-click="thepiratebay_test()") Test
-                strong.fs-headline.display-block ThePirateBay
-                a.fs-subhead.tc-black-2.display-block(ng-href="https://thepiratebay.se/") ThePirateBay
-                strong.fs-subhead.tc-black-2.display-block Torrents provider
-                .grid
-                    .checkbox.mt
-                        input.checkbox__input(type="checkbox", id="search_cron", ng-model="config.search.scan_auto", ng-change="update(config)")
-                        label.checkbox__label(for="search_cron") Automatically scan
-                        span.checkbox__help Automatically search for new video game releases on your provider.
+        br
+        md-card#ThePirateBay
+          md-card-content
+            button.btn.btn--m.btn--black.btn--raised(lx-ripple, style="float:right", ng-click="thepiratebay_test()") Test
+            strong.fs-headline.display-block ThePirateBay
+            a.fs-subhead.tc-black-2.display-block(ng-href="https://thepiratebay.se/") ThePirateBay
+            strong.fs-subhead.tc-black-2.display-block Torrents provider
+            .grid
+              #thepiratebay_progress
+            .grid
+                .checkbox.mt
+                    input.checkbox__input(type="checkbox", id="search_cron", ng-model="config.search.scan_auto", ng-change="update(config)")
+                    label.checkbox__label(for="search_cron") Automatically scan
+                    span.checkbox__help Automatically search for new video game releases on your provider.
                 .grid(ng-show="config.search.scan_auto")
                     .grid__col4
                         lx-text-field(label="Day", lx-tooltip="* Every day | */4 fourth day of the month", tooltip-position="bottom")
@@ -150,51 +156,54 @@ form(name="configForm")
                     lx-text-field(label="Minimum leechers", lx-tooltip="Only keep trackers with this minimum leechers.", tooltip-position="bottom")
                         input(type="text" ng-model="config.thepiratebay.filters.leechers", ng-blur="update(config)")
 
-        #Transmission.grid__col4.card
-            #transmission_progress
-            div(class="p+")
-                button.btn.btn--m.btn--red.btn--raised(lx-ripple, style="float:right", ng-click="transmission_test()") Test
-                strong.fs-headline.display-block Transmission
-                a.fs-subhead.tc-black-2.display-block(ng-href="https://www.transmissionbt.com/") Transmission
-                strong.fs-subhead.tc-black-2.display-block BitTorrent client for downloading torrents
-                .grid
-                    .grid__col8
-                        lx-text-field(label="Address", lx-tooltip="Address, usually localhost", tooltip-position="bottom")
-                            input(type="text", ng-model="config.transmission.address", ng-blur="update(config)")
-                    .grid__col4
-                        lx-text-field(label="Port", lx-tooltip="Port, usually 9091", tooltip-position="bottom")
-                            input(type="text", ng-model="config.transmission.port", ng-blur="update(config)")
-                .grid
-                    lx-text-field(label="Rpc url", lx-tooltip="Change if you don't run Transmission RPC at the default url.", tooltip-position="bottom")
-                        input(type="text", ng-model="config.transmission.rpc_url", ng-blur="update(config)")
-                .grid
-                    .grid__col6
-                        lx-text-field(label="Username")
-                            input(type="text", ng-model="config.transmission.username", ng-blur="update(config)")
-                    .grid__col6
-                        lx-text-field(label="Password")
-                            input(type="text", ng-model="config.transmission.password", ng-blur="update(config)")
-                .grid
-                    .grid__col10
-                        lx-text-field(label="Directory to download")
-                            input(type="text", ng-model="config.transmission.directory", ng-blur="update(config)",
-                            lx-tooltip="Transmission'll download to this directory. Keep empty for default Transmission directory.", tooltip-position="bottom")
-                    .grid__col2
-                        button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="transmissionTreeViewDialog()" style="margin-top:30px") Select
-                .grid
-                    .grid__col6
-                        div.checkbox.mt
-                            input.checkbox__input(type="checkbox", id="remove_torrent", ng-model="config.transmission.remove_torrent", ng-change="update(config)")
-                            label.checkbox__label(for="remove_torrent") Remove torrent
-                            span.checkbox__help Remove the torrent from Transmission after it finished seeding.
-                    .grid__col6
-                        div.checkbox.mt
-                            input.checkbox__input(type="checkbox", id="pause_torrent", ng-model="config.transmission.pause_torrent", ng-change="update(config)")
-                            label.checkbox__label(for="pause_torrent") Paused torrent
-                            span.checkbox__help Add the torrent paused.
+        br
+        md-card#Transmission
+          md-card-content
+            button.btn.btn--m.btn--red.btn--raised(lx-ripple, style="float:right", ng-click="transmission_test()") Test
+            strong.fs-headline.display-block Transmission
+            a.fs-subhead.tc-black-2.display-block(ng-href="https://www.transmissionbt.com/") Transmission
+            strong.fs-subhead.tc-black-2.display-block BitTorrent client for downloading torrents
+            .grid
+              #transmission_progress
+            .grid
+                .grid__col8
+                    lx-text-field(label="Address", lx-tooltip="Address, usually localhost", tooltip-position="bottom")
+                        input(type="text", ng-model="config.transmission.address", ng-blur="update(config)")
+                .grid__col4
+                    lx-text-field(label="Port", lx-tooltip="Port, usually 9091", tooltip-position="bottom")
+                        input(type="text", ng-model="config.transmission.port", ng-blur="update(config)")
+            .grid
+                lx-text-field(label="Rpc url", lx-tooltip="Change if you don't run Transmission RPC at the default url.", tooltip-position="bottom")
+                    input(type="text", ng-model="config.transmission.rpc_url", ng-blur="update(config)")
+            .grid
+                .grid__col6
+                    lx-text-field(label="Username")
+                        input(type="text", ng-model="config.transmission.username", ng-blur="update(config)")
+                .grid__col6
+                    lx-text-field(label="Password")
+                        input(type="text", ng-model="config.transmission.password", ng-blur="update(config)")
+            .grid
+                .grid__col10
+                    lx-text-field(label="Directory to download")
+                        input(type="text", ng-model="config.transmission.directory", ng-blur="update(config)",
+                        lx-tooltip="Transmission'll download to this directory. Keep empty for default Transmission directory.", tooltip-position="bottom")
+                .grid__col2
+                    button.btn.btn--s.btn--grey.btn--raised(lx-ripple ng-click="transmissionTreeViewDialog()" style="margin-top:30px") Select
+            .grid
+                .grid__col6
+                    div.checkbox.mt
+                        input.checkbox__input(type="checkbox", id="remove_torrent", ng-model="config.transmission.remove_torrent", ng-change="update(config)")
+                        label.checkbox__label(for="remove_torrent") Remove torrent
+                        span.checkbox__help Remove the torrent from Transmission after it finished seeding.
+                .grid__col6
+                    div.checkbox.mt
+                        input.checkbox__input(type="checkbox", id="pause_torrent", ng-model="config.transmission.pause_torrent", ng-change="update(config)")
+                        label.checkbox__label(for="pause_torrent") Paused torrent
+                        span.checkbox__help Add the torrent paused.
 
-        #Renamer.grid__col4.card
-            div(class="p+")
+        br
+        md-card#Renamer
+          md-card-content
                 strong.fs-headline.display-block Renamer
                 strong.fs-subhead.tc-black-2.display-block
 
