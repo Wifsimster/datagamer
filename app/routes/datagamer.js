@@ -63,7 +63,6 @@ app.get("/datagamer/games/count", function (req, res) {
     })
 });
 
-
 // Ask for top score video games
 app.get("/datagamer/games/top", function (req, res) {
 

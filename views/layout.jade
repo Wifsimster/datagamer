@@ -45,25 +45,28 @@ html(lang="en", ng-app="StarterApp")
 
     body(ng-controller="AppCtrl", layout="row")
         // Sidebar left
-        md-sidenav.md-sidenav-left.md-whiteframe-z2(layout="column", md-component-id="left", md-is-locked-open="$mdMedia('gt-sm')", tabindex="-1")
+        md-sidenav.md-sidenav-left.md-whiteframe-z2.bgc-blue-800(layout="column", md-component-id="left", md-is-locked-open="$mdMedia('gt-md')", tabindex="-1")
 
             // Sidebar Title
-            md-toolbar
+            md-toolbar.bgc-blue-800
                 h1.md-toolbar-tools Datagamer
 
             // Sidebar Content
-            md-content.tc-grey-900(style="overflow: auto;")
+            md-content.bgc-blue-800.tc-white-1(style="overflow: auto;")
                 ul.docs-menu
                     li.parent-list-item(ng-repeat="item in pages", ng-class="{parentActive:isActive('/{{item.url}}')}")
                         menu-link(section="page")
                             // Page without subnav
                             md-button.md-button(ng-if="!item.subnav", ng-href="/{{item.url}}", ng-class="{active:isActive('/{{item.url}}')}")
                                 span {{item.title}}
+
                             // Page with subnav
-                            md-button.md-button.md-button-toggle(ng-if="item.subnav", ng-click="toggle()")
-                                span {{item.title}}
+                            .md-button-toggle.md-button(ng-if="item.subnav", ng-click="toggle()", style="display:block;")
+                                div(flex, layout="row") {{item.title}}
+                                span(flex)
                                 span.md-toggle-icon(ng-class="{'toggled' : isOpen()}")
-                                    i.icon.icon--grey.icon--l.mdi.mdi--keyboard-arrow-up
+                                  md-icon(md-svg-src="md-toggle-arrow")
+
                             // Subnav
                             ul.menu-toggle-list(ng-show="show")
                                 li(ng-repeat="subitem in item.subnav")
@@ -76,9 +79,9 @@ html(lang="en", ng-app="StarterApp")
         div(layout="column", layout-fill, tabindex="-1" role="main")
 
             // Toolbar
-            md-toolbar
+            md-toolbar.bgc-blue-800
                 .md-toolbar-tools(tabindex="0")
-                    button.btn(hide-gt-sm="", aria-label="Toggle Menu", ng-click="openLeftMenu()")
+                    button.btn(hide-gt-md="", aria-label="Toggle Menu", ng-click="openLeftMenu()")
                         i.icon.icon--l.icon--flat.mdi.mdi--menu
                     fill-height(layout="rox", flex)
                         .md-toolbar-item.md-breadcrumb

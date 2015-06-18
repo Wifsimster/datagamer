@@ -43,13 +43,14 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
 
                 $http.get("/datagamer/search/" + escape(newFilter)).
                     success(function (data) {
-                        //console.log('Datagmer response !');
+                        console.log('Datagamer response !');
+                        console.log(data.games);
                         $scope.ajax.list = data.games;
                         $scope.ajax.loading = false;
                         LxProgressService.linear.hide();
                     }).
                     error(function (err) {
-                        //console.error(err);
+                        console.error(err);
                         $scope.ajax.loading = false;
                         LxProgressService.linear.hide();
                     });

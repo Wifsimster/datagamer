@@ -124,9 +124,9 @@ md-tabs-ink-bar {
   padding: 0;
 }
 
-.docs-menu .md-button.active {
-  color: #03a9f4;
-}
+/*.docs-menu .md-button.active {*/
+  /*color: #03a9f4;*/
+/*}*/
 
 .menu-heading {
   color: #888;
@@ -142,11 +142,11 @@ md-tabs-ink-bar {
 
 .docs-menu li.parentActive,
 .docs-menu li.parentActive .menu-toggle-list {
-  background-color: #f6f6f6;
+  background: #267ED5;
 }
 
 .menu-toggle-list {
-  background: #fff;
+  /*background: #fff;*/
   max-height: 999px;
   overflow: hidden;
   position: relative;
