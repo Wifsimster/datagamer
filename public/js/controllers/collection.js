@@ -103,11 +103,11 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                     res.game.name = res.game.defaultTitle;
                     res.game.releaseDate = res.game.releaseDates[0].date;
 
-                    // Update wanted game info
+                    // Update collection game info
                     $http.put('/collection/games', res.game)
                         .success(function (res) {
                             if (res.code == 202) {
-                                // Get wanted video games
+                                // Get collection video games
                                 $http.get('/collection/games').
                                     success(function (result) {
                                         if (result.code == 200) {

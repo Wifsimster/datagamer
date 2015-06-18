@@ -43,7 +43,7 @@ app.post("/collection/games", function (req, res) {
 app.put("/collection/games", function (req, res) {
     collection_db.loadDatabase();
 
-    winston.debug('Collection - Update game : ' + req.body);
+    winston.info('Collection - Update game : ' + req.body.defaultTitle);
 
     collection_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
         if (!err) {
