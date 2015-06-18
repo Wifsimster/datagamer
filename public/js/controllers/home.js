@@ -45,7 +45,6 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
         });
 
     $scope.add2WantedList = function (data) {
-
         // Save the Datagamer id
         data.datagamer_id = data._id;
         delete data._id;
@@ -56,6 +55,29 @@ app.controller('HomeCtrl', function ($scope, $http, LxProgressService, LxNotific
             success(function (result) {
                 if (result.code == 201) {
                     LxNotificationService.success(data.defaultTitle + " added to wanted list !");
+
+                    // Need to update game's info
+                    $http.get('/datagamer/game/info/' + data.datagamer_id).success(function (res) {
+                        if (res.code == 200) {
+                            // Save the datagamer id
+                            res.game.datagamer_id = res.game._id;
+                            delete res.game._id;
+                            res.game.name = res.game.defaultTitle;
+                            res.game.releaseDate = res.game.releaseDates[0].date;
+
+                            if (res.game.datagamer_id) {
+                                // Update wanted game info
+                                $http.put('/wanted/games', res.game)
+                                    .success(function (res) {
+                                        if (res.code == 202) {
+
+                                        }
+                                    });
+
+                            }
+                        }
+                    });
+
                 } else {
                     LxNotificationService.error(result.message);
                 }

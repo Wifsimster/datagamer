@@ -10,16 +10,13 @@ var collection_db = new Datastore('collection.nedb');
 var CODE = require('../../app/enums/codes');
 
 app.get("/collection/games/scan", function (req, res) {
-
     collection_db.loadDatabase();
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
     winston.info("Collection - Scan : " + config.collection.directory);
 
     var files = getFiles(config.collection.directory);
-
 });
-
 
 app.get("/collection/games", function (req, res) {
     collection_db.loadDatabase();

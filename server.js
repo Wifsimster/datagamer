@@ -82,12 +82,12 @@ winston.info('Datagamer is running on port ' + port);
 
 if (config.search.scan_auto || config.collection.scan_auto || config.renamer.scan_auto || config.update.scan_auto) {
     winston.info('Initialazing CRON :');
-
-    search.start();
-    collection.start();
-    renamer.start();
-    transmission.start();
-    update.start();
+    //
+    //search.start();
+    //collection.start();
+    //renamer.start();
+    //transmission.start();
+    //update.start();
 
 } else {
     winston.info('No CRON activated.');

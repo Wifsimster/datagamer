@@ -348,3 +348,8 @@ tv
 /*.card .cover-image*/
   /*max-height: 92%;*/
   /*max-width: 92%;*/
+
+.game-overview
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
