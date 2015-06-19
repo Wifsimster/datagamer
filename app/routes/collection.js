@@ -29,12 +29,24 @@ app.get("/collection/games", function (req, res) {
 
 app.post("/collection/games", function (req, res) {
     collection_db.loadDatabase();
-    //winston.info(req.body);
-    collection_db.insert(req.body, function (err, game) {
+
+    collection_db.find({name: req.body.name}, function (err, games) {
         if (!err) {
-            CODE.SUCCESS_POST.game = game;
-            res.json(CODE.SUCCESS_POST);
+            if (games.length == 0) {
+                collection_db.insert(req.body, function (err, newDoc) {
+                    if (!err) {
+                        CODE.SUCCESS_POST.game = newDoc;
+                        res.json(CODE.SUCCESS_POST);
+                    } else {
+                        winston.error('Collection - ' + err);
+                        res.json(CODE.BAD_REQUEST);
+                    }
+                });
+            } else {
+                res.json(CODE.ALREADY_EXIST);
+            }
         } else {
+            winston.error('Collection - ' + err);
             res.json(CODE.BAD_REQUEST);
         }
     });
@@ -45,10 +57,13 @@ app.put("/collection/games", function (req, res) {
 
     winston.info('Collection - Update game : ' + req.body.defaultTitle);
 
-    collection_db.update({_id: req.body._id}, req.body, function (err, newDoc) {
+    collection_db.update({name: req.body.defaultTitle}, req.body, function (err, newDoc) {
         if (!err) {
+            winston.info(newDoc);
+            CODE.SUCCESS_PUT.game = newDoc;
             res.json(CODE.SUCCESS_PUT);
         } else {
+            winston.error('Collection - ' + err);
             res.json(CODE.BAD_REQUEST);
         }
     });
@@ -59,6 +74,18 @@ app.delete("/collection/games/:id", function (req, res) {
     var id = req.params.id;
 
     collection_db.remove({_id: id}, {}, function (err) {
+        if (!err) {
+            res.json(CODE.SUCCESS_DELETE);
+        } else {
+            res.json(CODE.BAD_REQUEST);
+        }
+    });
+});
+
+app.delete("/collection/games", function (req, res) {
+    collection_db.loadDatabase();
+
+    collection_db.remove({}, {multi: true}, function (err) {
         if (!err) {
             res.json(CODE.SUCCESS_DELETE);
         } else {

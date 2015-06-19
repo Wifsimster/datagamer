@@ -13,7 +13,7 @@ app.get("/datagamer/search/:name", function (req, res) {
 
     var name = req.params.name;
 
-    winston.info("Datagamer - Searching game : " + name);
+    winston.info("Datagamer API - Searching game : " + name);
 
     request('http://' + config.search.datagamer.url + '/api/games/by/defaultTitle/' + name, {
         headers: {
@@ -28,7 +28,7 @@ app.get("/datagamer/search/:name", function (req, res) {
                 CODE.SUCCESS.games = result.games;
                 res.json(CODE.SUCCESS);
             } else {
-                winston.info('Datagamer - No game found for : ' + name);
+                winston.info('Datagamer API - No game found for : ' + name);
                 res.json(CODE.NOT_FOUND);
             }
         } else {
@@ -44,7 +44,7 @@ app.get("/datagamer/games/count", function (req, res) {
 
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
-    winston.info("Datagamer - Asking games count...");
+    winston.info("Datagamer API - Asking games count...");
 
     request('http://' + config.search.datagamer.url + '/api/games/count', {
         headers: {
@@ -54,7 +54,7 @@ app.get("/datagamer/games/count", function (req, res) {
 
         if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
-            winston.info('Datagamer - Count : ' + result.count);
+            winston.info('Datagamer API - Count : ' + result.count);
             res.json(result);
         } else {
             winston.error(error);
@@ -68,7 +68,7 @@ app.get("/datagamer/games/top", function (req, res) {
 
     var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
-    winston.info("Datagamer - Asking top score games...");
+    winston.info("Datagamer API - Asking top score games...");
 
     request('http://' + config.search.datagamer.url + '/api/games/top/10', {
         headers: {
@@ -78,7 +78,7 @@ app.get("/datagamer/games/top", function (req, res) {
 
         if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
-            winston.info('Datagamer - Result : ' + result.limit);
+            winston.info('Datagamer API - Result : ' + result.limit);
             res.json(result);
         } else {
             winston.error(error);
@@ -93,7 +93,7 @@ app.get("/datagamer/games/similar/:name", function (req, res) {
 
     var name = req.params.name;
 
-    winston.info("Datagamer - Searching games similar to " + name);
+    winston.info("Datagamer API - Searching games similar to " + name);
 
     request('http://' + config.search.datagamer.url + '/api/games/similar/by/80/for/' + name, {
         headers: {
@@ -117,7 +117,7 @@ app.get("/datagamer/game/info/:id", function (req, res) {
 
     var id = req.params.id;
 
-    winston.info("Datagamer - Updating '" + id + "' info...");
+    winston.info("Datagamer API - Updating '" + id + "' info...");
 
     request('http://' + config.search.datagamer.url + '/api/games/by/id/' + id, {
         headers: {
@@ -127,7 +127,7 @@ app.get("/datagamer/game/info/:id", function (req, res) {
         if (!error && response.statusCode == 200) {
             var result = JSON.parse(body);
             if (result.code == 200) {
-                winston.info('Datagamer responds with game info from ' + result.game.defaultTitle);
+                winston.info('Datagamer API responds with game info from ' + result.game.defaultTitle);
                 CODE.SUCCESS.game = result.game;
                 res.json(CODE.SUCCESS);
             } else {
@@ -148,7 +148,7 @@ app.post("/datagamer/request/user", function (req, res) {
     var name = req.body.name;
     var email = req.body.email;
 
-    winston.info("Datagamer - Adding '" + name + "' as a new user...");
+    winston.info("Datagamer API - Adding '" + name + "' as a new user...");
 
     request.post('http://' + config.search.datagamer.url + '/api/users', {
         form: {
@@ -160,7 +160,7 @@ app.post("/datagamer/request/user", function (req, res) {
             var result = JSON.parse(body);
 
             if (result.code == 201) {
-                winston.info('Datagamer - ' + result.user.name + ' added !');
+                winston.info('Datagamer API - ' + result.user.name + ' added !');
 
                 // Update config datagamer api key
                 var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
@@ -169,7 +169,7 @@ app.post("/datagamer/request/user", function (req, res) {
 
                 res.json(result);
             } else {
-                winston.error('Datagamer - ' + result.message);
+                winston.error('Datagamer API - ' + result.message);
                 res.json(result);
             }
         } else {

@@ -267,8 +267,8 @@ function recursiveRename(i, config, files, callback) {
                                         //var oldDirectory = config.renamer.from + '/' + game.name;
                                         var oldDirectory = file + "/";
 
-                                        // Need to replace : caractere by - for Windows
-                                        var gameName = game.name.replace(/(:)/g, '-');
+                                        // Need to replace : caractere by " -" for Windows
+                                        var gameName = game.name.replace(/(:)/g, ' -');
 
                                         var newDirectory = config.renamer.to + '/' + gameName + ' (' + new Date(game.releaseDate).getFullYear() + ')';
                                         winston.info('Renamer --- Try to move "' + oldDirectory + '" to "' + newDirectory + '"');

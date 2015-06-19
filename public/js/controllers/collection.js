@@ -94,7 +94,6 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
 
         $http.get('/datagamer/game/info/' + datagamer_id).
             success(function (res) {
-
                 if (res.code == 200) {
 
                     // Save the datagamer id
@@ -162,6 +161,35 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                             LxNotificationService.error(err);
                         });
                     LxNotificationService.notify('Game deleted from collection !', 'delete', false, 'grey');
+                } else {
+                    LxNotificationService.error(result.message);
+                }
+            }).
+            error(function (err) {
+                //console.error(err);
+                LxNotificationService.error(err);
+            });
+    };
+
+    $scope.deleteAllGames = function () {
+        // Delete all games from collection database
+        $http.delete('/collection/games').
+            success(function (result) {
+                if (result.code == 204) {
+                    // If ok, refresh collection games list
+                    $http.get('/collection/games').
+                        success(function (result) {
+                            if (result.code == 200) {
+                                $scope.games = result.games;
+                            } else {
+                                LxNotificationService.error(result.message);
+                            }
+                        }).
+                        error(function (err) {
+                            //console.error(err);
+                            LxNotificationService.error(err);
+                        });
+                    LxNotificationService.notify('Games deleted from collection !', 'delete', false, 'grey');
                 } else {
                     LxNotificationService.error(result.message);
                 }
