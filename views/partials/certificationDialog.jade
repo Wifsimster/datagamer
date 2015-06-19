@@ -1,0 +1,29 @@
+md-dialog(aria-label="Certified manually you game", RequestDialogCtrl)
+    form(name="certificationForm")
+      md-toolbar.bgc-blue-800
+        .md-toolbar-tools
+          h2 Manual certification
+      md-dialog-content
+        div
+          md-subheader.md-sticky-no-effect
+           p This directory will be renamed and moved to your collection directory after you have certify the game.
+
+          p.fs-body-2(style="text-align:center;") {{ originalTorrentName }} &#8594; {{ game.name }} ({{ game.releaseDate | date:'yyyy' }})
+
+          br
+
+          md-autocomplete(
+                   md-search-text="searchText"
+                   md-selected-item-change="selectedItemChange(item)"
+                   md-items="item in querySearch(searchText)"
+                   md-item-text="item.defaultTitle"
+                   md-min-length="2"
+                   placeholder="Search for an other video game...")
+           md-item-template
+             span(md-highlight-text="searchText" md-highlight-flags="^i") {{item.defaultTitle}} ({{item.releaseDates[0].date | date:'yyyy' }})
+           md-not-found No matches found for "{{searchText}}".
+
+
+      .md-actions(layout="row")
+          md-button(ng-click="cancel()") Cancel
+          button.btn.btn--m.btn--blue.btn--raised(lx-ripple, ng-click="certify(game)") Certify

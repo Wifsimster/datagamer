@@ -12,8 +12,11 @@ div
             div(style="position:relative;")
               #scan_progress.card
 
-            ul.list
-                li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games | orderBy:'percentage'")
+
+            section(ng-show="uncertifiedGames.length > 0")
+              span.fs-title.display-block.mb Uncertified games
+              ul.list
+                li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in uncertifiedGames | orderBy:'percentage'")
                     div(id="scan_progress_{{game._id}}")
 
                     .list-primary-tile
@@ -50,9 +53,56 @@ div
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game._id, game.datagamer_id)",
                         lx-tooltip="Add video game information", tooltip-position="left", style="margin-right: 5px")
                             i.mdi.mdi--refresh
+                        button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="certifiedGame(game, $event)",
+                        lx-tooltip="Manually certified the game", tooltip-position="left", style="margin-right: 5px")
+                            i.mdi.mdi--verified-user
                         button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteGame(game._id)",
                         lx-tooltip="Delete a game from collection database", tooltip-position="left")
                             i.mdi.mdi--delete
+
+            section(ng-show="certifiedGames.length > 0")
+              span.fs-title.display-block.mb Certified games
+              ul.list
+                  li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in certifiedGames")
+                      div(id="scan_progress_{{game._id}}")
+
+                      .list-primary-tile
+                          img.list-primary-tile__img(ng-show="game.media.thumbnails[0]" ng-src="{{ game.media.thumbnails[0] }}")
+                          img.list-primary-tile__img(ng-hide="game.media.thumbnails[0]" src="http://niesr.ac.uk/sites/default/files/styles/large/adaptive-image/public/default_images/thumbnail-default_2_0.jpg?itok=zti20ldd")
+
+                      .list-content-tile.list-content-tile--one-line {{game.name}} ({{game.releaseDate | date:'yyyy'}})
+                          ul
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.metacritic.score")
+                                  .label.label-danger(lx-tooltip="Metacritic score", tooltip-position="bottom") {{game.metacritic.score}}
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.genres[0].name")
+                                  .label.label-info(lx-tooltip="Genre", tooltip-position="bottom") {{game.genres[0].name}}
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.developers[0].name")
+                                  .label.label-info(lx-tooltip="Developer", tooltip-position="bottom") {{game.developers[0].name}}
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.editors[0].name")
+                                  .label.label-info(lx-tooltip="Editor", tooltip-position="bottom") {{game.editors[0].name}}
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.percentage == 100")
+                                  .label.label-success(lx-tooltip="100% match with the game in your directory !", tooltip-position="bottom") Certified
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.percentage < 100")
+                                  .label.label-warning(lx-tooltip="Percentage of matching with the game in your directory !", tooltip-position="bottom") {{ game.percentage }}%
+                          ul
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.repack")
+                                  .label.label-primary(lx-tooltip="Your game is a repack.", tooltip-position="bottom") {{game.repack}}
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.crack")
+                                  .label.label-primary(lx-tooltip="Your game contains a crack.", tooltip-position="bottom") {{game.crack}}
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.multi")
+                                  .label.label-primary(lx-tooltip="Your game is multilanguage.", tooltip-position="bottom") {{game.multi}}
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.team")
+                                  .label.label-primary(lx-tooltip="Team who prepared your game.", tooltip-position="bottom") {{game.team}}
+                              li(style="display:inline; margin-right: 5px;" ng-show="game.version")
+                                  .label.label-primary(lx-tooltip="Your game version.", tooltip-position="bottom") {{game.version}}
+
+                      .list-secondary-tile
+                          button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="updateGameInfo(game._id, game.datagamer_id)",
+                          lx-tooltip="Add video game information", tooltip-position="left", style="margin-right: 5px")
+                              i.mdi.mdi--refresh
+                          button.btn.btn--xs.btn--blue.btn--fab(lx-ripple, ng-click="deleteGame(game._id)",
+                          lx-tooltip="Delete a game from collection database", tooltip-position="left")
+                              i.mdi.mdi--delete
 
             div(ng-hide="games.length > 0")
                 p.text-center(class="p+") No game found in your collection !

@@ -1,18 +1,29 @@
-app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxNotificationService) {
+app.controller('CollectionCtrl', function ($scope, $http, $mdDialog, LxProgressService, LxNotificationService) {
 
     $scope.games = [];
+    $scope.certifiedGames = [];
+    $scope.uncertifiedGames = [];
 
     // Get collection video games
     $http.get('/collection/games').
         success(function (result) {
             if (result.code == 200) {
                 $scope.games = result.games;
+
+                // Split games in two type
+                $scope.games.forEach(function (game) {
+                    if (game.percentage == 100) {
+                        $scope.certifiedGames.push(game);
+                    } else {
+                        $scope.uncertifiedGames.push(game);
+                    }
+                });
+
             } else {
                 LxNotificationService.error(result.message);
             }
         }).
         error(function (err) {
-            //console.error(err);
             LxNotificationService.error(err);
         });
 
@@ -36,7 +47,19 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                     $http.get('/collection/games').
                         success(function (result) {
                             if (result.code == 200) {
+
                                 $scope.games = result.games;
+                                $scope.certifiedGames = [];
+                                $scope.uncertifiedGames = [];
+
+                                // Split games in two type
+                                $scope.games.forEach(function (game) {
+                                    if (game.percentage == 100) {
+                                        $scope.certifiedGames.push(game);
+                                    } else {
+                                        $scope.uncertifiedGames.push(game);
+                                    }
+                                });
                             } else {
                                 LxNotificationService.error(result.message);
                             }
@@ -70,7 +93,19 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                     $http.get('/collection/games').
                         success(function (result) {
                             if (result.code == 200) {
+
                                 $scope.games = result.games;
+                                $scope.certifiedGames = [];
+                                $scope.uncertifiedGames = [];
+
+                                // Split games in two type
+                                $scope.games.forEach(function (game) {
+                                    if (game.percentage == 100) {
+                                        $scope.certifiedGames.push(game);
+                                    } else {
+                                        $scope.uncertifiedGames.push(game);
+                                    }
+                                });
                             } else {
                                 LxNotificationService.error(result.message);
                             }
@@ -89,7 +124,6 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
     };
 
     $scope.updateGameInfo = function (id, datagamer_id) {
-
         LxProgressService.linear.show('#5fa2db', '#scan_progress_' + id);
 
         $http.get('/datagamer/game/info/' + datagamer_id).
@@ -110,7 +144,19 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                                 $http.get('/collection/games').
                                     success(function (result) {
                                         if (result.code == 200) {
+
                                             $scope.games = result.games;
+                                            $scope.certifiedGames = [];
+                                            $scope.uncertifiedGames = [];
+
+                                            // Split games in two type
+                                            $scope.games.forEach(function (game) {
+                                                if (game.percentage == 100) {
+                                                    $scope.certifiedGames.push(game);
+                                                } else {
+                                                    $scope.uncertifiedGames.push(game);
+                                                }
+                                            });
                                             LxProgressService.linear.hide();
                                         } else {
                                             LxNotificationService.error(result.message);
@@ -151,7 +197,19 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                     $http.get('/collection/games').
                         success(function (result) {
                             if (result.code == 200) {
+
                                 $scope.games = result.games;
+                                $scope.certifiedGames = [];
+                                $scope.uncertifiedGames = [];
+
+                                // Split games in two type
+                                $scope.games.forEach(function (game) {
+                                    if (game.percentage == 100) {
+                                        $scope.certifiedGames.push(game);
+                                    } else {
+                                        $scope.uncertifiedGames.push(game);
+                                    }
+                                });
                             } else {
                                 LxNotificationService.error(result.message);
                             }
@@ -180,7 +238,19 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                     $http.get('/collection/games').
                         success(function (result) {
                             if (result.code == 200) {
+
                                 $scope.games = result.games;
+                                $scope.certifiedGames = [];
+                                $scope.uncertifiedGames = [];
+
+                                // Split games in two type
+                                $scope.games.forEach(function (game) {
+                                    if (game.percentage == 100) {
+                                        $scope.certifiedGames.push(game);
+                                    } else {
+                                        $scope.uncertifiedGames.push(game);
+                                    }
+                                });
                             } else {
                                 LxNotificationService.error(result.message);
                             }
@@ -199,4 +269,106 @@ app.controller('CollectionCtrl', function ($scope, $http, LxProgressService, LxN
                 LxNotificationService.error(err);
             });
     };
+
+    $scope.certifiedGame = function (game, ev) {
+        $mdDialog.show({
+            controller: CertificationDialogController,
+            templateUrl: 'partials/certificationDialog.jade',
+            targetEvent: ev,
+            locals: {
+                game: game
+            }
+        }).then(function (game) {
+            // Update selected game with new game info
+            $http.get('/collection/games').
+                success(function (result) {
+                    if (result.code == 200) {
+
+                        $scope.games = result.games;
+
+                        // Split games in two type
+                        $scope.games.forEach(function (game) {
+                            if (game.percentage == 100) {
+                                $scope.certifiedGames.push(game);
+                            } else {
+                                $scope.uncertifiedGames.push(game);
+                            }
+                        });
+                    } else {
+                        LxNotificationService.error(result.message);
+                    }
+                }).
+                error(function (err) {
+                    LxNotificationService.error(err);
+                });
+        });
+    }
 });
+
+
+function CertificationDialogController($scope, $http, game, $mdDialog) {
+
+    $scope.originalTorrentName = game.originalTorrentName;
+    $scope.game = game;
+
+    // Return video games
+    $scope.querySearch = function (query) {
+        return $http.get("/datagamer/search/" + escape(query)).
+            then(function (res) {
+                if (res.data.code == 200) {
+                    return res.data.games.slice(0, 10);
+                } else {
+                    return null;
+                }
+            });
+    }
+
+    $scope.selectedItemChange = function (item) {
+        $scope.game.datagamer_id = item._id;
+        $scope.game.name = item.defaultTitle;
+        $scope.game.releaseDate = item.releaseDates[0].date;
+    }
+
+    $scope.cancel = function () {
+        $mdDialog.cancel();
+    };
+
+    $scope.certify = function (game) {
+        // Search info for new selected game to certify with his datagamer id
+        $http.get('/datagamer/game/info/' + game.datagamer_id).
+            success(function (res) {
+                if (res.code == 200) {
+
+                    var certifiedGame = res.game;
+
+                    // Change info of current game with new game info
+                    certifiedGame._id = game._id;
+
+                    // Move the game directory to collection directory
+
+                    // Set game to certified
+                    certifiedGame.percentage = 100;
+
+                    // Delete uncertified game from collection database
+                    $http.delete('/collection/games/' + game._id).
+                        success(function (res) {
+                            console.log(res);
+                            if (res.code == 204) {
+                                // Save the new game to collection database
+                                $http.post('/collection/games/', certifiedGame).
+                                    success(function (res) {
+                                        console.log(res);
+                                        if (res.code == 201) {
+
+                                        }
+                                    });
+                            }
+                        });
+
+                }
+            });
+
+        $mdDialog.cancel();
+    };
+}
+

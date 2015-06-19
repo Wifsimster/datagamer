@@ -27,6 +27,21 @@ app.get("/collection/games", function (req, res) {
     });
 });
 
+app.get("/collection/games/:id", function (req, res) {
+    collection_db.loadDatabase();
+    var id = req.params.id;
+
+    collection_db.findOne({_id: id}, function (err, game) {
+        if (!err) {
+            CODE.SUCCESS.game = game;
+            res.send(CODE.SUCCESS);
+        } else {
+            winston.error('Collection - ' + err);
+            res.json(CODE.BAD_REQUEST);
+        }
+    });
+});
+
 app.post("/collection/games", function (req, res) {
     collection_db.loadDatabase();
 

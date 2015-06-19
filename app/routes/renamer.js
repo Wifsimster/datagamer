@@ -68,6 +68,9 @@ function extractInfoFromName(name) {
     winston.info('Renamer --------------------------------------------');
     winston.info('Renamer - Original filename : ' + filename);
 
+    // Save original name for game which need to be certified manually afterward
+    game.originalTorrentName = filename;
+
     // Delete " PC " from filename
     filename = filename.replace(/PC/g, '');
 
@@ -257,8 +260,8 @@ function recursiveRename(i, config, files, callback) {
                             game.releaseDate = bestGame.releaseDates[0].date;
                         }
 
-                        // Move and rename game directory only if the game percentage is 95% or more
-                        if (game.percentage >= 95) {
+                        // Move and rename game directory only if the game percentage is 100%
+                        if (game.percentage == 100) {
                             collection_db.find({name: game.name}, function (err, doc) {
                                 if (!err) {
                                     // If no game with this name exist in collection database
@@ -309,7 +312,18 @@ function recursiveRename(i, config, files, callback) {
                             });
                         } else {
                             winston.info('Renamer - ' + game.name + ' percentage (' + game.percentage + ') is not high enought to be moved !');
-                            recursiveRename(i + 1, config, files, callback);
+                            winston.info('Renamer - ' + game.name + ' will be added to collection database anyway but need to be certified manually by the user !');
+
+                            // Add this new game to the collection database
+                            collection_db.insert(game, function (err) {
+                                if (!err) {
+                                    winston.info('Renamer - ' + game.name + ' added to collection !');
+                                    recursiveRename(i + 1, config, files, callback);
+                                } else {
+                                    winston.error(err);
+                                    callback();
+                                }
+                            });
                         }
                     } else {
                         // No game found, parse next one...
