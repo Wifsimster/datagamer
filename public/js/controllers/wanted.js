@@ -45,7 +45,7 @@ app.controller('WantedCtrl', function ($scope, $http, LxNotificationService, LxP
                     success(function (data) {
                         console.log('Datagamer response !');
                         console.log(data.games);
-                        $scope.ajax.list = data.games;
+                        $scope.ajax.list = data.games.slice(0, 10);
                         $scope.ajax.loading = false;
                         LxProgressService.linear.hide();
                     }).

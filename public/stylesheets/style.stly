@@ -353,3 +353,6 @@ tv
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+.md-breadcrumb::first-letter
+  text-transform: uppercase;

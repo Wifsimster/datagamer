@@ -49,7 +49,7 @@ html(lang="en", ng-app="StarterApp")
 
             // Sidebar Title
             md-toolbar.bgc-blue-800
-                h1.md-toolbar-tools Datagamer
+              h1.md-toolbar-tools Datagamer
 
             // Sidebar Content
             md-content.bgc-blue-800.tc-white-1(style="overflow: auto;")
@@ -88,6 +88,27 @@ html(lang="en", ng-app="StarterApp")
                             span {{breadcrumb}}
 
                     span(flex)
+
+                    md-menu
+                      button.btn.btn--xl.btn--icon(aria-label="", ng-click="$mdOpenMenu($event)")
+                        i.mdi.mdi--apps
+                      md-menu-content(width="4")
+                        md-menu-item
+                          md-button(ng-click="")
+                            i.icon.icon--m.icon--flat.mdi.mdi--gamepad
+                            span Datagamer
+                        md-menu-item
+                          md-button(ng-click="")
+                            i.icon.icon--m.icon--flat.mdi.mdi--tv
+                            span Sickbeard
+                        md-menu-item
+                          md-button(ng-click="")
+                            i.icon.icon--m.icon--flat.mdi.mdi--movie
+                            span Couchpotato
+                        md-menu-item
+                          md-button(ng-click="")
+                            i.icon.icon--m.icon--flat.mdi.mdi--headset
+                            span Headphones
 
             md-content.md-padding(md-scroll-y, flex)
                 div(ng-view)

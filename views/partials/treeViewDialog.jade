@@ -1,8 +1,9 @@
-md-dialog(aria-label="Request an API key for Datagamer", RequestDialogCtrl)
+md-dialog(RequestDialogCtrl)
     form(name="requestForm")
-        md-content.md-default-theme
+      md-toolbar.bgc-blue-800
+        .md-toolbar-tools
             h2 Select a directory
-
+      md-dialog-content
             lx-text-field(label="Directory")
                 input(type="text" ng-model="srcpath" ng-change="srcpathChange()")
 

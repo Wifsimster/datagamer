@@ -7,10 +7,10 @@ div
 
             h1.fs-title(ng-show="games.length > 0") Your video games ({{ games.length }})
 
-            .grid
-              br
-              #scan_progress
-              br
+            br
+
+            div(style="position:relative;")
+              #scan_progress.card
 
             ul.list
                 li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in games | orderBy:'percentage'")
