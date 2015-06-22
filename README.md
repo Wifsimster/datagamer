@@ -12,3 +12,5 @@ Like <a href="https://couchpota.to/">Couchpotato</a> or <a href="http://sickbear
 * ThePirateBay provider ;
 * Transmission communication ;
 * Update (in development).
+
+<img src="https://lh5.googleusercontent.com/-_CkPkpqyS6w/VYL0_vFZysI/AAAAAAAAAP0/Dy8sV54gXfA/w884-h553-no/home.png">
