@@ -3,6 +3,9 @@ md-dialog(aria-label="Certified manually you game", RequestDialogCtrl)
       md-toolbar.bgc-blue-800
         .md-toolbar-tools
           h2 Manual certification
+          span(flex)
+          button.btn.btn--m.btn--icon(lx-ripple, ng-click="cancel()")
+            i.mdi.mdi--close
       md-dialog-content
         div
           md-subheader.md-sticky-no-effect

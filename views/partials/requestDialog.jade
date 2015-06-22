@@ -3,6 +3,9 @@ md-dialog(aria-label="Request an API key for Datagamer", RequestDialogCtrl)
       md-toolbar.bgc-blue-800
         .md-toolbar-tools
           h2 Datagamer
+          span(flex)
+          button.btn.btn--m.btn--icon(lx-ripple, ng-click="requestCancel()")
+            i.mdi.mdi--close
       md-dialog-content
         div
           md-subheader.md-sticky-no-effect Request a new API key for Datagamer

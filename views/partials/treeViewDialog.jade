@@ -3,6 +3,9 @@ md-dialog(RequestDialogCtrl)
       md-toolbar.bgc-blue-800
         .md-toolbar-tools
             h2 Select a directory
+            span(flex)
+            button.btn.btn--m.btn--icon(lx-ripple, ng-click="cancel()")
+              i.mdi.mdi--close
       md-dialog-content
             lx-text-field(label="Directory")
                 input(type="text" ng-model="srcpath" ng-change="srcpathChange()")
