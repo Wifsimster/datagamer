@@ -125,7 +125,7 @@ md-tabs-ink-bar {
 }
 
 /*.docs-menu .md-button.active {*/
-  /*color: #03a9f4;*/
+/*color: #03a9f4;*/
 /*}*/
 
 .menu-heading {
@@ -339,15 +339,15 @@ tv
   white-space: nowrap;
 
 /*.card.tiny.apps.square-cover .cover-image, .card.small.apps.square-cover .cover-image, .card.medium.apps.square-cover .cover-image, .card.medium-long.apps.square-cover .cover-image, .card.medium-minus.apps.square-cover .cover-image, .card.medium-plus.apps.square-cover .cover-image, .card.medium-plus-fixed.apps.square-cover .cover-image, .card.marge.apps.square-cover .cover-image, .card.large.apps.square-cover .cover-image*/
-  /*max-width: 73%;*/
+/*max-width: 73%;*/
 
 /*.card.small.circle-cover .cover-image, .card.small.square-cover .cover-image*/
-  /*max-height: 160px;*/
-  /*max-width: 160px;*/
+/*max-height: 160px;*/
+/*max-width: 160px;*/
 
 /*.card .cover-image*/
-  /*max-height: 92%;*/
-  /*max-width: 92%;*/
+/*max-height: 92%;*/
+/*max-width: 92%;*/
 
 .game-overview
   white-space: nowrap;
@@ -356,3 +356,10 @@ tv
 
 .md-breadcrumb::first-letter
   text-transform: uppercase;
+
+div.toggled > .icon.mdi--arrow-drop-up
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);

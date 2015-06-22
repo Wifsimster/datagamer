@@ -62,10 +62,9 @@ html(lang="en", ng-app="StarterApp")
 
                             // Page with subnav
                             .md-button-toggle.md-button(ng-if="item.subnav", ng-click="toggle()", style="display:block;")
-                                div(flex, layout="row") {{item.title}}
-                                span(flex)
-                                span.md-toggle-icon(ng-class="{'toggled' : isOpen()}")
-                                  md-icon(md-svg-src="md-toggle-arrow")
+                                div(flex, layout="row", ng-class="{'toggled' : isOpen()}") {{item.title}}
+                                  span(flex)
+                                  i.icon.icon--l.icon--flat.mdi.mdi--arrow-drop-up
 
                             // Subnav
                             ul.menu-toggle-list(ng-show="show")
