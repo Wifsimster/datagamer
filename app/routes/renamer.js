@@ -311,14 +311,27 @@ function recursiveRename(i, config, files, callback) {
                                 }
                             });
                         } else {
-                            winston.info('Renamer - ' + game.name + ' percentage (' + game.percentage + ') is not high enought to be moved !');
-                            winston.info('Renamer - ' + game.name + ' will be added to collection database anyway but need to be certified manually by the user !');
-
-                            // Add this new game to the collection database
-                            collection_db.insert(game, function (err) {
+                            collection_db.find({name: game.name}, function (err, doc) {
                                 if (!err) {
-                                    winston.info('Renamer - ' + game.name + ' added to collection !');
-                                    recursiveRename(i + 1, config, files, callback);
+                                    // If no game with this name exist in collection database
+                                    if (doc.length == 0) {
+                                        winston.info('Renamer - ' + game.name + ' percentage (' + game.percentage + ') is not high enought to be moved !');
+                                        winston.info('Renamer - ' + game.name + ' will be added to collection database anyway but need to be certified manually by the user !');
+
+                                        // Add this new game to the collection database
+                                        collection_db.insert(game, function (err) {
+                                            if (!err) {
+                                                winston.info('Renamer - ' + game.name + ' added to collection !');
+                                                recursiveRename(i + 1, config, files, callback);
+                                            } else {
+                                                winston.error(err);
+                                                callback();
+                                            }
+                                        });
+                                    } else {
+                                        winston.info('Renamer - ' + game.name + ' already exist in collection database !');
+                                        recursiveRename(i + 1, config, files, callback);
+                                    }
                                 } else {
                                     winston.error(err);
                                     callback();

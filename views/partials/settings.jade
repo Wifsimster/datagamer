@@ -88,11 +88,11 @@ form(name="configForm")
                             input(type="text" ng-model="config.collection.cron.minute", ng-blur="update(config)")
 
         br
-        md-card#Datagamer
+        md-card#Datagamer-API
           md-card-content
                 button.btn.btn--m.btn--blue.btn--raised(lx-ripple, style="float:right", ng-click="showRequestDialog()", lx-tooltip="Register on Datagamer and get an API key.", tooltip-position="left") Request API key
-                strong.fs-headline.display-block Datagamer
-                strong.fs-subhead.tc-black-2.display-block Video games info provider.
+                strong.fs-headline.display-block Datagamer API v2
+                strong.fs-subhead.tc-black-2.display-block Video games info provider. You need to request an API key for using this service.
                 .grid
                     #apikey_progress
 

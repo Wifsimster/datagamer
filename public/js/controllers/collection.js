@@ -9,6 +9,8 @@ app.controller('CollectionCtrl', function ($scope, $http, $mdDialog, LxProgressS
         success(function (result) {
             if (result.code == 200) {
                 $scope.games = result.games;
+                $scope.certifiedGames = [];
+                $scope.uncertifiedGames = [];
 
                 // Split games in two type
                 $scope.games.forEach(function (game) {
@@ -38,9 +40,7 @@ app.controller('CollectionCtrl', function ($scope, $http, $mdDialog, LxProgressS
         $http.get('/renamer/games/postprocessing').
             success(function (result) {
                 LxProgressService.linear.hide();
-
                 if (result.code == 201) {
-                    $scope.postProcessingResult = result;
                     LxNotificationService.success('Post-processing ended !');
 
                     // Update collection games list
@@ -86,7 +86,6 @@ app.controller('CollectionCtrl', function ($scope, $http, $mdDialog, LxProgressS
                 LxProgressService.linear.hide();
 
                 if (result.code == 201) {
-                    $scope.postProcessingResult = result;
                     LxNotificationService.success('Scan ended !');
 
                     // Update collection games list
@@ -278,13 +277,15 @@ app.controller('CollectionCtrl', function ($scope, $http, $mdDialog, LxProgressS
             locals: {
                 game: game
             }
-        }).then(function (game) {
+        }).then(function () {
+
             // Update selected game with new game info
             $http.get('/collection/games').
                 success(function (result) {
                     if (result.code == 200) {
-
                         $scope.games = result.games;
+                        $scope.certifiedGames = [];
+                        $scope.uncertifiedGames = [];
 
                         // Split games in two type
                         $scope.games.forEach(function (game) {
@@ -339,10 +340,16 @@ function CertificationDialogController($scope, $http, game, $mdDialog) {
             success(function (res) {
                 if (res.code == 200) {
 
-                    var certifiedGame = res.game;
+                    // Save the datagamer id
+                    res.game.datagamer_id = res.game._id;
 
                     // Change info of current game with new game info
-                    certifiedGame._id = game._id;
+                    res.game._id = game._id;
+
+                    res.game.name = res.game.defaultTitle;
+                    res.game.releaseDate = res.game.releaseDates[0].date;
+
+                    var certifiedGame = res.game;
 
                     // Move the game directory to collection directory
 
@@ -359,7 +366,8 @@ function CertificationDialogController($scope, $http, game, $mdDialog) {
                                     success(function (res) {
                                         console.log(res);
                                         if (res.code == 201) {
-
+                                            // Close dialog
+                                            $mdDialog.hide();
                                         }
                                     });
                             }
@@ -367,8 +375,6 @@ function CertificationDialogController($scope, $http, game, $mdDialog) {
 
                 }
             });
-
-        $mdDialog.cancel();
     };
 }
 

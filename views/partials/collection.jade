@@ -1,20 +1,20 @@
 div
     .grid
         .grid__col12
-            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="postProcessing()", lx-tooltip="Trigger renamer module.", tooltip-position="left", style="margin-right:10px;") Post-processing
-            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scan()", lx-tooltip="Scan your collection directory to found new games.", tooltip-position="left", style="margin-right:10px;") Scan
-            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="deleteAllGames()", lx-tooltip="Reset your games collection", tooltip-position="left", style="margin-right:10px;") Wipe out
-
-            h1.fs-title(ng-show="games.length > 0") Your video games ({{ games.length }})
-
             br
 
             div(style="position:relative;")
               #scan_progress.card
 
+            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="postProcessing()", lx-tooltip="Trigger renamer module.", tooltip-position="left", style="margin-right:10px;") Post-processing
+            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="scan()", lx-tooltip="Scan your collection directory to found new games.", tooltip-position="left", style="margin-right:10px;") Scan
+            button.float-right.btn.btn--l.btn--blue.btn--raised(lx-ripple, ng-click="deleteAllGames()", lx-tooltip="Reset your games collection", tooltip-position="left", style="margin-right:10px;") Wipe out
+
+            br
+
 
             section(ng-show="uncertifiedGames.length > 0")
-              span.fs-title.display-block.mb Uncertified games
+              span.fs-title.display-block.mb Uncertified games ({{uncertifiedGames.length}})
               ul.list
                 li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in uncertifiedGames | orderBy:'percentage'")
                     div(id="scan_progress_{{game._id}}")
@@ -61,7 +61,7 @@ div
                             i.mdi.mdi--delete
 
             section(ng-show="certifiedGames.length > 0")
-              span.fs-title.display-block.mb Certified games
+              span.fs-title.display-block.mb Certified games ({{certifiedGames.length}})
               ul.list
                   li.card.list-row.list-row.list-row--has-primary.list-row--has-secondary(ng-repeat="game in certifiedGames")
                       div(id="scan_progress_{{game._id}}")
@@ -106,9 +106,3 @@ div
 
             div(ng-hide="games.length > 0")
                 p.text-center(class="p+") No game found in your collection !
-
-
-//md-bottom-sheet.md-list.md-has-header
-    md-subheader Post-processing results
-    md-list
-        p {{ postProcessingResult }}
